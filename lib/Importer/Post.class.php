@@ -2,7 +2,7 @@
 
 class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
-  protected $uri;
+  protected $uri, $id, $data;
 
   public function dispatch()
   {
@@ -20,9 +20,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $dom = new DomDocument();
     $dom->appendChild($dom->importNode($query->item(0), true));
 
-    $post = $this->savePost($dom);
-    //$this->saveComments();
-    //$this->saveMedias();
+    $post_id = $this->savePost($dom);
+    $this->saveComments($dom);
+    $this->saveMedias($dom);
+
+    return $post_id;
   }
 
   public function savePost(DomDocument $dom)
@@ -87,10 +89,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     if ($post_id = post_exists($data['post_title'], '', $data['post_date']))
     {
       $data['ID'] = $post_id;
-      //return $post_id;
     }
-
-    $post_id = wp_insert_post($data);
+    else
+    {
+      $post_id = wp_insert_post($data);
+      $data['ID'] = $post_id;
+    }
 
     /*
      * Post save extras
@@ -131,7 +135,81 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     add_post_meta($post_id, 'canalblog_id', $canalblog_id, true);
     add_post_meta($post_id, 'canalblog_uri', $this->uri, true);
 
+    $this->data = $data;
+    $this->id =   $post_id;
+
     return $post_id;
+  }
+
+  public function saveComments(DomDocument $dom)
+  {
+    if ($this->data['comment_status'] == 'closed')
+    {
+      return false;
+    }
+
+    $xpath = new DomXpath($dom);
+    $xpathResult = $xpath->query("//div[@class='blogbody']/div[@class and @class!='itemfooter']");
+
+    if (!$xpathResult->length)
+    {
+      return 0;
+    }
+
+    $comments = get_comments(array('post_id' => $this->id));
+
+    foreach ($xpathResult as $commentNode)
+    {
+      if (!preg_match('#^fdc#U', $commentNode->getAttribute('class')))
+      {
+        continue;
+      }
+
+      /*
+       * Determining Canalblog comment ID
+       */
+      $canalblog_comment_id = $xpath->query("a[@id]", $commentNode)->item(0)->getAttribute('id');
+
+      /*
+       * Checking if it's already saved
+       */
+      foreach ($comments as $comment)
+      {
+        if (get_comment_meta($comment->comment_ID, 'canalblog_id', true) == $canalblog_comment_id)
+        {
+          continue;
+        }
+      }
+
+      $data = array(
+        'comment_approved' => 1,
+        'comment_post_ID' =>  $this->id,
+      );
+
+      /*
+       * Comment Title
+       */
+
+
+      /*
+       * Comment content
+       */
+
+      $data = wp_filter_comment($data);
+      $comment_id = wp_new_comment($data);
+
+      /*
+       * Saving original ID
+       */
+      add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
+    }
+
+    wp_update_comment_count_now($this->id);
+  }
+
+  public function saveMedias(DomDocument $dom)
+  {
+
   }
 
   /**

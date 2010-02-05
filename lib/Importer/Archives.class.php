@@ -32,15 +32,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
        */
       $post = new CanalblogImporterImporterPost($this->getConfiguration());
       $post->setUri($permalink);
-      $post_id = $post->process();
-
-      /*
-       * Importing post comments
-       */
-
-      /*
-       * Importing post medias
-       */
+      $post->process();
     }
   }
 
