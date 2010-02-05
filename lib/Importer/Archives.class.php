@@ -27,9 +27,20 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 
     foreach ($permalinks as $permalink)
     {
+      /*
+       * Importing post content
+       */
       $post = new CanalblogImporterImporterPost($this->getConfiguration());
       $post->setUri($permalink);
-      $post->process();
+      $post_id = $post->process();
+
+      /*
+       * Importing post comments
+       */
+
+      /*
+       * Importing post medias
+       */
     }
   }
 
