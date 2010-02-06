@@ -39,6 +39,25 @@
               <li><?php printf(__('Hour formatting: %s', 'canalblog-importer'), date_i18n('H:i')) ?></li>
               <li><?php _e('Digest format: Monthly', 'canalblog-importer') ?></li>
             </ul>
+
+            <br /><a href="http://www.canalblog.com/cf/my/"><?php _e("Configure Canalblog settings", 'canalblog-importer') ?></a>
+          </td>
+        </tr>
+        <tr>
+          <th><?php _e("Permalink structure", 'canalblog-importer') ?></th>
+          <td style="vertical-align: top">
+            <span class="help"><?php _e("The importer will rewrite all your internal links (from a post to another). It can be done only once so check your permalink structure <em>before</em> importing anything.", 'canalblog-importer') ?><br />
+            <?php _e("Best permalink structure is at least the <em>month and title</em> one (<code>2010/02/sample-post/</code>).", 'canalblog-importer') ?></span>
+
+            <br /><a href="options-permalink.php"><?php _e('Configure permalink structure', 'canalblog-importer') ?></a>
+          </td>
+        </tr>
+        <tr>
+          <th><?php _e("Thumbnail size", 'canalblog-importer') ?></th>
+          <td style="vertical-align: top">
+            <span class="help"><?php _e("The importer will retrieve <em>all</em> your pictures and will use the <strong>medium size</strong> format as a replacement within your posts (with a link to full size pictures).", 'canalblog-importer') ?></span>
+
+            <br /><a href="options-media.php"><?php _e('Configure thumbnail size', 'canalblog-importer') ?></a>
           </td>
         </tr>
       </tbody>

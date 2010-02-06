@@ -15,6 +15,7 @@ class CanalblogImporterImporter
     3 => array('page' => '03-cats', 'operation' => 'CanalblogImporterImporterCategories'),
     4 => array('page' => '04-arch', 'operation' => 'CanalblogImporterImporterArchives'),
     5 => array('page' => '05-clnp', 'operation' => 'CanalblogImporterImporterCleanup'),
+    6 => array('page' => '06-ccln', 'operation' => 'CanalblogImporterImporterConclusion'),
   );
   protected $plugin;
   protected $is_ready_to_process = false;
@@ -48,7 +49,7 @@ class CanalblogImporterImporter
     /*
      * Do we cancel sometime?
      */
-    if (isset($_REQUEST['submit']) && $_REQUEST['submit'] === __('Cancel'))
+    if (isset($_REQUEST['submit']) && in_array($_REQUEST['submit'], array(__('Cancel', 'canalblog-importer'), __('Done', 'canalblog-importer')), true))
     {
       $this->stop();
     }
