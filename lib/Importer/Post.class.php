@@ -27,6 +27,15 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $post_id;
   }
 
+  /**
+   * Save post content
+   *
+   * @author oncletom
+   * @since 1.0
+   * @version 1.0
+   * @param DomDocument $dom
+   * @return Integer Post ID
+   */
   public function savePost(DomDocument $dom)
   {
     $xpath = new DomXpath($dom);
@@ -141,6 +150,14 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $post_id;
   }
 
+  /**
+   * Save comments from a post
+   *
+   * @author oncletom
+   * @since 1.0
+   * @version 1.0
+   * @param DomDocument $dom
+   */
   public function saveComments(DomDocument $dom)
   {
     if ($this->data['comment_status'] == 'closed')
@@ -177,7 +194,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $canalblog_comment_id = $xpath->query("a[@id]", $commentNode)->item(0)->getAttribute('id');
 
       /*
-       * Checking if it's already saved
+       * Checking if it's already saved from import
        */
       foreach ($comments as $comment)
       {
@@ -209,12 +226,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        * Comment content
        * It's basically all direct <p>
        */
-      $data['comment_content'] = array();
+      $tmpdom = new DomDocument();
       foreach ($xpath->query('p', $commentNode) as $comment_p)
       {
-        $data['comment_content'][] = $comment_p->nodeValue;
+        $tmpdom->appendChild($tmpdom->importNode($comment_p, true));
       }
-      $data['comment_content'] = implode("\r\n", $data['comment_content']);
+      $data['comment_content'] = $tmpdom->saveHTML();
+      unset($tmpdom);
 
       /*
        * Comment footer
@@ -228,6 +246,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       {
         $data['comment_author_url'] = $uriNode->getAttribute('href');
       }
+      unset($uriNode);
 
       preg_match('#^Posté par (?P<comment_author>.+), (?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) à (?P<hour>[^:]+):(?P<minute>.+)$#iUs', trim($commentFooterNode->textContent), $matches);
       $matches['strptime'] = strptime(sprintf($date_pattern, $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
@@ -236,6 +255,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $data['comment_author'] =   $matches['comment_author'];
       $data['comment_date'] =     sprintf('%s-%s-%s %s:%s:00', $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']);
       $data['comment_date_gmt'] = $data['comment_date'];
+      unset($matches);
 
       /*
        * Saving (only if not exists)
@@ -248,9 +268,22 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       }
     }
 
+    /*
+     * Recounting comments for this post
+     */
     wp_update_comment_count_now($this->id);
   }
 
+  /**
+   * Save medias from a post
+   *
+   * Also alter content to make it points locally
+   *
+   * @author oncletom
+   * @since 1.0
+   * @version 1.0
+   * @param DomDocument $dom
+   */
   public function saveMedias(DomDocument $dom)
   {
 
