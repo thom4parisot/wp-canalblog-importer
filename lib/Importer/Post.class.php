@@ -148,6 +148,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       return false;
     }
 
+    /*
+     * Canalblog is only in french, hopefully for us (and me...)
+     */
+    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR@euro', 'fr_FR', 'fr', 'french');
+    $date_pattern = '%s %s %s %s:%s';
+
     $xpath = new DomXpath($dom);
     $xpathResult = $xpath->query("//div[@class='blogbody']/div[@class and @class!='itemfooter']");
 
@@ -183,25 +189,63 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
       $data = array(
         'comment_approved' => 1,
+        'comment_karma' => 1,
         'comment_post_ID' =>  $this->id,
+        'comment_author_email' => 'nobody@canalblog',
+        'comment_agent' => 'Canalblog Importer',
+        'comment_author_IP' => '127.0.0.1',
+        'comment_type' => 'comment',
+        'comment_author_url' => '',
       );
 
       /*
        * Comment Title
+       * WordPress does not have such a feature so ... we only skip it
+       *
+       * @todo make an option agregating this to the comment content
        */
-
 
       /*
        * Comment content
+       * It's basically all direct <p>
        */
-
-      $data = wp_filter_comment($data);
-      $comment_id = wp_new_comment($data);
+      $data['comment_content'] = array();
+      foreach ($xpath->query('p', $commentNode) as $comment_p)
+      {
+        $data['comment_content'][] = $comment_p->nodeValue;
+      }
+      $data['comment_content'] = implode("\r\n", $data['comment_content']);
 
       /*
-       * Saving original ID
+       * Comment footer
        */
-      add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
+      $commentFooterNode = $xpath->query("div[@class='itemfooter']", $commentNode)->item(0);
+
+      /*
+       * Comment author + URI + date
+       */
+      if ($uriNode = $xpath->query("a", $commentFooterNode)->item(0))
+      {
+        $data['comment_author_url'] = $uriNode->getAttribute('href');
+      }
+
+      preg_match('#^Posté par (?P<comment_author>.+), (?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) à (?P<hour>[^:]+):(?P<minute>.+)$#iUs', trim($commentFooterNode->textContent), $matches);
+      $matches['strptime'] = strptime(sprintf($date_pattern, $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
+      $matches['month'] = sprintf('%02s', $matches['strptime']['tm_mon'] + 1);
+
+      $data['comment_author'] =   $matches['comment_author'];
+      $data['comment_date'] =     sprintf('%s-%s-%s %s:%s:00', $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']);
+      $data['comment_date_gmt'] = $data['comment_date'];
+
+      /*
+       * Saving (only if not exists)
+       */
+      $data = wp_filter_comment($data);
+      if (!comment_exists($data['comment_author'], $data['comment_date']))
+      {
+        $comment_id = wp_insert_comment($data);
+        add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
+      }
     }
 
     wp_update_comment_count_now($this->id);
