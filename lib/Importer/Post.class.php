@@ -247,7 +247,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       if ($titleNode = $xpath->query('h3', $commentNode)->item(0))
       {
         $tmpnode = $tmpdom->createElement('p');
-        $tmpnode->appendChild($tmpdom->createElement('strong', $titleNode->textContent));
+        $tmpnode->appendChild($tmpdom->createElement('strong', esc_html($titleNode->textContent)));
         $tmpdom->appendChild($tmpnode);
       }
 
@@ -266,6 +266,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        * Comment footer
        */
       $commentFooterNode = $xpath->query("div[@class='itemfooter']", $commentNode)->item(0);
+
+      //happens rarely, don't know why
+      if (null === $commentFooterNode)
+      {
+        continue;
+      }
 
       /*
        * Comment author + URI + date
