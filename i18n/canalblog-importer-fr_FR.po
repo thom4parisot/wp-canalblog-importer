@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/canalblog-importer\n"
-"POT-Creation-Date: 2010-02-06 14:28+0000\n"
-"PO-Revision-Date: 2010-02-06 15:56+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-06 16:22+0100\n"
+"PO-Revision-Date: 2010-02-06 16:25+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -20,118 +20,140 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: lib/Importer.class.php:46
-#: pages/02-tags.php:23
-#: pages/03-cats.php:23
-#: pages/04-arch.php:24
-msgid "Cancel"
-msgstr "Annuler"
-
-#: lib/Plugin.class.php:65
-msgid "Canalblog"
-msgstr ""
-
-#: lib/Plugin.class.php:65
-msgid "Import posts, comments, and users from a Canalblog blog."
-msgstr "Importation d'articles, de commentaires et d'utilisateurs depuis Canalblog."
-
-#: pages/01-init.php:3
-#: pages/02-tags.php:3
-#: pages/03-cats.php:3
-#: pages/04-arch.php:3
+#: ../pages/01-init.php:3
+#: ../pages/04-arch.php:3
+#: ../pages/03-cats.php:3
+#: ../pages/02-tags.php:3
 msgid "Canalblog Importer"
 msgstr ""
 
-#: pages/01-init.php:5
+#: ../pages/01-init.php:5
 msgid "You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>."
 msgstr "Vous êtes à quelques étapes de votre migration de Canalblog vers WordPress. Merci de compléter les champs requis et de cliquer sur le bouton <em>Démarrer l'import</em>."
 
-#: pages/01-init.php:7
-#: pages/02-tags.php:5
-#: pages/03-cats.php:5
-#: pages/04-arch.php:5
+#: ../pages/01-init.php:7
+#: ../pages/04-arch.php:5
+#: ../pages/03-cats.php:5
+#: ../pages/02-tags.php:5
 msgid "Import Steps"
 msgstr "Étapes de l'import"
 
-#: pages/01-init.php:9
-#: pages/01-init.php:16
-#: pages/02-tags.php:7
-#: pages/03-cats.php:7
-#: pages/04-arch.php:7
+#: ../pages/01-init.php:9
+#: ../pages/01-init.php:16
+#: ../pages/04-arch.php:7
+#: ../pages/03-cats.php:7
+#: ../pages/02-tags.php:7
 msgid "Configuration"
 msgstr "Configuration"
 
-#: pages/01-init.php:10
-#: pages/02-tags.php:8
-#: pages/02-tags.php:14
-#: pages/03-cats.php:8
-#: pages/04-arch.php:8
+#: ../pages/01-init.php:10
+#: ../pages/04-arch.php:8
+#: ../pages/03-cats.php:8
+#: ../pages/02-tags.php:8
+#: ../pages/02-tags.php:14
 msgid "Tags"
 msgstr "Mots-clefs"
 
-#: pages/01-init.php:11
-#: pages/02-tags.php:9
-#: pages/03-cats.php:9
-#: pages/03-cats.php:14
-#: pages/04-arch.php:9
+#: ../pages/01-init.php:11
+#: ../pages/04-arch.php:9
+#: ../pages/03-cats.php:9
+#: ../pages/03-cats.php:14
+#: ../pages/02-tags.php:9
 msgid "Categories"
 msgstr "Catégories"
 
-#: pages/01-init.php:12
-#: pages/02-tags.php:10
-#: pages/03-cats.php:10
-#: pages/04-arch.php:10
-#: pages/04-arch.php:14
+#: ../pages/01-init.php:12
+#: ../pages/04-arch.php:10
+#: ../pages/04-arch.php:14
+#: ../pages/03-cats.php:10
+#: ../pages/02-tags.php:10
 msgid "Archives"
 msgstr "Archives"
 
-#: pages/01-init.php:13
-#: pages/02-tags.php:11
-#: pages/03-cats.php:11
-#: pages/04-arch.php:11
+#: ../pages/01-init.php:13
+#: ../pages/04-arch.php:11
+#: ../pages/03-cats.php:11
+#: ../pages/02-tags.php:11
 msgid "Cleanup"
 msgstr "Nettoyage"
 
-#: pages/01-init.php:24
+#: ../pages/01-init.php:24
 msgid "Blog URL"
 msgstr "Adresse du blog"
 
-#: pages/01-init.php:27
+#: ../pages/01-init.php:27
 msgid "Example: http://yourblog.canalblog.com"
 msgstr "Exemple : http://votreblog.canalblog.com"
 
-#: pages/01-init.php:34
+#: ../pages/01-init.php:34
+msgid "Canalblog settings"
+msgstr "Réglages de Canalblog"
+
+#: ../pages/01-init.php:36
+msgid "Please ensure your Canalblog blog is configured with these settings:"
+msgstr "Merci de vous assurer que votre blog Canalblog est configuré comme suit :"
+
+#: ../pages/01-init.php:38
+#, php-format
+msgid "Day formatting: %s"
+msgstr "Format de la date : %s"
+
+#: ../pages/01-init.php:39
+#, php-format
+msgid "Hour formatting: %s"
+msgstr "Format de l'heure : %s"
+
+#: ../pages/01-init.php:40
+msgid "Digest format: Monthly"
+msgstr "Fréquence des archives : Mensuelle"
+
+#: ../pages/01-init.php:48
 msgid "Start import"
 msgstr "Démarrer l'import"
 
-#: pages/02-tags.php:19
+#: ../pages/04-arch.php:15
+msgid "This step includes posts, comments, authors and attachments. This is done month by month so if you have a huge blog, be patient ;-)"
+msgstr "Cette étape inclut les articles, commentaires, auteurs et les médias. C'est effectué mois par mois donc si vous avez un blog important, soyez patient(e) ;-)"
+
+#: ../pages/04-arch.php:20
 #, php-format
-msgid "About to import <strong>%s tags</strong>."
-msgstr "Sur le point d'importer <strong>%s mots-clefs</strong>."
+msgid "<strong>%s months of posts</strong> to import &mdash; currently %s/%s."
+msgstr "<strong>%s mois d'archives</strong> à importer &mdash; actuellement %s/%s"
 
-#: pages/02-tags.php:22
-msgid "Import Tags"
-msgstr "Importer les mots-clefs"
+#: ../pages/04-arch.php:23
+msgid "Import Archives"
+msgstr "Importer les archives"
 
-#: pages/03-cats.php:19
+#: ../pages/04-arch.php:24
+#: ../pages/03-cats.php:23
+#: ../pages/02-tags.php:23
+#: ../lib/Importer.class.php:46
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ../pages/03-cats.php:19
 #, php-format
 msgid "About to import <strong>%s categories</strong>."
 msgstr "Sur le point d'importer <strong>%s catégories</strong>."
 
-#: pages/03-cats.php:22
+#: ../pages/03-cats.php:22
 msgid "Import Categories"
 msgstr "Importer les catégories"
 
-#: pages/04-arch.php:15
-msgid "This step includes posts, comments, authors and attachments. This is done month by month so if you have a huge blog, be patient ;-)"
-msgstr "Cette étape inclut les articles, commentaires, auteurs et les médias. C'est effectué mois par mois donc si vous avez un blog important, soyez patient(e) ;-)"
-
-#: pages/04-arch.php:20
+#: ../pages/02-tags.php:19
 #, php-format
-msgid "<strong>%s months of posts</strong> to import − currently %s/%s."
-msgstr "<strong>%s mois d'archives</strong> à importer − actuellement %s/%s"
+msgid "About to import <strong>%s tags</strong>."
+msgstr "Sur le point d'importer <strong>%s mots-clefs</strong>."
 
-#: pages/04-arch.php:23
-msgid "Import Archives"
-msgstr "Importer les archives"
+#: ../pages/02-tags.php:22
+msgid "Import Tags"
+msgstr "Importer les mots-clefs"
+
+#: ../lib/Plugin.class.php:65
+msgid "Canalblog"
+msgstr ""
+
+#: ../lib/Plugin.class.php:65
+msgid "Import posts, comments, and users from a Canalblog blog."
+msgstr "Importation d'articles, de commentaires et d'utilisateurs depuis Canalblog."
 

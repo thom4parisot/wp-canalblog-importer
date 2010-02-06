@@ -17,7 +17,7 @@
     <?php wp_nonce_field('import-canalblog') ?>
     <input type="hidden" name="process-import" value="1" />
 
-    <p><?php printf(__('<strong>%s months of posts</strong> to import − currently %s/%s.', 'canalblog-importer'), count($months), $months[$page]['month'], $months[$page]['year']) ?></p>
+    <p><?php printf(__('<strong>%s months of posts</strong> to import &mdash; currently %s/%s.', 'canalblog-importer'), count($months), $months[$page]['month'], $months[$page]['year']) ?></p>
 
     <p class="submit">
       <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Archives', 'canalblog-importer') ?>" />

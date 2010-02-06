@@ -22,9 +22,23 @@
       <tbody>
         <tr>
           <th><label for="canalblog_uri"><?php _e('Blog URL') ?></label></th>
-          <td>
+          <td style="vertical-align: top">
             <input type="text" value="" name="blog_url" id="canalblog_uri" /><br />
             <span class="help"><?php _e('Example: http://yourblog.canalblog.com', 'canalblog-importer') ?></span>
+          </td>
+          <td rowspan="2" style="text-align: left">
+            <img src="<?php echo $this->configuration->getPluginUri() ?>/assets/images/canalblog-configuration.png" alt="" />
+          </td>
+        </tr>
+        <tr>
+          <th><?php _e('Canalblog settings', 'canalblog-importer') ?></th>
+          <td style="vertical-align: top">
+            <span class="help"><?php _e('Please ensure your Canalblog blog is configured with these settings:', 'canalblog-importer') ?></span>
+            <ul>
+              <li><?php printf(__('Day formatting: %s', 'canalblog-importer'), date_i18n('d F Y')) ?></li>
+              <li><?php printf(__('Hour formatting: %s', 'canalblog-importer'), date_i18n('H:i')) ?></li>
+              <li><?php _e('Digest format: Monthly', 'canalblog-importer') ?></li>
+            </ul>
           </td>
         </tr>
       </tbody>

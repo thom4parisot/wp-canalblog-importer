@@ -17,6 +17,7 @@ abstract class WPPluginToolkitConfiguration
             $i18n_path_from_plugins,
             $options,
             $plugin_path,
+            $plugin_uri,
             $unix_name;
 
   /**
@@ -150,6 +151,11 @@ abstract class WPPluginToolkitConfiguration
     return $this->plugin_path;
   }
 
+  public function getPluginUri()
+  {
+    return $this->plugin_uri;
+  }
+
   /**
    * Returns unix name of the plugin
    *
@@ -222,6 +228,7 @@ abstract class WPPluginToolkitConfiguration
 
     $this->dirname =      dirname($this->filename);
     $this->plugin_path =  preg_replace('#(.+)([^/]+/[^/]+)$#sU', "$2", $this->filename);
+    $this->plugin_uri =   WP_PLUGIN_URL.'/'.dirname($this->plugin_path);
     do_action($this->unix_name.'_configuration_setup_path', $this);
   }
 
