@@ -40,6 +40,14 @@ class CanalblogImporterImporter
     $this->current_page = $current_page;
     $operation = new $this->pages[$current_page]['operation']($this->configuration);
 
+    /*
+     * Do we cancel sometime?
+     */
+    if (isset($_REQUEST['submit']) && $_REQUEST['submit'] === __('Cancel'))
+    {
+      $this->stop();
+    }
+
     $this->is_ready_to_process = !!$operation->dispatch();
 
     return $operation;
@@ -68,7 +76,7 @@ class CanalblogImporterImporter
    */
   public function process(CanalblogImporterImporterBase $operation)
   {
-    if (true === $this->is_ready_to_process && isset($_POST) && !empty($_POST) && check_admin_referer('import-canalblog'))
+    if (true === $this->is_ready_to_process && isset($_REQUEST['process-import']) && (int)$_REQUEST['process-import'] === 1 && wp_verify_nonce($_REQUEST['_wpnonce'], 'import-canalblog'))
     {
       try{
         $return = $operation->process();
@@ -103,6 +111,8 @@ class CanalblogImporterImporter
   {
     delete_option('canalblog_importer_blog_uri');
     delete_option('canalblog_importer_step');
-    wp_redirect('?import=canalblog');
+    delete_option('canalblog_importer_archives_current_index');
+
+    echo '<script type="text/javascript">window.location.href="?import=canalblog";</script>';
   }
 }

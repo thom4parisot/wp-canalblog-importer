@@ -85,7 +85,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         $imgNode->removeAttribute('border');
         $imgNode->setAttribute('alt', '');
         $imgNode->setAttribute('class', 'aligncenter size-medium');
-        $imgNode->parentNode->remoteAttribute('target');
+        $imgNode->parentNode->removeAttribute('target');
       }
     }
 
@@ -353,6 +353,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $postdata['post_parent'] =   $this->id;
       $postdata['post_date'] =     $post['post_date'];
       $postdata['post_date_gmt'] = $post['post_date_gmt'];
+      $postdata['post_author'] =   $this->data['post_author'];
 
       $attachment_id = $wpImport->process_attachment($postdata, $remote_uri);
       add_post_meta($attachment_id, 'canalblog_attachment_uri', $remote_uri, true);
@@ -427,6 +428,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     $data = array(
       'display_name' =>  $username,
+      'role' =>          'author',
       'user_login' =>    $username,
       'user_pass' =>     wp_generate_password(),
       'user_url'  =>     'http://',

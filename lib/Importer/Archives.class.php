@@ -9,20 +9,26 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       return false;
     }
 
-    $this->arguments['page'] =   isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
     $this->arguments['months'] = $this->getMonths();
 
-    if ($this->arguments['page'] < 1 || ($this->arguments['page']-1 > count($this->arguments['months'])))
-    {
-      return false;
-    }
+    set_time_limit(30);
+    ini_set('memory_limit', '128M');
 
     return true;
   }
 
   public function process()
   {
-    $archives_index = $this->arguments['months'][$this->arguments['page'] - 1];
+    /*
+     * No index defined? We can go the next step
+     */
+    if (empty($this->arguments['months']) || !isset($this->arguments['months'][get_option('canalblog_importer_archives_current_index')]))
+    {
+      return true;
+    }
+
+    $archives_index = $this->arguments['months'][get_option('canalblog_importer_archives_current_index')];
     $permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
 
     foreach ($permalinks as $permalink)
@@ -34,6 +40,10 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       $post->setUri($permalink);
       $post->process();
     }
+
+    update_option('canalblog_importer_archives_current_index', $this->arguments['page'] + 1);
+    $url = '?import=canalblog&step='.get_option('canalblog_importer_step').'&process-import=1&_wpnonce='.wp_create_nonce('import-canalblog');
+    echo '<script type="text/javascript">window.location.href = "'.$url.'";</script>';
   }
 
   /**
