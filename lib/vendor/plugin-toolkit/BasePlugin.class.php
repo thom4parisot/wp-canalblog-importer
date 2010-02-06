@@ -41,7 +41,8 @@ abstract class WPPluginToolkitPlugin
       spl_autoload_register(array($this, 'configureAutoload'));
     }
 
-    do_action($this->configuration->getUnixName().'_plugin_construct', $this);
+    load_plugin_textdomain($configuration->getUnixName(), $configuration->getI18nPath(), $configuration->getI18nFromPluginPath());
+    do_action($configuration->getUnixName().'_plugin_construct', $this);
   }
 
   /**

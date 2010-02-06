@@ -62,6 +62,6 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
    */
   public function registerAdminHooks()
   {
-    register_importer('canalblog', __('Canalblog'), __('Import posts, comments, and users from a Canalblog blog.'), array ($this, 'importPage'));
+    register_importer('canalblog', __('Canalblog'), __('Import posts, comments, and users from a Canalblog blog.', 'canalblog-importer'), array ($this, 'importPage'));
   }
 }
