@@ -1,16 +1,15 @@
 # Translation of the WordPress plugin   by .
-# Copyright (C) 2010 
+# Copyright (C) 2010
 # This file is distributed under the same license as the  package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version:  \n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/canalblog-importer\n"
-"POT-Creation-Date: 2010-02-06 14:28+0000\n"
-"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-06 16:45+0100\n"
+"PO-Revision-Date: 2010-02-06 16:45+0100\n"
+"Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,101 +18,140 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: lib/Importer.class.php:46 pages/02-tags.php:23 pages/03-cats.php:23
-#: pages/04-arch.php:24
-msgid "Cancel"
-msgstr ""
-
-#: lib/Plugin.class.php:65
-msgid "Canalblog"
-msgstr ""
-
-#: lib/Plugin.class.php:65
-msgid "Import posts, comments, and users from a Canalblog blog."
-msgstr ""
-
-#: pages/01-init.php:3 pages/02-tags.php:3 pages/03-cats.php:3
-#: pages/04-arch.php:3
+#: ../pages/01-init.php:3
+#: ../pages/04-arch.php:3
+#: ../pages/03-cats.php:3
+#: ../pages/02-tags.php:3
 msgid "Canalblog Importer"
 msgstr ""
 
-#: pages/01-init.php:5
-msgid ""
-"You are only a few steps to your Canalblog to WordPress migration. Please "
-"fill in the fields and press <em>Start import</em>."
+#: ../pages/01-init.php:5
+msgid "You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>."
 msgstr ""
 
-#: pages/01-init.php:7 pages/02-tags.php:5 pages/03-cats.php:5
-#: pages/04-arch.php:5
+#: ../pages/01-init.php:7
+#: ../pages/04-arch.php:5
+#: ../pages/03-cats.php:5
+#: ../pages/02-tags.php:5
 msgid "Import Steps"
 msgstr ""
 
-#: pages/01-init.php:9 pages/01-init.php:16 pages/02-tags.php:7
-#: pages/03-cats.php:7 pages/04-arch.php:7
+#: ../pages/01-init.php:9
+#: ../pages/01-init.php:16
+#: ../pages/04-arch.php:7
+#: ../pages/03-cats.php:7
+#: ../pages/02-tags.php:7
 msgid "Configuration"
 msgstr ""
 
-#: pages/01-init.php:10 pages/02-tags.php:8 pages/02-tags.php:14
-#: pages/03-cats.php:8 pages/04-arch.php:8
+#: ../pages/01-init.php:10
+#: ../pages/04-arch.php:8
+#: ../pages/03-cats.php:8
+#: ../pages/02-tags.php:8
+#: ../pages/02-tags.php:14
 msgid "Tags"
 msgstr ""
 
-#: pages/01-init.php:11 pages/02-tags.php:9 pages/03-cats.php:9
-#: pages/03-cats.php:14 pages/04-arch.php:9
+#: ../pages/01-init.php:11
+#: ../pages/04-arch.php:9
+#: ../pages/03-cats.php:9
+#: ../pages/03-cats.php:14
+#: ../pages/02-tags.php:9
 msgid "Categories"
 msgstr ""
 
-#: pages/01-init.php:12 pages/02-tags.php:10 pages/03-cats.php:10
-#: pages/04-arch.php:10 pages/04-arch.php:14
+#: ../pages/01-init.php:12
+#: ../pages/04-arch.php:10
+#: ../pages/04-arch.php:14
+#: ../pages/03-cats.php:10
+#: ../pages/02-tags.php:10
 msgid "Archives"
 msgstr ""
 
-#: pages/01-init.php:13 pages/02-tags.php:11 pages/03-cats.php:11
-#: pages/04-arch.php:11
+#: ../pages/01-init.php:13
+#: ../pages/04-arch.php:11
+#: ../pages/03-cats.php:11
+#: ../pages/02-tags.php:11
 msgid "Cleanup"
 msgstr ""
 
-#: pages/01-init.php:24
+#: ../pages/01-init.php:24
 msgid "Blog URL"
 msgstr ""
 
-#: pages/01-init.php:27
+#: ../pages/01-init.php:27
 msgid "Example: http://yourblog.canalblog.com"
 msgstr ""
 
-#: pages/01-init.php:34
+#: ../pages/01-init.php:34
+msgid "Canalblog settings"
+msgstr ""
+
+#: ../pages/01-init.php:36
+msgid "Please ensure your Canalblog blog is configured with these settings:"
+msgstr ""
+
+#: ../pages/01-init.php:38
+#, php-format
+msgid "Day formatting: %s"
+msgstr ""
+
+#: ../pages/01-init.php:39
+#, php-format
+msgid "Hour formatting: %s"
+msgstr ""
+
+#: ../pages/01-init.php:40
+msgid "Digest format: Monthly"
+msgstr ""
+
+#: ../pages/01-init.php:48
 msgid "Start import"
 msgstr ""
 
-#: pages/02-tags.php:19
+#: ../pages/04-arch.php:15
+msgid "This step includes posts, comments, authors and attachments. This is done month by month so if you have a huge blog, be patient ;-)"
+msgstr ""
+
+#: ../pages/04-arch.php:20
 #, php-format
-msgid "About to import <strong>%s tags</strong>."
+msgid "<strong>%s months of posts</strong> to import &mdash; currently %s/%s &mdash; %s remaining month(s)."
 msgstr ""
 
-#: pages/02-tags.php:22
-msgid "Import Tags"
+#: ../pages/04-arch.php:23
+msgid "Import Archives"
 msgstr ""
 
-#: pages/03-cats.php:19
+#: ../pages/04-arch.php:24
+#: ../pages/03-cats.php:23
+#: ../pages/02-tags.php:23
+#: ../lib/Importer.class.php:51
+msgid "Cancel"
+msgstr ""
+
+#: ../pages/03-cats.php:19
 #, php-format
 msgid "About to import <strong>%s categories</strong>."
 msgstr ""
 
-#: pages/03-cats.php:22
+#: ../pages/03-cats.php:22
 msgid "Import Categories"
 msgstr ""
 
-#: pages/04-arch.php:15
-msgid ""
-"This step includes posts, comments, authors and attachments. This is done "
-"month by month so if you have a huge blog, be patient ;-)"
-msgstr ""
-
-#: pages/04-arch.php:20
+#: ../pages/02-tags.php:19
 #, php-format
-msgid "<strong>%s months of posts</strong> to import − currently %s/%s."
+msgid "About to import <strong>%s tags</strong>."
 msgstr ""
 
-#: pages/04-arch.php:23
-msgid "Import Archives"
+#: ../pages/02-tags.php:22
+msgid "Import Tags"
 msgstr ""
+
+#: ../lib/Plugin.class.php:65
+msgid "Canalblog"
+msgstr ""
+
+#: ../lib/Plugin.class.php:65
+msgid "Import posts, comments, and users from a Canalblog blog."
+msgstr ""
+

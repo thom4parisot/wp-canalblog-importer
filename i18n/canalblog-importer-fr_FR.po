@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-06 16:22+0100\n"
-"PO-Revision-Date: 2010-02-06 16:25+0100\n"
+"POT-Creation-Date: 2010-02-06 16:45+0100\n"
+"PO-Revision-Date: 2010-02-06 16:45+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -117,8 +117,8 @@ msgstr "Cette étape inclut les articles, commentaires, auteurs et les médias. 
 
 #: ../pages/04-arch.php:20
 #, php-format
-msgid "<strong>%s months of posts</strong> to import &mdash; currently %s/%s."
-msgstr "<strong>%s mois d'archives</strong> à importer &mdash; actuellement %s/%s"
+msgid "<strong>%s months of posts</strong> to import &mdash; currently %s/%s &mdash; %s remaining month(s)."
+msgstr "<strong>%s mois d'archives</strong> à importer &mdash; actuellement %s/%s &mdash; %s mois restant(s)."
 
 #: ../pages/04-arch.php:23
 msgid "Import Archives"
@@ -127,7 +127,7 @@ msgstr "Importer les archives"
 #: ../pages/04-arch.php:24
 #: ../pages/03-cats.php:23
 #: ../pages/02-tags.php:23
-#: ../lib/Importer.class.php:46
+#: ../lib/Importer.class.php:51
 msgid "Cancel"
 msgstr "Annuler"
 
