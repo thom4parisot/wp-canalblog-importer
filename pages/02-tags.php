@@ -1,26 +1,26 @@
 <div class="wrap">
   <div id="icon-tools" class="icon32"><br /></div>
-  <h2><?php _e('Canalblog Importer') ?></h2>
+  <h2><?php _e('Canalblog Importer', 'canalblog-importer') ?></h2>
 
-  <p><strong><?php _e('Import Steps') ?></strong></p>
+  <p><strong><?php _e('Import Steps', 'canalblog-importer') ?></strong></p>
   <ol>
-    <li><?php _e('Configuration') ?></li>
-    <li><strong><?php _e('Tags') ?></strong></li>
-    <li><?php _e('Categories') ?></li>
-    <li><?php _e('Archives') ?></li>
-    <li><?php _e('Cleanup') ?></li>
+    <li><?php _e('Configuration', 'canalblog-importer') ?></li>
+    <li><strong><?php _e('Tags', 'canalblog-importer') ?></strong></li>
+    <li><?php _e('Categories', 'canalblog-importer') ?></li>
+    <li><?php _e('Archives', 'canalblog-importer') ?></li>
+    <li><?php _e('Cleanup', 'canalblog-importer') ?></li>
   </ol>
 
-  <h3><?php _e('Tags') ?></h3>
+  <h3><?php _e('Tags', 'canalblog-importer') ?></h3>
   <form action="?import=canalblog" method="post">
     <?php wp_nonce_field('import-canalblog') ?>
     <input type="hidden" name="process-import" value="1" />
 
-    <p><?php printf(__('About to import <strong>%s tags</strong>.'), count($tags)) ?></p>
+    <p><?php printf(__('About to import <strong>%s tags</strong>.', 'canalblog-importer'), count($tags)) ?></p>
 
     <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Tags') ?>" />
-      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel') ?>" />
+      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Tags', 'canalblog-importer') ?>" />
+      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel', 'canalblog-importer') ?>" />
     </p>
   </form>
 </div>

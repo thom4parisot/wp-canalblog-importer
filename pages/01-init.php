@@ -1,19 +1,19 @@
 <div class="wrap">
   <div id="icon-tools" class="icon32"><br /></div>
-  <h2><?php _e('Canalblog Importer') ?></h2>
+  <h2><?php _e('Canalblog Importer', 'canalblog-importer') ?></h2>
 
-  <p><?php _e("You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>.") ?></p>
+  <p><?php _e("You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>.", 'canalblog-importer') ?></p>
 
-  <p><strong><?php _e('Import Steps') ?></strong></p>
+  <p><strong><?php _e('Import Steps', 'canalblog-importer') ?></strong></p>
   <ol>
-    <li><strong><?php _e('Configuration') ?></strong></li>
-    <li><?php _e('Tags') ?></li>
-    <li><?php _e('Categories') ?></li>
-    <li><?php _e('Archives') ?></li>
-    <li><?php _e('Cleanup') ?></li>
+    <li><strong><?php _e('Configuration', 'canalblog-importer') ?></strong></li>
+    <li><?php _e('Tags', 'canalblog-importer') ?></li>
+    <li><?php _e('Categories', 'canalblog-importer') ?></li>
+    <li><?php _e('Archives', 'canalblog-importer') ?></li>
+    <li><?php _e('Cleanup', 'canalblog-importer') ?></li>
   </ol>
 
-  <h3><?php _e('Configuration') ?></h3>
+  <h3><?php _e('Configuration', 'canalblog-importer') ?></h3>
   <form action="?import=canalblog" method="post">
     <?php wp_nonce_field('import-canalblog') ?>
     <input type="hidden" name="process-import" value="1" />
@@ -24,14 +24,14 @@
           <th><label for="canalblog_uri"><?php _e('Blog URL') ?></label></th>
           <td>
             <input type="text" value="" name="blog_url" id="canalblog_uri" /><br />
-            <span class="help"><?php _e('Example: http://yourblog.canalblog.com') ?></span>
+            <span class="help"><?php _e('Example: http://yourblog.canalblog.com', 'canalblog-importer') ?></span>
           </td>
         </tr>
       </tbody>
     </table>
 
     <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Start import') ?>" />
+      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Start import', 'canalblog-importer') ?>" />
     </p>
   </form>
 </div>
