@@ -22,9 +22,8 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
   {
     if (isset($_POST['blog_url']))
     {
-      if (empty($_POST['blog_url'])
+      if (empty($_POST['blog_url']))
       {
-
         return false;
       }
 
