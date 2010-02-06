@@ -5,10 +5,10 @@ if (!class_exists('BasePlugin'))
 }
 
 /**
- * WP LESS Plugin class
+ * Canalblog Plugin class
  *
  * @author oncletom
- * @package wp-less
+ * @package canalblog-importer
  * @subpackage lib
  */
 class CanalblogImporterPlugin extends WPPluginToolkitPlugin

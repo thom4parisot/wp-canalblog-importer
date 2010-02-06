@@ -2,6 +2,9 @@
 
 class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 {
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
+   */
   public function dispatch()
   {
     if (!get_option('canalblog_importer_blog_uri'))
@@ -18,6 +21,9 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     return true;
   }
 
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#process()
+   */
   public function process()
   {
     /*

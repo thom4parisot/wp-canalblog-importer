@@ -5,6 +5,9 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   protected $uri, $id, $data;
   protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
 
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
+   */
   public function dispatch()
   {
     if (!$this->uri)
@@ -15,6 +18,9 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return true;
   }
 
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#process()
+   */
   public function process()
   {
     $query = $this->getRemoteXpath($this->uri, "//div[@class='blogbody']");

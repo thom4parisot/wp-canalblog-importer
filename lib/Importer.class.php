@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Importing class, calling to sub class for specialized tasks
+ *
+ * @author oncletom
+ * @since 1.0
+ */
 class CanalblogImporterImporter
 {
   protected $configuration;

@@ -1,7 +1,15 @@
 <?php
-
+/**
+ * Import tags from a remote blog
+ *
+ * @author oncletom
+ * @since 1.0
+ */
 class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
 {
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
+   */
   public function dispatch()
   {
     if (!get_option('canalblog_importer_blog_uri'))
@@ -14,6 +22,9 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
     return true;
   }
 
+  /**
+   * @see lib/Importer/CanalblogImporterImporterBase#process()
+   */
   public function process()
   {
     $counter = 0;
@@ -29,6 +40,13 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
     }
   }
 
+  /**
+   * Retrieves the tags from remote blog
+   *
+   * @author oncletom
+   * @protected
+   * @return Array
+   */
   protected function getTags()
   {
     $http = new Wp_HTTP();

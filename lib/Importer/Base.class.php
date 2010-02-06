@@ -1,10 +1,24 @@
 <?php
-
+/**
+ * Base class for importing process
+ *
+ * @abstract
+ * @author oncletom
+ * @since 1.0
+ */
 abstract class CanalblogImporterImporterBase
 {
   protected $arguments = array();
   protected $configuration;
 
+  /**
+   * Constructor
+   *
+   * Basically stores configuration
+   *
+   * @author oncletom
+   * @param CanalblogImporterConfiguration $configuration
+   */
   public function __construct(CanalblogImporterConfiguration $configuration)
   {
     $this->configuration = $configuration;
@@ -69,6 +83,21 @@ abstract class CanalblogImporterImporterBase
     return $result;
   }
 
+  /**
+   * Checks if the import step is ready to run
+   *
+   * @author oncletom
+   * @abstract
+   * @return Boolean true if it's ok to process
+   */
   abstract public function dispatch();
+
+  /**
+   * Process the import step
+   *
+   * @author oncletom
+   * @abstract
+   * @return Boolean true if it's ok to proceed to next step
+   */
   abstract public function process();
 }
