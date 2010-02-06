@@ -3,6 +3,7 @@
 class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
   protected $uri, $id, $data;
+  protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
 
   public function dispatch()
   {
@@ -70,6 +71,23 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
      */
     preg_match('#(\d{2}:\d{2})#U', $itemfooter, $dates);
     $data['post_date'] = sprintf('%s-%s-%s %s:00', $post_year, $post_month, $post_day, $dates[1]);
+
+    /*
+     * Striping images attributes such as their size
+     * Also centering them with WordPress CSS class
+     */
+    foreach ($dom->getElementsByTagName('img') as $imgNode)
+    {
+      if (preg_match('#^'.self::$remote_storage_base_domain.'#', $imgNode->getAttribute('src')))
+      {
+        $imgNode->removeAttribute('height');
+        $imgNode->removeAttribute('width');
+        $imgNode->removeAttribute('border');
+        $imgNode->setAttribute('alt', '');
+        $imgNode->setAttribute('class', 'aligncenter size-medium');
+        $imgNode->parentNode->remoteAttribute('target');
+      }
+    }
 
     /*
      * Determining content
@@ -282,7 +300,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * Save medias from a post
    *
    * Also alter content to make it points locally
-   * Base on WordPress importer to avoid code duplication
    *
    * @author oncletom
    * @since 1.0
@@ -291,9 +308,104 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveMedias(DomDocument $dom)
   {
+    /*
+     * Initialize WordPress importer
+     */
     require_once ABSPATH.'wp-admin/import/wordpress.php';
+    $wpImport = new WP_Import();
+    $wpImport->fetch_attachments = true;
+
+    $attachments = array();
+    $post = get_post($this->id, ARRAY_A);
+    preg_match_all('#('.self::$remote_storage_base_domain.'/[^_]+\.[a-z0-9]+)[^a-z0-9]#Us', $post['post_content'], $matches);
+
+    if (empty($matches) || empty($matches[0]))
+    {
+      return false;
+    }
+
+    $remote_uris = array_unique($matches[1]);
+    $upload = wp_upload_dir($post['post_date']);
+
+    foreach ($remote_uris as $remote_uri)
+    {
+      /*
+       * Checking it does not exists yet
+       */
+      $candidates = get_posts(array(
+        'meta_key' =>   'canalblog_attachment_uri',
+        'meta_value' => $remote_uri,
+        'post_type' =>  'attachment',
+      ));
+
+      /*
+       * Skipping the save
+       */
+      if (!empty($candidates))
+      {
+        continue;
+      }
+
+      /*
+       * Saving attachment
+       */
+      $postdata = compact('post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_excerpt', 'post_title', 'post_status', 'post_name', 'comment_status', 'ping_status', 'guid', 'post_parent', 'menu_order', 'post_type', 'post_password');
+      $postdata['post_parent'] =   $this->id;
+      $postdata['post_date'] =     $post['post_date'];
+      $postdata['post_date_gmt'] = $post['post_date_gmt'];
+
+      $attachment_id = $wpImport->process_attachment($postdata, $remote_uri);
+      add_post_meta($attachment_id, 'canalblog_attachment_uri', $remote_uri, true);
+      $attachments[$remote_uri] = $attachment_id;
+    }
+
+    /*
+     * URL mapping
+     * Basically, we change the thumbnail URI by the medium size
+     */
+    $new_map = array();
+    foreach ($wpImport->url_remap as $old_uri => $new_uri)
+    {
+      if (!preg_match('/\.thumbnail\.[^\.]+$/', $old_uri))
+      {
+        if ($old_uri)
+        {
+          $new_map[$old_uri] = $new_uri;
+        }
+
+        continue;
+      }
+
+      /*
+       * Restore Canalblog thumbnail URI
+       */
+      $original_uri = str_replace('.thumbnail', '', $old_uri);
+      $old_uri = str_replace('.thumbnail', '_p', $old_uri);
+
+      /*
+       * Replace it by our own thumbnail URI
+       */
+      $size_pattern = '-%sx%s';
+      $new_uri = str_replace(
+        sprintf($size_pattern, intval(get_option('thumbnail_size_w')), intval(get_option('thumbnail_size_h'))),
+        sprintf($size_pattern, intval(get_option('medium_size_w')), intval(get_option('medium_size_h'))),
+        $new_uri
+      );
+
+      $image_data = image_downsize($attachments[$original_uri], 'medium');
+      $new_map[$old_uri] = $image_data[0];
+    }
+
+    $wpImport->url_remap = $new_map;
 
 
+    /*
+     * Saving mapping
+     */
+    if (!empty($wpImport->url_remap))
+    {
+      $wpImport->backfill_attachment_urls();
+    }
   }
 
   /**
