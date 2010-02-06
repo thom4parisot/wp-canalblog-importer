@@ -217,22 +217,26 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
       /*
        * Comment Title
-       * WordPress does not have such a feature so ... we only skip it
-       *
-       * @todo make an option agregating this to the comment content
+       * We agregate it in comment
        */
+      $tmpdom = new DomDocument();
+      if ($titleNode = $xpath->query('h3', $commentNode)->item(0))
+      {
+        $tmpnode = $tmpdom->createElement('p');
+        $tmpnode->appendChild($tmpdom->createElement('strong', $titleNode->textContent));
+        $tmpdom->appendChild($tmpnode);
+      }
 
       /*
        * Comment content
        * It's basically all direct <p>
        */
-      $tmpdom = new DomDocument();
       foreach ($xpath->query('p', $commentNode) as $comment_p)
       {
         $tmpdom->appendChild($tmpdom->importNode($comment_p, true));
       }
       $data['comment_content'] = $tmpdom->saveHTML();
-      unset($tmpdom);
+      unset($tmpdom, $tmpnode);
 
       /*
        * Comment footer
@@ -278,6 +282,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * Save medias from a post
    *
    * Also alter content to make it points locally
+   * Base on WordPress importer to avoid code duplication
    *
    * @author oncletom
    * @since 1.0
@@ -286,6 +291,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveMedias(DomDocument $dom)
   {
+    require_once ABSPATH.'wp-admin/import/wordpress.php';
+
 
   }
 
