@@ -6,16 +6,17 @@
 
   <p><strong><?php _e('Import Steps') ?></strong></p>
   <ol>
-    <li><strong>Configuration</strong></li>
-    <li>Tags</li>
-    <li>Categories</li>
-    <li>Archives</li>
-    <li>Cleanup</li>
+    <li><strong><?php _e('Configuration') ?></strong></li>
+    <li><?php _e('Tags') ?></li>
+    <li><?php _e('Categories') ?></li>
+    <li><?php _e('Archives') ?></li>
+    <li><?php _e('Cleanup') ?></li>
   </ol>
 
-  <h3>Configuration</h3>
+  <h3><?php _e('Configuration') ?></h3>
   <form action="?import=canalblog" method="post">
     <?php wp_nonce_field('import-canalblog') ?>
+    <input type="hidden" name="process-import" value="1" />
 
     <table class="form-table">
       <tbody>
@@ -30,7 +31,7 @@
     </table>
 
     <p class="submit">
-      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Start import') ?>" />
+      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Start import') ?>" />
     </p>
   </form>
 </div>
