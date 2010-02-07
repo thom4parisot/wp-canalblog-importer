@@ -4,6 +4,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
   protected $uri, $id, $data;
   protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
+  protected static $media_pattern = array(
+    'new' => array(
+      'detection_pattern' => '#(http://storage.canalblog.com/[^_]+\.[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern_inline' => '#^http://storage.canalblog.com/#',
+      'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixNew'),
+    ),
+    'old' => array(
+      'detection_pattern' => '#(%canalblog_domain%/images/[^t][^\/]+\.[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern_inline' => '#^%canalblog_domain%/images/#',
+      'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixOld'),
+    ),
+  );
 
   /**
    * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
@@ -84,14 +96,19 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
      */
     foreach ($dom->getElementsByTagName('img') as $imgNode)
     {
-      if (preg_match('#^'.self::$remote_storage_base_domain.'#', $imgNode->getAttribute('src')))
+      foreach (self::$media_pattern as &$config)
       {
-        $imgNode->removeAttribute('height');
-        $imgNode->removeAttribute('width');
-        $imgNode->removeAttribute('border');
-        $imgNode->setAttribute('alt', '');
-        $imgNode->setAttribute('class', 'aligncenter size-medium');
-        $imgNode->parentNode->removeAttribute('target');
+        $config['detection_pattern_inline'] = str_replace('%canalblog_domain%', get_option('canalblog_importer_blog_uri'), $config['detection_pattern_inline']);
+
+        if (preg_match($config['detection_pattern_inline'], $imgNode->getAttribute('src')))
+        {
+          $imgNode->removeAttribute('height');
+          $imgNode->removeAttribute('width');
+          $imgNode->removeAttribute('border');
+          $imgNode->setAttribute('alt', '');
+          $imgNode->setAttribute('class', 'aligncenter size-medium');
+          $imgNode->parentNode->removeAttribute('target');
+        }
       }
     }
 
@@ -328,15 +345,38 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $wpImport->fetch_attachments = true;
 
     $attachments = array();
+    $remote_uris = array();
+    $remote_uris_mapping = array();
     $post = get_post($this->id, ARRAY_A);
-    preg_match_all('#('.self::$remote_storage_base_domain.'/[^_]+\.[a-z0-9]+)[^a-z0-9]#Us', $post['post_content'], $matches);
 
-    if (empty($matches) || empty($matches[0]))
+    /*
+     * Looping on different patterns of medias
+     * Canalblog changed its media pattern around 2006 june
+     */
+    foreach (self::$media_pattern as $type => &$config)
+    {
+      $config['detection_pattern'] = str_replace('%canalblog_domain%', get_option('canalblog_importer_blog_uri'), $config['detection_pattern']);
+      preg_match_all($config['detection_pattern'], $post['post_content'], $matches);
+
+      if (empty($matches) || empty($matches[0]))
+      {
+        continue;
+      }
+
+      $remote_uris = array_merge($remote_uris, $matches[1]);
+      $remote_uris_mapping[$type] = $matches[1];
+    }
+
+    $remote_uris = array_unique($remote_uris);
+
+    /*
+     * No picture? No need to go furthermore
+     */
+    if (empty($remote_uris))
     {
       return false;
     }
 
-    $remote_uris = array_unique($matches[1]);
     $upload = wp_upload_dir($post['post_date']);
 
     foreach ($remote_uris as $remote_uri)
@@ -393,7 +433,17 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        * Restore Canalblog thumbnail URI
        */
       $original_uri = str_replace('.thumbnail', '', $old_uri);
-      $old_uri = str_replace('.thumbnail', '_p', $old_uri);
+
+      foreach (self::$media_pattern as $type => &$config)
+      {
+        if (!isset($remote_uris_mapping[$type]) || !in_array($original_uri, $remote_uris_mapping[$type]))
+        {
+          continue;
+        }
+
+        $old_uri = call_user_func($config['thumbnail_replacement_callback'], $old_uri);
+      }
+
 
       /*
        * Replace it by our own thumbnail URI
@@ -419,6 +469,20 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     {
       $wpImport->backfill_attachment_urls();
     }
+  }
+
+  protected function thumbnailFilenameFixNew($uri)
+  {
+    return str_replace('.thumbnail', '_p', $uri);
+  }
+
+  protected function thumbnailFilenameFixOld($uri)
+  {
+    $base_uri = get_option('canalblog_importer_blog_uri').'/images/';
+    $uri = str_replace('.thumbnail', '', $uri);
+    $uri = str_replace($base_uri, $base_uri.'t-', $uri);
+
+    return $uri;
   }
 
   /**

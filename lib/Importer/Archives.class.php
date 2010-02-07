@@ -15,7 +15,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
     $this->arguments['months'] = $this->getMonths();
 
-    set_time_limit(30);
+    set_time_limit(60);
     ini_set('memory_limit', '128M');
 
     return true;
