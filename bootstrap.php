@@ -3,7 +3,7 @@
 Plugin Name: Canalblog Importer
 Description: Enables content importing from a blog hosted on Canalblog platform.
 Author: Oncle Tom
-Version: 1.0
+Version: 1.0.1
 Author URI: http://case.oncle-tom.net/
 Plugin URI: http://wordpress.org/extend/plugins/canalblog-importer/
 

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: canalblog, wordpress, migration, import, admin
 Requires at least: 2.9
 Tested up to: 2.9.x
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 
 Fatigué(e) d'avoir à gérer un blog sur Canalblog ? Cette extension va vous permettre de TOUT récupérer en quelques clics.
@@ -37,7 +37,7 @@ En bonus, si vous avez lié vos articles entre eux sur Canalblog, l'outil va cor
 * Français
 * Anglais
 
-** Remarque **
+**Remarque**
 
 Cette extension nécessite au minimum PHP 5.1. Si vous avez un bon hébergeur, vous n'aurez même pas besoin d'y penser.
 Sinon vous verrez plein d'erreurs et rien ne fonctionnera.
@@ -54,6 +54,11 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.0.1 =
+
+ * correction d'un bug stoppant l'import sur des mois particulièrement chargés en archives
+ * prise en compte de l'ancienne structure de médias de Canalblog, pour les blogs datant d'avant juin 2006
+
 = Version 1.0 =
 
  * version initiale, avec tout ce qu'il faut pour devenir autonome
