@@ -196,7 +196,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    *
    * @author oncletom
    * @since 1.0
-   * @version 1.0
+   * @version 2.0
    * @param DomDocument $dom
    */
   public function saveComments(DomDocument $dom)
@@ -212,19 +212,33 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR@euro', 'fr_FR', 'fr', 'french');
     $date_pattern = '%s %s %s %s:%s';
 
-    $xpath = new DomXpath($dom);
-    $xpathResult = $xpath->query("//div[@class='blogbody']/div[@class and @class!='itemfooter']");
 
-    if (!$xpathResult->length)
+    $xpath = new DomXpath($dom);
+    $tmpdom = new DomDocument();
+    $tmpdom->appendChild($tmpdom->importNode($xpath->query("//div[@class='blogbody']")->item(0), true));
+    list($tmp, $html_comments) = explode('<a id="comments">', $tmpdom->saveHTML());
+    unset($tmpdom, $tmp);
+
+    preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">(.+)</div>#siU', $html_comments, $matches);
+    $found_comments = $matches[0];
+    unset($matches);
+
+    if (empty($found_comments))
     {
       return 0;
     }
 
     $comments = get_comments(array('post_id' => $this->id));
 
-    foreach ($xpathResult as $commentNode)
+    foreach ($found_comments as $commentHtml)
     {
-      if (!preg_match('#^fdc#U', $commentNode->getAttribute('class')))
+      $commentDom = new DomDocument();
+      $commentDom->preserveWhitespace = false;
+      @$commentDom->loadHTML($commentHtml);
+      $xpath = new DomXpath($commentDom);
+      $commentNode = $commentDom->getElementsByTagName('body')->item(0);
+
+      if ($xpath->query("a[@id]", $commentNode)->length === 0)
       {
         continue;
       }
