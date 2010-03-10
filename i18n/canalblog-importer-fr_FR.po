@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 21:26+0100\n"
-"PO-Revision-Date: 2010-03-10 21:37+0100\n"
+"POT-Creation-Date: 2010-03-10 21:59+0100\n"
+"PO-Revision-Date: 2010-03-10 21:59+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../bootstrap.php:14
+#: ../bootstrap.php:17
 msgid "Enables content importing from a blog hosted on Canalblog platform."
 msgstr "Active l'import du contenu d'un blog hébergé sur la plateforme Canalblog."
 
@@ -272,11 +272,15 @@ msgstr "Sur le point d'importer <strong>%s mots-clefs</strong>."
 msgid "Import Tags"
 msgstr "Importer les mots-clefs"
 
-#: ../lib/Plugin.class.php:65
+#: ../lib/Plugin.class.php:54
+msgid "Import a Canalblog blog"
+msgstr "Importer un blog Canalblog"
+
+#: ../lib/Plugin.class.php:85
 msgid "Canalblog"
 msgstr ""
 
-#: ../lib/Plugin.class.php:65
+#: ../lib/Plugin.class.php:85
 msgid "Import posts, comments, and users from a Canalblog blog."
 msgstr "Importation d'articles, de commentaires et d'utilisateurs depuis Canalblog."
 

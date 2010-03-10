@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 21:40+0100\n"
-"PO-Revision-Date: 2010-03-10 21:40+0100\n"
+"POT-Creation-Date: 2010-03-10 21:59+0100\n"
+"PO-Revision-Date: 2010-03-10 21:59+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -270,11 +270,15 @@ msgstr ""
 msgid "Import Tags"
 msgstr ""
 
-#: ../lib/Plugin.class.php:65
+#: ../lib/Plugin.class.php:54
+msgid "Import a Canalblog blog"
+msgstr ""
+
+#: ../lib/Plugin.class.php:85
 msgid "Canalblog"
 msgstr ""
 
-#: ../lib/Plugin.class.php:65
+#: ../lib/Plugin.class.php:85
 msgid "Import posts, comments, and users from a Canalblog blog."
 msgstr ""
 

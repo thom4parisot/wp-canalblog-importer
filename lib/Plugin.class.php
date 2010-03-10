@@ -38,6 +38,26 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
   }
 
   /**
+   * Adds some metas within the plugin list
+   *
+   * @since 1.1
+   * @version
+   * @param Array $plugin_meta
+   * @param String $plugin_file
+   * @param Array $plugin_data
+   * @return Array
+   */
+  public function filterPluginRowMeta($plugin_meta, $plugin_file, $plugin_data)
+  {
+    if ($plugin_data['Name'] === 'Canalblog Importer')
+    {
+      $plugin_meta[] = '<a href="import.php?import=canalblog">'.__('Import a Canalblog blog', 'canalblog-importer').'</a>';
+    }
+
+    return $plugin_meta;
+  }
+
+  /**
    * Prints out the import page for WordPress
    *
    * @author oncletom
@@ -63,5 +83,6 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
   public function registerAdminHooks()
   {
     register_importer('canalblog', __('Canalblog'), __('Import posts, comments, and users from a Canalblog blog.', 'canalblog-importer'), array ($this, 'importPage'));
+    add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 3);
   }
 }
