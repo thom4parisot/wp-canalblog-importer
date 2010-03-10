@@ -40,7 +40,7 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
   /**
    * Adds some metas within the plugin list
    *
-   * @since 1.1
+   * @since 1.0.2
    * @version
    * @param Array $plugin_meta
    * @param String $plugin_file
