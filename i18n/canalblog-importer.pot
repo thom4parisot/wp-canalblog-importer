@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-06 18:16+0100\n"
-"PO-Revision-Date: 2010-02-06 18:16+0100\n"
+"POT-Creation-Date: 2010-03-10 21:40+0100\n"
+"PO-Revision-Date: 2010-03-10 21:40+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,10 @@ msgstr ""
 "X-Poedit-KeywordsList: _e;_e ;__;__ ;_c;_c ;__ngettext;__ngettext;esc_attr__\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
+
+#: ../bootstrap.php:17
+msgid "Enables content importing from a blog hosted on Canalblog platform."
+msgstr ""
 
 #: ../pages/06-ccln.php:3
 #: ../pages/01-init.php:3

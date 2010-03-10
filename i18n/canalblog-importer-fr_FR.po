@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-06 18:07+0100\n"
-"PO-Revision-Date: 2010-02-06 18:15+0100\n"
+"POT-Creation-Date: 2010-03-10 21:26+0100\n"
+"PO-Revision-Date: 2010-03-10 21:37+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,10 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SearchPath-0: ..\n"
+
+#: ../bootstrap.php:14
+msgid "Enables content importing from a blog hosted on Canalblog platform."
+msgstr "Active l'import du contenu d'un blog hébergé sur la plateforme Canalblog."
 
 #: ../pages/06-ccln.php:3
 #: ../pages/01-init.php:3
