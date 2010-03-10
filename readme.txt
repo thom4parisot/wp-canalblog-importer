@@ -54,6 +54,10 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.0 =
+
+ * détection de la présence de PHP5 afin d'éviter des erreurs peu sympathiques
+
 = Version 1.0.1 =
 
  * correction d'un bug stoppant l'import sur des mois particulièrement chargés en archives
