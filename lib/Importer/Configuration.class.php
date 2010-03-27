@@ -30,14 +30,23 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
       $uri = esc_url_raw(strtolower($_POST['blog_url']), array('http'));
       $uri = preg_replace('/(canalblog.com).*$/siU', '\\1', $uri);
 
-      $http = new WP_Http();
-      $result = $http->head($uri);
-
-      if (preg_match('#http://[^\.]+.canalblog.com#U', $uri) && $result['response']['code'] == 200)
-      {
-        update_option('canalblog_importer_blog_uri', $uri);
-        return true;
+      try{
+        if (preg_match('#http://[^\.]+.canalblog.com#U', $uri) && $this->getRemoteHtml($uri))
+        {
+          update_option('canalblog_importer_blog_uri', $uri);
+          return true;
+        }
       }
+      catch (CanalblogImporterException $e)
+      {
+        echo $e;
+      }
+      catch (Exception $e)
+      {
+        wp_die($e->getMessage());
+      }
+
+      return false;
     }
   }
 }

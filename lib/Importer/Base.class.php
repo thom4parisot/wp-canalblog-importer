@@ -10,6 +10,9 @@ abstract class CanalblogImporterImporterBase
 {
   protected $arguments = array();
   protected $configuration;
+  protected static $http_retry_count =  0;
+  public static $http_retry_delay =     500000;    //milliseconds for usleep usage (0.5s)
+  public static $http_max_retry_count = 5;
 
   /**
    * Constructor
@@ -47,20 +50,79 @@ abstract class CanalblogImporterImporterBase
   }
 
   /**
+   * Retrieves a page content based on its URI
+   *
+   * @author oncletom
+   * @since 1.0.3
+   * @param string $uri
+   * @throws CanalblogImporterException in case of error during request or something else
+   * @return string HTML content of $uri
+   */
+  public function getRemoteHtml($uri)
+  {
+    $http = new Wp_HTTP();
+
+    try{
+      $result = $http->get($uri);
+
+      if (is_wp_error($result))
+      {
+        throw new CanalblogImporterException(sprintf(__("HTTP request returned an error: %s [%s]", 'canalblog-importer'), $result->get_error_message(), $uri));
+      }
+      elseif (!is_array($result))
+      {
+        throw new CanalblogImporterException(sprintf(__("HTTP request did not returned an expected result [%s]", 'canalblog-importer'), $uri));
+      }
+      elseif (!isset($result['response']['code']) || (int)$result['response']['code'] !== 200)
+      {
+        throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s]", 'canalblog-importer'), $uri));
+      }
+      elseif (!isset($result['body']) || empty($result['body']))
+      {
+        throw new CanalblogImporterException(sprintf(__("Remote document is empty [%s]", 'canalblog-importer'), $uri));
+      }
+      else
+      {
+        unset($http);
+        return $result['body'];
+      }
+    }
+    catch (CanalblogImporterException $e)
+    {
+      /*
+       * Retry the download another time, with a small delay (1s)
+       */
+      if (++self::$http_retry_count <= self::$http_max_retry_count)
+      {
+        usleep(self::$http_retry_delay);
+        return $this->getRemoteHtml($uri);
+      }
+      else
+      {
+        throw new CanalblogImporterException($e->getMessage());
+      }
+    }
+    catch (Exception $e)
+    {
+      throw new CanalblogImporterException(sprintf(__("An error occured during HTTP request: %s. [%s]", 'canalblog-importer'), $e->getMessage(), $uri));
+    }
+
+  }
+
+  /**
    * Returns a remote page as Dom Document
    *
    * @author oncletom
    * @param String $uri
    * @return DomDocument
    */
-  public function getRemoteDomDocument($uri)
+  public function getRemoteDomDocument($uri, &$html = '')
   {
-    $http = new Wp_HTTP();
-    $result = $http->get($uri);
+    $html = $this->getRemoteHtml($uri);
 
     $dom = new DomDocument();
     $dom->preserveWhitespace = false;
-    @$dom->loadHTML($result['body']);
+    @$dom->loadHTML($html);
 
     return $dom;
   }
@@ -73,9 +135,9 @@ abstract class CanalblogImporterImporterBase
    * @param String $xpath_query
    * @return DomNodeList
    */
-  public function getRemoteXpath($uri, $xpath_query)
+  public function getRemoteXpath($uri, $xpath_query, &$html = '')
   {
-    $dom = $this->getRemoteDomDocument($uri);
+    $dom = $this->getRemoteDomDocument($uri, $html);
     $xpath = new DOMXPath($dom);
 
     $result = $xpath->query($xpath_query);

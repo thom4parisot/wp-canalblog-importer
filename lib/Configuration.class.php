@@ -10,7 +10,7 @@ class CanalblogImporterConfiguration extends WPPluginToolkitConfiguration
   /**
    * Refers to the version of the plugin
    */
-  const VERSION =   '1.0.2';
+  const VERSION =   '1.0.3-dev';
 
   /**
    * @see lib/vendor/plugin-toolkit/WPPluginToolkitConfiguration#configureOptions()
