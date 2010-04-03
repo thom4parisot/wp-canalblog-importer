@@ -49,21 +49,16 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
    */
   protected function getTags()
   {
-    $http = new Wp_HTTP();
-    $result = $http->get(get_option('canalblog_importer_blog_uri').'/archives/');
-
-    $dom = new DomDocument();
-    $dom->preserveWhitespace = false;
-    @$dom->loadHTML($result['body']);
-
+    $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/');
     $xpath = new DOMXPath($dom);
     $tags = array();
+
     foreach ($xpath->query("//div[@class='blogbody']//ul[@class='taglist']//a[@rel='tag']") as $node)
     {
       $tags[] = $node->nodeValue;
     }
 
-    unset($dom, $http);
+    unset($dom, $xpath);
     return $tags;
   }
 }

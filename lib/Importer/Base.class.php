@@ -120,6 +120,13 @@ abstract class CanalblogImporterImporterBase
   {
     $html = $this->getRemoteHtml($uri);
 
+    //removing all scripts (we don't want them)
+    $html = preg_replace('#<script.+>.+<\/script>#siU', '', $html);
+
+    //fixing UTF8 encoding, loadHTML is messed up if does not appear after <head>
+    //props of @ricola
+    $html = preg_replace('/(<head[^>]*>)/siU', '\\1<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />', $html);
+
     $dom = new DomDocument();
     $dom->preserveWhitespace = false;
     @$dom->loadHTML($html);

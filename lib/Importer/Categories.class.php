@@ -43,15 +43,10 @@ class CanalblogImporterImporterCategories extends CanalblogImporterImporterBase
    */
   protected function getCategories()
   {
-    $http = new Wp_HTTP();
-    $result = $http->get(get_option('canalblog_importer_blog_uri').'/archives/');
-
-    $dom = new DomDocument();
-    $dom->preserveWhitespace = false;
-    @$dom->loadHTML($result['body']);
-
+    $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/');
     $xpath = new DOMXPath($dom);
     $categories = array();
+
     foreach ($xpath->query("//div[@class='blogbody']//p/a[@href]") as $node)
     {
       if (preg_match('#archives/[^\/]+/index.html$#iU', $node->getAttribute('href')))
@@ -60,7 +55,7 @@ class CanalblogImporterImporterCategories extends CanalblogImporterImporterBase
       }
     }
 
-    unset($dom, $http);
+    unset($dom, $xpath);
     return $categories;
   }
 }

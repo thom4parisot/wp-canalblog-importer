@@ -35,13 +35,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function process()
   {
-    $query = $this->getRemoteXpath($this->uri, "//div[@class='blogbody']");
+    $query = $this->getRemoteXpath($this->uri, "//div[@id='content']", $html);
     $dom = new DomDocument();
     $dom->appendChild($dom->importNode($query->item(0), true));
 
-    $post_id = $this->savePost($dom);
-    $this->saveComments($dom);
-    $this->saveMedias($dom);
+    $post_id = $this->savePost($dom, $html);
+    $this->saveComments($dom, $html);
+    $this->saveMedias($dom, $html);
 
     return $post_id;
   }
@@ -139,6 +139,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     if ($post_id = post_exists($data['post_title'], '', $data['post_date']))
     {
       $data['ID'] = $post_id;
+      $post_existed = true;
     }
     else
     {
@@ -188,6 +189,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $this->data = $data;
     $this->id =   $post_id;
 
+    if (!isset($post_existed))
+    {
+      //exit;
+    }
+
     return $post_id;
   }
 
@@ -199,7 +205,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * @version 2.0
    * @param DomDocument $dom
    */
-  public function saveComments(DomDocument $dom)
+  public function saveComments(DomDocument $dom, $html)
   {
     if ($this->data['comment_status'] == 'closed')
     {
@@ -212,15 +218,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR@euro', 'fr_FR', 'fr', 'french');
     $date_pattern = '%s %s %s %s:%s';
 
-
-    $xpath = new DomXpath($dom);
-    $tmpdom = new DomDocument();
-    $tmpdom->appendChild($tmpdom->importNode($xpath->query("//div[@class='blogbody']")->item(0), true));
-    list($tmp, $html_comments) = explode('<a id="comments">', $tmpdom->saveHTML());
+    list($tmp, $html_comments) = explode('<a id="comments">', $html);
     unset($tmpdom, $tmp);
 
-    preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">(.+)</div>#siU', $html_comments, $matches);
+    preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">.+</div>#siU', $html_comments, $matches);
     $found_comments = $matches[0];
+
     unset($matches);
 
     if (empty($found_comments))
@@ -232,6 +235,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     foreach ($found_comments as $commentHtml)
     {
+      $commentHtml = preg_replace('#<script.+>[^<]+<\/script>#siU', '', $commentHtml);
+
       $commentDom = new DomDocument();
       $commentDom->preserveWhitespace = false;
       @$commentDom->loadHTML($commentHtml);
@@ -290,7 +295,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       {
         $tmpdom->appendChild($tmpdom->importNode($comment_p, true));
       }
-      $data['comment_content'] = $tmpdom->saveHTML();
+      $data['comment_content'] = html_entity_decode($tmpdom->saveHTML(), ENT_QUOTES, 'UTF-8');
       unset($tmpdom, $tmpnode);
 
       /*
@@ -313,7 +318,9 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       }
       unset($uriNode);
 
-      preg_match('#^Posté par (?P<comment_author>.+), (?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) à (?P<hour>[^:]+):(?P<minute>.+)$#iUs', trim($commentFooterNode->textContent), $matches);
+      $tmp = trim(str_replace(array("\r\n", "\r", "\n"), ' ', $commentFooterNode->textContent));
+      $tmp = str_replace('  ', ' ', $tmp);
+      preg_match('#^Post(é|&eacute;?) par (?P<comment_author>.+), (le )?(?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) (à|&agrave;?) (?P<hour>[^:]+):(?P<minute>.+)$#iUs', $tmp, $matches);
       $matches['strptime'] = strptime(sprintf($date_pattern, $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
       $matches['month'] = sprintf('%02s', $matches['strptime']['tm_mon'] + 1);
 
