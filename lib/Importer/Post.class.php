@@ -121,8 +121,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     /*
      * Determining author
      */
-    preg_match('#Post&eacute; par (.+) &agrave;#siU', $itemfooter, $matches);
-    $author_name = $matches[1];
+    preg_match('#Post(&eacute;|é) par (.+) (&agrave;|à)#siU', $itemfooter, $matches);
+    $author_name = $matches[2];
     $data['post_author'] = $this->getOrCreateAuthorByUsername($author_name);
 
     /*
