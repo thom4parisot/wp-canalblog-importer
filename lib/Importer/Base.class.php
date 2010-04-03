@@ -121,7 +121,7 @@ abstract class CanalblogImporterImporterBase
     $html = $this->getRemoteHtml($uri);
 
     //removing all scripts (we don't want them)
-    $html = preg_replace('#<script.+>.+<\/script>#siU', '', $html);
+    $html = preg_replace('#<script.+>.+<\/script>#siU', '', trim($html));
 
     //fixing UTF8 encoding, loadHTML is messed up if does not appear after <head>
     //props of @ricola
