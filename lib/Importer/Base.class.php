@@ -50,12 +50,50 @@ abstract class CanalblogImporterImporterBase
   }
 
   /**
+   * Transform an HTML string into DomDocument object
+   *
+   * @version 1.0
+   * @since 1.0.3
+   * @param string $html
+   *
+   * @return DomDocument
+   */
+  public function getDomDocumentFromHtml(&$html)
+  {
+    //removing all scripts (we don't want them)
+    $html = preg_replace('#<script.+>.+<\/script>#siU', '', trim($html));
+
+    /*
+     * Fixing UTF8 encoding on existing full document
+     * @props ricola
+     */
+    if (preg_match('/<head/iU', $html))
+    {
+      $html = preg_replace('/(<head[^>]*>)/siU', '\\1<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />', $html);
+    }
+    /*
+     * Fixing UTF8 on HTML fragment
+     */
+    else
+    {
+      $html = sprintf('<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>%s</body></html>', $html);
+    }
+
+    $dom = new DomDocument();
+    $dom->preserveWhitespace = false;
+    @$dom->loadHTML($html);
+
+    return $dom;
+  }
+
+  /**
    * Retrieves a page content based on its URI
    *
    * @author oncletom
    * @since 1.0.3
    * @param string $uri
    * @throws CanalblogImporterException in case of error during request or something else
+   *
    * @return string HTML content of $uri
    */
   public function getRemoteHtml($uri)
@@ -119,17 +157,7 @@ abstract class CanalblogImporterImporterBase
   public function getRemoteDomDocument($uri, &$html = '')
   {
     $html = $this->getRemoteHtml($uri);
-
-    //removing all scripts (we don't want them)
-    $html = preg_replace('#<script.+>.+<\/script>#siU', '', trim($html));
-
-    //fixing UTF8 encoding, loadHTML is messed up if does not appear after <head>
-    //props of @ricola
-    $html = preg_replace('/(<head[^>]*>)/siU', '\\1<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />', $html);
-
-    $dom = new DomDocument();
-    $dom->preserveWhitespace = false;
-    @$dom->loadHTML($html);
+    $dom = $this->getDomDocumentFromHtml($html);
 
     return $dom;
   }

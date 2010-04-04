@@ -189,11 +189,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $this->data = $data;
     $this->id =   $post_id;
 
-    if (!isset($post_existed))
-    {
-      //exit;
-    }
-
     return $post_id;
   }
 
@@ -223,7 +218,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">.+</div>#siU', $html_comments, $matches);
     $found_comments = $matches[0];
-
     unset($matches);
 
     if (empty($found_comments))
@@ -235,11 +229,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     foreach ($found_comments as $commentHtml)
     {
-      $commentHtml = preg_replace('#<script.+>[^<]+<\/script>#siU', '', $commentHtml);
+      $commentDom = $this->getDomDocumentFromHtml($commentHtml);
 
-      $commentDom = new DomDocument();
-      $commentDom->preserveWhitespace = false;
-      @$commentDom->loadHTML($commentHtml);
       $xpath = new DomXpath($commentDom);
       $commentNode = $commentDom->getElementsByTagName('body')->item(0);
 
@@ -291,11 +282,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        * Comment content
        * It's basically all direct <p>
        */
-      foreach ($xpath->query('p', $commentNode) as $comment_p)
+      foreach ($xpath->query('//p', $commentNode) as $comment_p)
       {
         $tmpdom->appendChild($tmpdom->importNode($comment_p, true));
       }
-      $data['comment_content'] = html_entity_decode($tmpdom->saveHTML(), ENT_QUOTES, 'UTF-8');
+
+      $data['comment_content'] = trim(preg_replace('#<p>[\s]*</p>#U', '', $tmpdom->saveHTML()));
       unset($tmpdom, $tmpnode);
 
       /*
@@ -303,7 +295,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        */
       $commentFooterNode = $xpath->query("div[@class='itemfooter']", $commentNode)->item(0);
 
-      //happens rarely, don't know why
+      //happens rarely, don't know why: we skip the import of this comment
       if (null === $commentFooterNode)
       {
         continue;
