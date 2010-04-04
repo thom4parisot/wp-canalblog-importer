@@ -58,10 +58,13 @@ abstract class CanalblogImporterImporterBase
    *
    * @return DomDocument
    */
-  public function getDomDocumentFromHtml(&$html)
+  public function getDomDocumentFromHtml(&$html, $stripJavaScript = true)
   {
     //removing all scripts (we don't want them)
-    $html = preg_replace('#<script.+>.+<\/script>#siU', '', trim($html));
+    if (!!$stripJavaScript)
+    {
+      $html = preg_replace('#<script[^>]*>[^>]+<\/script>#siU', '', trim($html));
+    }
 
     /*
      * Fixing UTF8 encoding on existing full document
