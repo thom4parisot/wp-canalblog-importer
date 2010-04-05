@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: canalblog, wordpress, migration, import, admin
 Requires at least: 2.9
 Tested up to: 2.9.x
-Stable tag: 1.0.3
+Stable tag: 1.1
 
 
 Fatigué(e) d'avoir à gérer un blog sur Canalblog ? Cette extension va vous permettre de TOUT récupérer en quelques clics.
