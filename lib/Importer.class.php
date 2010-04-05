@@ -118,6 +118,9 @@ class CanalblogImporterImporter
     delete_option('canalblog_importer_blog_uri');
     delete_option('canalblog_importer_step');
     delete_option('canalblog_importer_archives_current_index');
+    delete_option('canalblog_overwrite_contents');
+    delete_option('canalblog_comments_status');
+    delete_option('canalblog_trackbacks_status');
 
     echo '<script type="text/javascript">window.location.href="?import=canalblog";</script>';
   }
