@@ -17,6 +17,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     ),
   );
 
+  public function __construct()
+  {
+    $this->overwrite_contents = get_option('canalblog_overwrite_contents', 0);
+    $this->comments_status =    get_option('canalblog_comments_status', 'open');
+    $this->trackbacks_status =  get_option('canalblog_trackbacks_status', 'open');
+  }
+
   /**
    * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
    */
@@ -128,8 +135,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     /*
      * Opened to comments + trackbacks
      */
-    $data['comment_status'] = $xpath->query("//div[@class='blogbody']//form[@id='frmComment']")->length ? 'open' : 'close';
-    $data['ping_status'] = $xpath->query("//div[@class='blogbody']//a[@title='Rétroliens']")->length ? 'open' : 'close';
+    $data['comment_status'] = $this->comments_status;
+    $data['ping_status'] = $this->trackbacks_status;
 
     /*
      * Saving
@@ -139,6 +146,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     if ($post_id = post_exists($data['post_title'], '', $data['post_date']))
     {
       $data['ID'] = $post_id;
+
+      if ($this->overwrite_contents)
+      {
+        wp_untrash_post($post_id);
+        wp_update_post($data);
+      }
+
       $post_existed = true;
     }
     else
@@ -244,17 +258,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        */
       $canalblog_comment_id = $xpath->query("a[@id]", $commentNode)->item(0)->getAttribute('id');
 
-      /*
-       * Checking if it's already saved from import
-       */
-      foreach ($comments as $comment)
-      {
-        if (get_comment_meta($comment->comment_ID, 'canalblog_id', true) == $canalblog_comment_id)
-        {
-          continue;
-        }
-      }
-
       $data = array(
         'comment_approved' => 1,
         'comment_karma' => 1,
@@ -325,11 +328,23 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        * Saving (only if not exists)
        */
       $data = wp_filter_comment($data);
-      if (!comment_exists($data['comment_author'], $data['comment_date']))
+      if ($comment_id = comment_exists($data['comment_author'], $data['comment_date']))
+      {
+        $data['comment_ID'] = $comment_id;
+
+        if ($this->overwrite_contents)
+        {
+          wp_untrash_comment($comment_id);
+          wp_update_comment($data);
+        }
+      }
+      else
       {
         $comment_id = wp_insert_comment($data);
         add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
       }
+
+      unset($tmp, $data);
     }
 
     /*
