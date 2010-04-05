@@ -54,6 +54,13 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.1 =
+
+ * possibilité de forcer l'import du contenu (pratique pour corriger le problème des accents sans avoir à tout réinstaller)
+ * correction du bug des statuts des commentaires/rétroliens
+ * ajout de traductions manquantes
+ * les articles/commentaires mis dans la corbeille sont automatiquement restaurés
+
 = Version 1.0.3 =
 
  * gestion des coupures de connexion avec Canalblog (5 tentatives)
