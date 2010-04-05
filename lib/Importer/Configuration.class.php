@@ -34,6 +34,10 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
         if (preg_match('#http://[^\.]+.canalblog.com#U', $uri) && $this->getRemoteHtml($uri))
         {
           update_option('canalblog_importer_blog_uri', $uri);
+          update_option('canalblog_overwrite_contents', isset($_POST['overwrite_contents']) ? 1 : 0);
+          update_option('canalblog_comments_status', isset($_POST['comments_status']) && in_array($_POST['comments_status'], array('open', 'closed')) ? $_POST['comments_status'] : 'open');
+          update_option('canalblog_trackbacks_status', isset($_POST['trackbacks_status']) && in_array($_POST['trackbacks_status'], array('open', 'closed')) ? $_POST['trackbacks_status'] : 'open');
+
           return true;
         }
       }

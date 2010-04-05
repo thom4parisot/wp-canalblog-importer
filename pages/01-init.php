@@ -26,8 +26,35 @@
             <input type="text" value="" name="blog_url" id="canalblog_uri" /><br />
             <span class="help"><?php _e('Example: http://yourblog.canalblog.com', 'canalblog-importer') ?></span>
           </td>
-          <td rowspan="2" style="text-align: left">
+          <td rowspan="7" style="text-align: left">
             <img src="<?php echo $this->configuration->getPluginUri() ?>/assets/images/canalblog-configuration.png" alt="" />
+          </td>
+        </tr>
+        <tr>
+          <th><label for="canalblog_overwrite_contents"><?php _e('Overwrite existing contents', 'canalblog-importer') ?></label></th>
+          <td style="vertical-align: top">
+            <input type="checkbox" value="1" name="overwrite_contents" id="canalblog_overwrite_contents" />
+            <span class="help"><?php _e('If checked, already imported contents will be updated instead of being skipped.', 'canalblog-importer') ?></span>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="canalblog_default_comments_status"><?php _e('Default Comments Status', 'canalblog-importer') ?></label></th>
+          <td style="vertical-align: top">
+            <select name="comments_status" id="canalblog_default_comments_status">
+              <option value="open" selected="selected"><?php _e('Opened', 'canalblog-importer') ?></option>
+              <option value="closed"><?php _e('Closed', 'canalblog-importer') ?></option>
+            </select><br />
+            <span class="help"><?php _e('It will be the default status for imported articles.', 'canalblog-importer') ?></span>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="canalblog_default_trackback_status"><?php _e('Default Trackback Status', 'canalblog-importer') ?></label></th>
+          <td style="vertical-align: top">
+            <select name="trackback_status" id="canalblog_default_trackback_status">
+              <option value="open" selected="selected"><?php _e('Opened', 'canalblog-importer') ?></option>
+              <option value="closed"><?php _e('Closed', 'canalblog-importer') ?></option>
+            </select><br />
+            <span class="help"><?php _e('It will be the default status for imported articles.', 'canalblog-importer') ?></span>
           </td>
         </tr>
         <tr>
@@ -40,7 +67,7 @@
               <li><?php _e('Digest format: Monthly', 'canalblog-importer') ?></li>
             </ul>
 
-            <br /><a href="http://www.canalblog.com/cf/my/"><?php _e("Configure Canalblog settings", 'canalblog-importer') ?></a>
+            <a href="http://www.canalblog.com/cf/my/" style="font-weight:bold"><?php _e("Configure Canalblog settings", 'canalblog-importer') ?></a>
           </td>
         </tr>
         <tr>
@@ -49,7 +76,7 @@
             <span class="help"><?php _e("The importer will rewrite all your internal links (from a post to another). It can be done only once so check your permalink structure <em>before</em> importing anything.", 'canalblog-importer') ?><br />
             <?php _e("Best permalink structure is at least the <em>month and title</em> one (<code>2010/02/sample-post/</code>).", 'canalblog-importer') ?></span>
 
-            <br /><a href="options-permalink.php"><?php _e('Configure permalink structure', 'canalblog-importer') ?></a>
+            <br /><a href="options-permalink.php" style="font-weight:bold"><?php _e('Configure permalink structure', 'canalblog-importer') ?></a>
           </td>
         </tr>
         <tr>
@@ -57,7 +84,7 @@
           <td style="vertical-align: top">
             <span class="help"><?php _e("The importer will retrieve <em>all</em> your pictures and will use the <strong>medium size</strong> format as a replacement within your posts (with a link to full size pictures).", 'canalblog-importer') ?></span>
 
-            <br /><a href="options-media.php"><?php _e('Configure thumbnail size', 'canalblog-importer') ?></a>
+            <br /><a href="options-media.php" style="font-weight:bold"><?php _e('Configure thumbnail size', 'canalblog-importer') ?></a>
           </td>
         </tr>
       </tbody>
