@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 21:59+0100\n"
-"PO-Revision-Date: 2010-03-10 21:59+0100\n"
+"POT-Creation-Date: 2010-04-05 09:40+0100\n"
+"PO-Revision-Date: 2010-04-05 09:43+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -168,60 +168,91 @@ msgid "Example: http://yourblog.canalblog.com"
 msgstr "Exemple : http://votreblog.canalblog.com"
 
 #: ../pages/01-init.php:34
+msgid "Overwrite existing contents"
+msgstr "Mettre à jour le contenu existant"
+
+#: ../pages/01-init.php:37
+msgid "If checked, already imported contents will be updated instead of being skipped."
+msgstr "Si coché, le contenu déjà importé sera mis à jour au lieu d'être ignoré."
+
+#: ../pages/01-init.php:41
+msgid "Default Comments Status"
+msgstr "Statut des commentaires"
+
+#: ../pages/01-init.php:44
+#: ../pages/01-init.php:54
+msgid "Opened"
+msgstr "Ouvert"
+
+#: ../pages/01-init.php:45
+#: ../pages/01-init.php:55
+msgid "Closed"
+msgstr "Fermé"
+
+#: ../pages/01-init.php:47
+#: ../pages/01-init.php:57
+msgid "It will be the default status for imported articles."
+msgstr "Ce sera le réglage par défaut pour les articles importés."
+
+#: ../pages/01-init.php:51
+msgid "Default Trackback Status"
+msgstr "Statut des rétroliens"
+
+#: ../pages/01-init.php:61
 msgid "Canalblog settings"
 msgstr "Réglages de Canalblog"
 
-#: ../pages/01-init.php:36
+#: ../pages/01-init.php:63
 msgid "Please ensure your Canalblog blog is configured with these settings:"
 msgstr "Merci de vous assurer que votre blog Canalblog est configuré comme suit :"
 
-#: ../pages/01-init.php:38
+#: ../pages/01-init.php:65
 #, php-format
 msgid "Day formatting: %s"
 msgstr "Format de la date : %s"
 
-#: ../pages/01-init.php:39
+#: ../pages/01-init.php:66
 #, php-format
 msgid "Hour formatting: %s"
 msgstr "Format de l'heure : %s"
 
-#: ../pages/01-init.php:40
+#: ../pages/01-init.php:67
 msgid "Digest format: Monthly"
 msgstr "Fréquence des archives : Mensuelle"
 
-#: ../pages/01-init.php:43
+#: ../pages/01-init.php:70
 msgid "Configure Canalblog settings"
 msgstr "Réglages Canalblog"
 
-#: ../pages/01-init.php:47
+#: ../pages/01-init.php:74
 msgid "Permalink structure"
 msgstr "Structure des permaliens"
 
-#: ../pages/01-init.php:49
+#: ../pages/01-init.php:76
 msgid "The importer will rewrite all your internal links (from a post to another). It can be done only once so check your permalink structure <em>before</em> importing anything."
 msgstr "L'outil d'import va modifier tous vos liens internes (renvois d'article en article). Ce ne sera fait qu'une seule fois donc assurez vous d'avoir configuré vos permaliens <em>avant</em> d'importer la moindre chose."
 
-#: ../pages/01-init.php:50
+#: ../pages/01-init.php:77
 msgid "Best permalink structure is at least the <em>month and title</em> one (<code>2010/02/sample-post/</code>)."
 msgstr "La meilleure structure de permaliens est au moins <em>mois et titre</em> (<code>2010/02/sample-post/</code>)."
 
-#: ../pages/01-init.php:52
+#: ../pages/01-init.php:79
 msgid "Configure permalink structure"
 msgstr "Configurer la structure des permaliens"
 
-#: ../pages/01-init.php:56
+#: ../pages/01-init.php:83
 msgid "Thumbnail size"
 msgstr "Taille des vignettes"
 
-#: ../pages/01-init.php:58
+#: ../pages/01-init.php:85
 msgid "The importer will retrieve <em>all</em> your pictures and will use the <strong>medium size</strong> format as a replacement within your posts (with a link to full size pictures)."
 msgstr "L'outil d'import va rappatrier <em>toutes</em> vos images et utiliser le format <strong>taille moyenne</strong> au sein de vos articles (avec un lien vers la taille plein format)."
 
-#: ../pages/01-init.php:60
+#: ../pages/01-init.php:87
 msgid "Configure thumbnail size"
 msgstr "Configurer la taille des vignettes"
 
-#: ../pages/01-init.php:67
+#: ../pages/01-init.php:94
 msgid "Start import"
 msgstr "Démarrer l'import"
 
@@ -283,4 +314,29 @@ msgstr ""
 #: ../lib/Plugin.class.php:85
 msgid "Import posts, comments, and users from a Canalblog blog."
 msgstr "Importation d'articles, de commentaires et d'utilisateurs depuis Canalblog."
+
+#: ../lib/Importer/Base.class.php:111
+#, php-format
+msgid "HTTP request returned an error: %s [%s]"
+msgstr "La requête HTTP a renvoyé une erreur : %s [%s]"
+
+#: ../lib/Importer/Base.class.php:115
+#, php-format
+msgid "HTTP request did not returned an expected result [%s]"
+msgstr "La requête HTTP n'a pas renvoyé le résultat escompté [%s]"
+
+#: ../lib/Importer/Base.class.php:119
+#, php-format
+msgid "Tried to request an unavailable page [%s]"
+msgstr "Tentative d'accès à une page indisponible [%s]"
+
+#: ../lib/Importer/Base.class.php:123
+#, php-format
+msgid "Remote document is empty [%s]"
+msgstr "La page distante est vide [%s]"
+
+#: ../lib/Importer/Base.class.php:148
+#, php-format
+msgid "An error occured during HTTP request: %s. [%s]"
+msgstr "Une erreur s'est produite pendant une requête HTTP : %s. [%s]"
 
