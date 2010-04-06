@@ -19,7 +19,13 @@ __('Enables content importing from a blog hosted on Canalblog platform.', 'canal
 if (phpversion() < '5.1')
 {
   printf("Canalblog Importer nécessite PHP 5.1 ou plus (votre version : <code>%s</code>). <a href='http://www.wordpress-fr.net/support/sujet-31932-1.html' target='_blank'>Comment faire</a> ?", phpversion());
-  die();
+  exit;
+}
+
+if (preg_match('#WIN#iU', php_uname('s')) || !function_exists('strptime'))
+{
+  printf("Canalblog Importer ne fonctionne pas sous Windows ou sur les sytèmes auxquels il manque la fonction <code>strptime</code>.");
+  exit;
 }
 
 require dirname(__FILE__).'/lib/Plugin.class.php';

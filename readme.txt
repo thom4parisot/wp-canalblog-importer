@@ -12,6 +12,8 @@ Fatigué(e) d'avoir à gérer un blog sur Canalblog ? Cette extension va vous pe
 
 == Description ==
 
+**Ne fonctionne(ra) pas sous Windows**
+
 Cette extension récupère tout votre contenu public de n'importe quel blog Canalblog. Il faut juste un peu de patience pendant que tout se fait tout seul.
 
 **Ce qui est rappatrié**
