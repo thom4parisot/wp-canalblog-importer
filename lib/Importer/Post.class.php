@@ -336,7 +336,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
         if ($this->overwrite_contents)
         {
-          wp_untrash_comment($comment_id);
+          if ('trash' === wp_get_comment_status($comment_id))
+          {
+            wp_untrash_comment($comment_id);
+          }
+
           wp_update_comment($data);
         }
       }
