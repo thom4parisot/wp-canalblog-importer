@@ -64,7 +64,6 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
     $xpath = new DOMXPath($dom);
     $permalinks = array();
-    var_dump(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
     
     foreach ($xpath->query("//div[@id='content']//a[.='#']") as $node)
     {
@@ -85,8 +84,6 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
         }
       }
     }
-
-    var_dump($permalinks);
     
     return $permalinks;
   }
