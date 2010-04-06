@@ -64,8 +64,9 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
     $xpath = new DOMXPath($dom);
     $permalinks = array();
-
-    foreach ($xpath->query("//div[@class='blogbody']//a[.='#']") as $node)
+    var_dump(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
+    
+    foreach ($xpath->query("//div[@id='content']//a[.='#']") as $node)
     {
       $permalinks[] = $node->getAttribute('href');
     }
@@ -74,14 +75,19 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
      * Collecting other pages
      * Skipping first link and next page
      */
-    foreach ($xpath->query("//div[@class='blogbody']//div[last()]//a[position()>1 and position()<last()]") as $node)
+    foreach ($xpath->query("//div[@id='content']//div[last()]/a[position()>1 and position()<last()]") as $node)
     {
-      foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@class='blogbody']//a[.='#']") as $node)
+      if (preg_match('#/archives/\d{4}/\d{2}/p\d+-\d+\.html#U', $node->getAttribute('href')))
       {
-        $permalinks[] = $node->getAttribute('href');
+        foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@id='content']//a[.='#']") as $node)
+        {
+          $permalinks[] = $node->getAttribute('href');
+        }
       }
     }
 
+    var_dump($permalinks);
+    
     return $permalinks;
   }
 
@@ -93,7 +99,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   protected function getMonths()
   {
-    foreach ($this->getRemoteXpath(get_option('canalblog_importer_blog_uri').'/archives/', "//div[@class='blogbody']//p/a[@href]") as $node)
+    foreach ($this->getRemoteXpath(get_option('canalblog_importer_blog_uri').'/archives/', "//div[@id='content']//p/a[@href]") as $node)
     {
       if (preg_match('#archives/(\d{4})/(\d{2})/index.html$#iU', $node->getAttribute('href'), $matches))
       {

@@ -17,8 +17,10 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     ),
   );
 
-  public function __construct()
+  public function __construct(CanalblogImporterConfiguration $configuration)
   {
+    parent::__construct($configuration);
+
     $this->overwrite_contents = get_option('canalblog_overwrite_contents', 0);
     $this->comments_status =    get_option('canalblog_comments_status', 'open');
     $this->trackbacks_status =  get_option('canalblog_trackbacks_status', 'open');
