@@ -36,8 +36,9 @@ En bonus, si vous avez lié vos articles entre eux sur Canalblog, l'outil va cor
 
 **Traductions intégrées**
 
-* Français
 * Anglais
+* Français
+* Biélorusse (par [Marcis G.](http://pc.de/))
 
 **Remarque**
 
@@ -56,6 +57,10 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.1.4 =
+
+* ajout de la traduction biélorusse par [Marcis G.](http://pc.de/)
+
 = Version 1.1.3 =
 
  * bridage de l'extension pour Windows (fonctions indisponibles)

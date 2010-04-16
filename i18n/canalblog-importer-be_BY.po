@@ -1,0 +1,287 @@
+# Translation of the WordPress plugin   by .
+# Copyright (C) 2010
+# This file is distributed under the same license as the  package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CI\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-10 21:59+0100\n"
+"PO-Revision-Date: 2010-04-16 13:34+0300\n"
+"Last-Translator: FatCow <zhr@tut.by>\n"
+"Language-Team: Marcis G. <by.marcis@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _e;_e ;__;__ ;_c;_c ;__ngettext;__ngettext;esc_attr__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Belarusian\n"
+"X-Poedit-Country: BELARUS\n"
+"X-Poedit-SourceCharset: utf8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../bootstrap.php:17
+msgid "Enables content importing from a blog hosted on Canalblog platform."
+msgstr "Забяспечвае імпарт утрымання з блога, змесцаванага на платформе Canalblog."
+
+#: ../pages/06-ccln.php:3
+#: ../pages/01-init.php:3
+#: ../pages/04-arch.php:3
+#: ../pages/05-clnp.php:3
+#: ../pages/03-cats.php:3
+#: ../pages/02-tags.php:3
+msgid "Canalblog Importer"
+msgstr "Canalblog Importer"
+
+#: ../pages/06-ccln.php:5
+msgid "Finished!"
+msgstr "Скончана!"
+
+#: ../pages/06-ccln.php:11
+msgid "Finally, you've made your way from Canalblog. Before I wish you a newly happy blogging, please check these settings:"
+msgstr "Нарэшце, Вы зрабілі свой шлях ад Canalblog. Перш чым я пажадаю вам шчаслівага новага блога, калі ласка, праверце наступныя параметры:"
+
+#: ../pages/06-ccln.php:14
+msgid "Users"
+msgstr "Карыстачы"
+
+#: ../pages/06-ccln.php:15
+msgid "Canalblog importer has created as many users as Canalblog authors with published posts. You may be counted in but it is a separate account that your current one: just delete any account to claim back its posts."
+msgstr "Canalblog імпарцёр стварае гэтулькі карыстачоў, колькі аўтараў апублікаваных паведамленняў. "
+
+#: ../pages/06-ccln.php:19
+msgid "Configure users"
+msgstr "Налады карыстачоў"
+
+#: ../pages/06-ccln.php:22
+msgid "Blogroll"
+msgstr "Блогролл"
+
+#: ../pages/06-ccln.php:23
+msgid "Canalblog importer is not able to retrieve your friends links list. You'll have to retype it from scratch. Sorry ;-("
+msgstr "Canalblog імпарцёр не можа атрымаць спіс спасылак. Вам прыйдзецца перадрукаваць яго з нуля. Выбачыце ;-("
+
+#: ../pages/06-ccln.php:25
+msgid "Configure blogroll"
+msgstr "Налада блогролла"
+
+#: ../pages/06-ccln.php:28
+msgid "Search Engine Optimization"
+msgstr "СЕО"
+
+#: ../pages/06-ccln.php:30
+msgid "You changed your blog address without any possibility to redirect back your old blog to this one. Some advice:"
+msgstr "Вы змянілі адрас вашага блога без магчымасці перанакіраваць рэдырэкту на стары блог. Некалькі рад:"
+
+#: ../pages/06-ccln.php:32
+msgid "Tell your friends your blog address has changed... so as they will update links towards your new blog!"
+msgstr "Распавядзіце сваім сябрам, што адрас вашага блога не змяніўся ... бо яны будуць абнаўляць спасылкі на ваш новы блог!"
+
+#: ../pages/06-ccln.php:33
+msgid "Setup your Canalblog blog to hide from search engines (it's in Setup &gt; Syndication and ads). It will avoid duplicate content."
+msgstr "Наладзьце Canalblog блог, каб схаваць ад пошукавых сістэм (гэта ў Setup&gt; Syndication і аб'явы). Гэта дазволіць пазбегнуць дубляванні кантэнту."
+
+#: ../pages/06-ccln.php:34
+msgid "Change your email signature and social profiles to update your blog address."
+msgstr "Змяніць подпіс электроннай пошты і сацыяльныя профілі для абнаўлення адрасу вашага блога."
+
+#: ../pages/06-ccln.php:38
+msgid "And finally..."
+msgstr "І ў канцы..."
+
+#: ../pages/06-ccln.php:40
+msgid "Once you're done, delete your Canalblog account and <a href='http://www.canalblog.com/cf/contact.cfm' target='_blank'>write a mail to their team</a> explaining why you left. They have not evolved, you did."
+msgstr "Як толькі вы скончыце, выдаліце Canalblog акаўнт і <a href='http://www.canalblog.com/cf/contact.cfm' target='_blank'>напішыце лісты ўсім з вашай комманды</a> і растлумачыце, чаму вы сышлі. Яны яшчэ не дасягнулі таго, што зрабілі вы."
+
+#: ../pages/06-ccln.php:45
+#: ../lib/Importer.class.php:52
+msgid "Done"
+msgstr "Зроблена"
+
+#: ../pages/06-ccln.php:46
+msgid "I'm aware I've finally left Canalblog and this importer saved my life. Almost."
+msgstr "Я ведаю, я канчаткова пакінуў Canalblog і гэты імпарцёр выратаваў мне жыццё. Амаль."
+
+#: ../pages/01-init.php:5
+msgid "You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>."
+msgstr "Вы ўсяго толькі некалькі крокаў да Canalblog міграцыі WordPress. Калі ласка, запоўніце палі і націсніце кнопку <em>Пачаць імпарт.</em>"
+
+#: ../pages/01-init.php:7
+#: ../pages/04-arch.php:5
+#: ../pages/05-clnp.php:5
+#: ../pages/03-cats.php:5
+#: ../pages/02-tags.php:5
+msgid "Import Steps"
+msgstr "Крокі імпарту"
+
+#: ../pages/01-init.php:9
+#: ../pages/01-init.php:16
+#: ../pages/04-arch.php:7
+#: ../pages/05-clnp.php:7
+#: ../pages/03-cats.php:7
+#: ../pages/02-tags.php:7
+msgid "Configuration"
+msgstr "Канфігурацыя"
+
+#: ../pages/01-init.php:10
+#: ../pages/04-arch.php:8
+#: ../pages/05-clnp.php:8
+#: ../pages/03-cats.php:8
+#: ../pages/02-tags.php:8
+#: ../pages/02-tags.php:14
+msgid "Tags"
+msgstr "Тэгі"
+
+#: ../pages/01-init.php:11
+#: ../pages/04-arch.php:9
+#: ../pages/05-clnp.php:9
+#: ../pages/03-cats.php:9
+#: ../pages/03-cats.php:14
+#: ../pages/02-tags.php:9
+msgid "Categories"
+msgstr "Катэгорыі"
+
+#: ../pages/01-init.php:12
+#: ../pages/04-arch.php:10
+#: ../pages/04-arch.php:14
+#: ../pages/05-clnp.php:10
+#: ../pages/03-cats.php:10
+#: ../pages/02-tags.php:10
+msgid "Archives"
+msgstr "Архівы"
+
+#: ../pages/01-init.php:13
+#: ../pages/04-arch.php:11
+#: ../pages/05-clnp.php:11
+#: ../pages/05-clnp.php:14
+#: ../pages/03-cats.php:11
+#: ../pages/02-tags.php:11
+msgid "Cleanup"
+msgstr "Ачыстка"
+
+#: ../pages/01-init.php:24
+msgid "Blog URL"
+msgstr "УРЛ блога"
+
+#: ../pages/01-init.php:27
+msgid "Example: http://yourblog.canalblog.com"
+msgstr "Прыклад: http://yourblog.canalblog.com"
+
+#: ../pages/01-init.php:34
+msgid "Canalblog settings"
+msgstr "Налады Canalblog "
+
+#: ../pages/01-init.php:36
+msgid "Please ensure your Canalblog blog is configured with these settings:"
+msgstr "Пераканаецеся ў Canalblog блог наладжаны з наступнымі наладамі:"
+
+#: ../pages/01-init.php:38
+#, php-format
+msgid "Day formatting: %s"
+msgstr "Фармат дня: %s"
+
+#: ../pages/01-init.php:39
+#, php-format
+msgid "Hour formatting: %s"
+msgstr "Фармат гадзін: %s"
+
+#: ../pages/01-init.php:40
+msgid "Digest format: Monthly"
+msgstr "Дайджэст у фармаце: Штомесячны"
+
+#: ../pages/01-init.php:43
+msgid "Configure Canalblog settings"
+msgstr "Наладзіць Canalblog"
+
+#: ../pages/01-init.php:47
+msgid "Permalink structure"
+msgstr "Структура сталай спасылкі"
+
+#: ../pages/01-init.php:49
+msgid "The importer will rewrite all your internal links (from a post to another). It can be done only once so check your permalink structure <em>before</em> importing anything."
+msgstr "Імпарцёр перапіша ўсе вашы ўнутраныя спасылкі (з паста на іншай). Гэта можна зрабіць толькі адзін раз <em>, перш чым імпартаваць</em> нічога."
+
+#: ../pages/01-init.php:50
+msgid "Best permalink structure is at least the <em>month and title</em> one (<code>2010/02/sample-post/</code>)."
+msgstr "Лепшая структура сталай спасылкі, прынамсі <em>месяц і</em> адзін <em>загаловак</em> (<code>2010/02/sample-post/</code>)."
+
+#: ../pages/01-init.php:52
+msgid "Configure permalink structure"
+msgstr "Налада структуры спасылак"
+
+#: ../pages/01-init.php:56
+msgid "Thumbnail size"
+msgstr "Памер эскіза"
+
+#: ../pages/01-init.php:58
+msgid "The importer will retrieve <em>all</em> your pictures and will use the <strong>medium size</strong> format as a replacement within your posts (with a link to full size pictures)."
+msgstr "Імпарцёр будзе полуать <em>усё</em> вашы малюнкі і выкарыстоўваць <strong>сярэдні памер</strong> фармату ў якасці замены ў межах вашых пастоў (са спасылкай на поўны памер фатаграфіі)."
+
+#: ../pages/01-init.php:60
+msgid "Configure thumbnail size"
+msgstr "Налада памеру эскіза"
+
+#: ../pages/01-init.php:67
+msgid "Start import"
+msgstr "Пачатак імпарту"
+
+#: ../pages/04-arch.php:15
+msgid "This step includes posts, comments, authors and attachments. This is done month by month so if you have a huge blog, be patient ;-)"
+msgstr "Гэты крок складаецца з артыкулы, каментары, аўтары і ўкладанні. Гэта адбываецца з месяца ў месяц, так што калі ў вас велізарны блог, будзьце цярплівыя ;-)"
+
+#: ../pages/04-arch.php:20
+#, php-format
+msgid "<strong>%s months of posts</strong> to import &mdash; currently %s/%s &mdash; %s remaining month(s)."
+msgstr "<strong>%s месяцы пастоў</strong> імпарту &mdash; currently %s/%s &mdash; %s remaining month(s)."
+
+#: ../pages/04-arch.php:23
+msgid "Import Archives"
+msgstr "Імпарт архіваў"
+
+#: ../pages/04-arch.php:24
+#: ../pages/05-clnp.php:24
+#: ../pages/03-cats.php:23
+#: ../pages/02-tags.php:23
+#: ../lib/Importer.class.php:52
+msgid "Cancel"
+msgstr "Адмена"
+
+#: ../pages/05-clnp.php:20
+msgid "This operation will basically fix all links on your blog and cleanup temporary data stored for all previous steps. It will be quick, promise!"
+msgstr "Гэта аперацыя будзе выпраўляць усе спасылкі на свой і чысціць часавыя дадзеныя, якія захоўваюцца ва ўсіх папярэдніх этапах. Гэта будзе хутка, які абяцаецца!"
+
+#: ../pages/05-clnp.php:23
+msgid "Cleanup and tell me what to do"
+msgstr "Ачысціць і скажыце, што рабіць"
+
+#: ../pages/03-cats.php:19
+#, php-format
+msgid "About to import <strong>%s categories</strong>."
+msgstr "Пра імпарт <strong>%s катэгорый</strong>."
+
+#: ../pages/03-cats.php:22
+msgid "Import Categories"
+msgstr "Імпарт катэгорый"
+
+#: ../pages/02-tags.php:19
+#, php-format
+msgid "About to import <strong>%s tags</strong>."
+msgstr "Пра імпарт <strong>%s тэгаў</strong>."
+
+#: ../pages/02-tags.php:22
+msgid "Import Tags"
+msgstr "Імпарт тэгаў"
+
+#: ../lib/Plugin.class.php:54
+msgid "Import a Canalblog blog"
+msgstr "Імпарт Canalblog блога"
+
+#: ../lib/Plugin.class.php:85
+msgid "Canalblog"
+msgstr "Canalblog"
+
+#: ../lib/Plugin.class.php:85
+msgid "Import posts, comments, and users from a Canalblog blog."
+msgstr "Імпарт пастоў, каментароў і карыстачоў з Import блога"
+
