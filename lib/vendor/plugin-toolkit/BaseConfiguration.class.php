@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Base class for plugin configuration
+ * 
+ * @author oncletom
+ * @version 1.1
+ */
 abstract class WPPluginToolkitConfiguration
 {
   const UNIX_NAME = null;
@@ -233,13 +238,26 @@ abstract class WPPluginToolkitConfiguration
   }
 
   /**
+   * Defines an upload directory
+   * 
+   * @author  oncletom
+   * @version 1.0
+   * @since   1.1
+   * @param   String $upload_uri
+   */
+  public static function setUploadDir($upload_dir)
+  {
+    return self::$upload_dir = $upload_dir;
+  }
+  
+  /**
    * Resolves global upload path as WP does not provide any clean and independant solution for that
    *
    * It's barely based on the logic of `wp_upload_dir` function.
    *
    * @author oncletom
    * @since 1.0
-   * @version 1.0
+   * @version 1.1
    * @return boolean
    */
   protected function setupPathGlobal()
@@ -280,9 +298,22 @@ abstract class WPPluginToolkitConfiguration
       'error' =>    false,
     ));
 
-    self::$upload_dir = $uploads['basedir'];
-    self::$upload_url = $uploads['baseurl'];
+    self::setUploadDir($uploads['basedir']);
+    self::setUploadUrl($uploads['baseurl']);
 
     return $uploads['error'] ? false : true;
+  }
+  
+  /**
+   * Defines an upload URL
+   * 
+   * @author  oncletom
+   * @version 1.0
+   * @since   1.1
+   * @param   String $upload_url
+   */
+  public static function setUploadUrl($upload_url)
+  {
+    return self::$upload_url = $upload_url;
   }
 }
