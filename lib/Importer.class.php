@@ -69,6 +69,12 @@ class CanalblogImporterImporter
   public function printPage(CanalblogImporterImporterBase $operation)
   {
     extract($operation->getArguments());
+
+    if (!CanalblogImporterImporterBase::isWordPressImporterInstalled($this->configuration))
+    {
+      include $this->configuration->getDirname().'/pages/wordpress-importer-missing.php';
+    }
+
     include $this->configuration->getDirname().'/pages/'.$this->pages[$this->current_page]['page'].'.php';
   }
 

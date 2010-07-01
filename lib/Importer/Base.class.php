@@ -13,6 +13,7 @@ abstract class CanalblogImporterImporterBase
   protected static $http_retry_count =  0;
   public static $http_retry_delay =     500000;    //milliseconds for usleep usage (0.5s)
   public static $http_max_retry_count = 5;
+  protected static $wordpress_importer_locations = array();
 
   /**
    * Constructor
@@ -181,6 +182,60 @@ abstract class CanalblogImporterImporterBase
     $result = $xpath->query($xpath_query);
     unset($http, $dom, $xpath);
     return $result;
+  }
+
+  /*
+   * WordPress Importer check
+   */
+
+  /**
+   * Returns the WordPress importer location
+   *
+   * @since 1.1.4
+   * @param CanalblogImporterConfiguration $configuration
+   * @return string|boolean
+   */
+  public static function getWordPressImporterLocation(CanalblogImporterConfiguration $configuration)
+  {
+    foreach ($configuration->getWordPressImporterLocations() as $location)
+    {
+      if (file_exists($location))
+      {
+        return $location;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if the WordPress importer is available
+   *
+   * @since 1.1.4
+   * @param CanalblogImporterConfiguration $configuration
+   * @return boolean
+   */
+  public static function isWordPressImporterInstalled(CanalblogImporterConfiguration $configuration)
+  {
+    return self::getWordPressImporterLocation($configuration) ? true : false;
+  }
+
+  /**
+   * Requires the available WordPress Importer
+   *
+   * @since 1.1.4
+   * @throws CanalblogImporterException
+   */
+  public static function requireWordPressImporter(CanalblogImporterConfiguration $configuration)
+  {
+    if (self::isWordPressImporterInstalled($configuration))
+    {
+      require_once self::getWordPressImporterLocation($configuration);
+    }
+    else
+    {
+      throw new CanalblogImporterException("WordPress Importer could not be found.");
+    }
   }
 
   /**

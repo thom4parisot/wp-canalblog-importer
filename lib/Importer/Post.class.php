@@ -374,7 +374,14 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     /*
      * Initialize WordPress importer
      */
-    require_once ABSPATH.'wp-admin/import/wordpress.php';
+    try{
+      self::requireWordPressImporter($this->getConfiguration());
+    }
+    catch (CanalblogImporterException $e)
+    {
+      return false;
+    }
+
     $wpImport = new WP_Import();
     $wpImport->fetch_attachments = true;
 

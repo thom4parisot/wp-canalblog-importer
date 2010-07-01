@@ -12,11 +12,27 @@ class CanalblogImporterConfiguration extends WPPluginToolkitConfiguration
    */
   const VERSION =   '1.1.4-dev';
 
+  protected $wordpress_importer_locations = array();
+
   /**
    * @see lib/vendor/plugin-toolkit/WPPluginToolkitConfiguration#configureOptions()
    */
   protected function configureOptions()
   {
+    $this->wordpress_importer_locations = array(
+      ABSPATH.'wp-admin/import/wordpress.php',
+      WP_PLUGIN_DIR.'/wordpress-importer/wordpress-importer.php'
+    );
+  }
 
+  /**
+   * Returns the possible locations of WordPress Importer
+   *
+   * @since 1.1.4
+   * @return array
+   */
+  public function getWordPressImporterLocations()
+  {
+    return $this->wordpress_importer_locations;
   }
 }

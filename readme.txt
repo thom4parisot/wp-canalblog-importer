@@ -3,7 +3,7 @@ Contributors: oncletom
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=752034
 Tags: canalblog, wordpress, migration, import, admin
 Requires at least: 2.9
-Tested up to: 2.9.2
+Tested up to: 3.0
 Stable tag: 1.1.3
 
 
@@ -60,6 +60,8 @@ Encore quelques clics et ça sera terminé !
 = Version 1.1.4 =
 
 * ajout de la traduction biélorusse par [Marcis G.](http://pc.de/)
+* compatibilité avec WordPress 3.0
+* nécessite l'installation de l'importeur WordPress pour récupérer les images de votre blog Canalblog
 
 = Version 1.1.3 =
 

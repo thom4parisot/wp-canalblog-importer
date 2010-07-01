@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-05 09:43+0100\n"
-"PO-Revision-Date: 2010-04-05 09:43+0100\n"
+"POT-Creation-Date: 2010-07-01 23:04+0100\n"
+"PO-Revision-Date: 2010-07-01 23:04+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -292,6 +292,11 @@ msgstr ""
 msgid "Import Categories"
 msgstr ""
 
+#: ../pages/wordpress-importer-missing.php:3
+#, php-format
+msgid "Sorry but no WordPress Importer has been found. It is used to import post images. <a href='%s'>Please install it</a>, or import without getting back your pictures attachment."
+msgstr ""
+
 #: ../pages/02-tags.php:19
 #, php-format
 msgid "About to import <strong>%s tags</strong>."
@@ -313,27 +318,27 @@ msgstr ""
 msgid "Import posts, comments, and users from a Canalblog blog."
 msgstr ""
 
-#: ../lib/Importer/Base.class.php:111
+#: ../lib/Importer/Base.class.php:112
 #, php-format
 msgid "HTTP request returned an error: %s [%s]"
 msgstr ""
 
-#: ../lib/Importer/Base.class.php:115
+#: ../lib/Importer/Base.class.php:116
 #, php-format
 msgid "HTTP request did not returned an expected result [%s]"
 msgstr ""
 
-#: ../lib/Importer/Base.class.php:119
+#: ../lib/Importer/Base.class.php:120
 #, php-format
 msgid "Tried to request an unavailable page [%s]"
 msgstr ""
 
-#: ../lib/Importer/Base.class.php:123
+#: ../lib/Importer/Base.class.php:124
 #, php-format
 msgid "Remote document is empty [%s]"
 msgstr ""
 
-#: ../lib/Importer/Base.class.php:148
+#: ../lib/Importer/Base.class.php:149
 #, php-format
 msgid "An error occured during HTTP request: %s. [%s]"
 msgstr ""

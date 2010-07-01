@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-05 09:40+0100\n"
-"PO-Revision-Date: 2010-04-05 09:43+0100\n"
+"POT-Creation-Date: 2010-07-01 23:04+0100\n"
+"PO-Revision-Date: 2010-07-01 23:05+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -294,6 +294,11 @@ msgstr "Sur le point d'importer <strong>%s catégories</strong>."
 msgid "Import Categories"
 msgstr "Importer les catégories"
 
+#: ../pages/wordpress-importer-missing.php:3
+#, php-format
+msgid "Sorry but no WordPress Importer has been found. It is used to import post images. <a href='%s'>Please install it</a>, or import without getting back your pictures attachment."
+msgstr "Désolé mais aucun importeur WordPress n'a été trouvé. Il est utilisé pour rapatrier les images des articles. <a href='%s'>Merci de l'installer</a>, ou lancez l'import sans récupérer vos images jointes aux articles."
+
 #: ../pages/02-tags.php:19
 #, php-format
 msgid "About to import <strong>%s tags</strong>."
@@ -315,27 +320,27 @@ msgstr ""
 msgid "Import posts, comments, and users from a Canalblog blog."
 msgstr "Importation d'articles, de commentaires et d'utilisateurs depuis Canalblog."
 
-#: ../lib/Importer/Base.class.php:111
+#: ../lib/Importer/Base.class.php:112
 #, php-format
 msgid "HTTP request returned an error: %s [%s]"
 msgstr "La requête HTTP a renvoyé une erreur : %s [%s]"
 
-#: ../lib/Importer/Base.class.php:115
+#: ../lib/Importer/Base.class.php:116
 #, php-format
 msgid "HTTP request did not returned an expected result [%s]"
 msgstr "La requête HTTP n'a pas renvoyé le résultat escompté [%s]"
 
-#: ../lib/Importer/Base.class.php:119
+#: ../lib/Importer/Base.class.php:120
 #, php-format
 msgid "Tried to request an unavailable page [%s]"
 msgstr "Tentative d'accès à une page indisponible [%s]"
 
-#: ../lib/Importer/Base.class.php:123
+#: ../lib/Importer/Base.class.php:124
 #, php-format
 msgid "Remote document is empty [%s]"
 msgstr "La page distante est vide [%s]"
 
-#: ../lib/Importer/Base.class.php:148
+#: ../lib/Importer/Base.class.php:149
 #, php-format
 msgid "An error occured during HTTP request: %s. [%s]"
 msgstr "Une erreur s'est produite pendant une requête HTTP : %s. [%s]"
