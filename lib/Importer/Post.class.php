@@ -6,12 +6,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
   protected static $media_pattern = array(
     'new' => array(
-      'detection_pattern' => '#(http://storage.canalblog.com/[^_]+\.[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern' => '#(http://storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
       'detection_pattern_inline' => '#^http://storage.canalblog.com/#',
       'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixNew'),
     ),
     'old' => array(
-      'detection_pattern' => '#(%canalblog_domain%/images/[^t][^\/]+\.[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern' => '#(%canalblog_domain%/images/[^t][^\/]+(?:\.|t-\.)[a-z0-9]+)[^a-z0-9]#iUs',
       'detection_pattern_inline' => '#^%canalblog_domain%/images/#',
       'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixOld'),
     ),
