@@ -29,12 +29,12 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     /*
      * No index defined? We can go the next step
      */
-    if (empty($this->arguments['months']) || !isset($this->arguments['months'][get_option('canalblog_importer_archives_current_index')]))
+    if (empty($this->arguments['months']) || !isset($this->arguments['months'][$this->arguments['page']]))
     {
       return true;
     }
 
-    $archives_index = $this->arguments['months'][get_option('canalblog_importer_archives_current_index')];
+    $archives_index = $this->arguments['months'][$this->arguments['page']];
     $permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
 
     foreach ($permalinks as $permalink)
@@ -65,7 +65,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     $xpath = new DOMXPath($dom);
     $permalinks = array();
     
-    foreach ($xpath->query("//div[@id='content']//a[.='#']") as $node)
+    foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
     {
       $permalinks[] = $node->getAttribute('href');
     }
@@ -78,7 +78,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     {
       if (preg_match('#/archives/\d{4}/\d{2}/p\d+-\d+\.html#U', $node->getAttribute('href')))
       {
-        foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@id='content']//a[.='#']") as $node)
+        foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@id='content']//a[@rel='bookmark']") as $node)
         {
           $permalinks[] = $node->getAttribute('href');
         }
