@@ -12,6 +12,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       return false;
     }
 
+    $this->arguments['pagination_limit'] = 250;
     $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
     $this->arguments['months'] = $this->getMonths();
 
@@ -60,7 +61,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   protected function getMonth($year, $month)
   {
-    $uri_suffix = sprintf('%s/%s/index.html', $year, $month);
+    $uri_suffix = sprintf('%s/%s/p0-%s.html', $year, $month, $this->arguments['pagination_limit']);
     $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
     $xpath = new DOMXPath($dom);
     $permalinks = array();
