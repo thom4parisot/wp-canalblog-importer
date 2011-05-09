@@ -22,7 +22,7 @@ if (phpversion() < '5.1')
   exit;
 }
 
-if (preg_match('#WIN#iU', php_uname('s')) || !function_exists('strptime'))
+if (preg_match('#^WIN#iU', php_uname('s')) || !function_exists('strptime'))
 {
   printf("Canalblog Importer ne fonctionne pas sous Windows ou sur les sytèmes auxquels il manque la fonction <code>strptime</code>.");
   exit;
