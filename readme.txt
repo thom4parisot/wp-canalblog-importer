@@ -57,6 +57,10 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.2 =
+
+* amélioration de l'import (plus rapide, plus sûr)
+
 = Version 1.1.7 =
 
 * contournement de la pagination boguée de Canalblog (se bloquant à 5 pages)

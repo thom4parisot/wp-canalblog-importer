@@ -83,6 +83,21 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
   public function registerAdminHooks()
   {
     register_importer('canalblog', __('Canalblog'), __('Import posts, comments, and users from a Canalblog blog.', 'canalblog-importer'), array ($this, 'importPage'));
+    add_action('admin_enqueue_scripts', array($this, 'registerJavascripts'));
     add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 3);
+  }
+  
+  /**
+   * JavaScripts registration, if needed
+   * 
+   * @since 1.2
+   * @version 1.0
+   */
+  public function registerJavascripts()
+  {
+  	if (isset($_GET['import']) && 'canalblog' === $_GET['import'])
+  	{
+  		 wp_enqueue_script('canalblog_importer', $this->configuration->getPluginUri().'/assets/javascripts/import.js', array('jquery'), CanalblogImporterConfiguration::VERSION);
+  	}
   }
 }
