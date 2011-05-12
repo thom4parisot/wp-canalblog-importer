@@ -34,6 +34,8 @@ class CanalblogImporterImporter
 
   /**
    * Determines at which step we are
+   * 
+   * @todo seperate the step getter
    * @return unknown_type
    */
   public function dispatch()
@@ -41,10 +43,8 @@ class CanalblogImporterImporter
     /*
      * Determines page ID
      */
-    $current_page = get_option('canalblog_importer_step', 1);
-    $current_page = (int)$current_page ? $current_page : 1;
-    $this->current_page = $current_page;
-    $operation = new $this->pages[$current_page]['operation']($this->configuration);
+    $this->current_page = $this->getCurrentPage();
+    $operation = $this->getOperation();
 
     /*
      * Do we cancel sometime?
@@ -52,11 +52,36 @@ class CanalblogImporterImporter
     if (isset($_REQUEST['submit']) && in_array($_REQUEST['submit'], array(__('Cancel', 'canalblog-importer'), __('Done', 'canalblog-importer')), true))
     {
       $this->stop();
+      wp_redirect(get_admin_url(null, 'import.php?import=canalblog&canceled=true'), 307);
     }
 
     $this->is_ready_to_process = !!$operation->dispatch();
 
     return $operation;
+  }
+  
+  /**
+   * Returns the current page identifier
+   * 
+   * @since 1.2
+   * @return integer
+   */
+  public function getCurrentPage()
+  {
+  	$current_page = get_option('canalblog_importer_step', 1);
+    
+  	return $current_page ? $current_page : 1;
+  }
+  
+  /**
+   * Retrieves the current operation object
+   * 
+   * @since 1.2
+   * @return CanalblogImporterImporterBase
+   */
+  public function getOperation()
+  {
+  	return new $this->pages[$this->getCurrentPage()]['operation']($this->configuration);
   }
 
   /**
@@ -96,7 +121,7 @@ class CanalblogImporterImporter
         if ($return === true)
         {
           update_option('canalblog_importer_step', $this->current_page + 1);
-          echo '<script type="text/javascript">window.location.href="?import=canalblog&step='.get_option('canalblog_importer_step').'";</script>';
+          wp_redirect(get_admin_url(null, 'import.php?import=canalblog&step='.get_option('canalblog_importer_step')), 307);
         }
       }
       catch(CanalblogImporterException $e)
@@ -116,7 +141,7 @@ class CanalblogImporterImporter
    *
    * @author oncletom
    * @since 1.0
-   * @version 1.0
+   * @version 1.1
    * @return unknown_type
    */
   protected function stop()
@@ -127,7 +152,14 @@ class CanalblogImporterImporter
     delete_option('canalblog_overwrite_contents');
     delete_option('canalblog_comments_status');
     delete_option('canalblog_trackbacks_status');
-
-    echo '<script type="text/javascript">window.location.href="?import=canalblog";</script>';
+    
+    delete_transient('canalblog_tags');
+    delete_transient('canalblog_categories');
+    delete_transient('canalblog_months');
+    delete_transient('canalblog_post_uris');
+    
+    delete_transient('canablog_have_finished_tags');
+    delete_transient('canablog_have_finished_categories');
+    delete_transient('canablog_have_finished_archives');
   }
 }

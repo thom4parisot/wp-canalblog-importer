@@ -22,6 +22,8 @@ class CanalblogImporterImporterCategories extends CanalblogImporterImporterBase
    */
   public function process()
   {
+  	return false;
+  
     $counter = 0;
     foreach ($this->arguments['categories'] as $category)
     {

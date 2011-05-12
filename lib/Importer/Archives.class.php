@@ -27,6 +27,8 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   public function process()
   {
+  	return false;
+  
     /*
      * No index defined? We can go the next step
      */
