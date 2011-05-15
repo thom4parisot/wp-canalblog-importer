@@ -42,7 +42,7 @@
     </ol>
 
     <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Done', 'canalblog-importer') ?>" />
+      <input type="submit" name="submit" class="button-primary next-operation" value="<?php echo esc_attr__('Done', 'canalblog-importer') ?>" />
       − <?php _e("I'm aware I've finally left Canalblog and this importer saved my life. Almost.", 'canalblog-importer') ?>
     </p>
   </form>

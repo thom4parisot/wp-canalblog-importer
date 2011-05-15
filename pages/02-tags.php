@@ -18,21 +18,8 @@
 
     <p><?php printf(__('About to import <strong>%s tags</strong>.', 'canalblog-importer'), count($tags)) ?></p>
 
-    <p class="submit">
-      <input type="button" class="button-primary start-remote-operation" value="<?php echo esc_attr__('Import Tags', 'canalblog-importer') ?>" />
-      <input type="submit" class="button-primary next-operation hidden" value="<?php echo esc_attr__('Next Step →', 'canalblog-importer') ?>" />
-      <a href="<?php echo wp_nonce_url('import.php?import=canalblog&cancel=1', 'import-canalblog-cancel') ?>" class="button"><?php echo esc_attr__('Cancel', 'canalblog-importer') ?></a>
-    </p>
+    <?php include dirname(__FILE__).'/form-submit.php' ?>
   </form>
   
-  <div id="ajax-results" class="hidden hide-if-no-js updated">
-  	
-  	<p class="worker-container">
-  		<img src="<?php echo get_admin_url() ?>/images/wpspin_light.gif" alt="<?php _e('Loading') ?>" />
-  		<?php _e('Operation in progress...', 'canalblog-importer') ?>
-  		<span id="import-progress-value">0</span>%	
-  	</p>
-
-		<ul id="ajax-responses"></ul>
-  </div>
+	<?php include dirname(__FILE__).'/ajax-results.php' ?>
 </div>
