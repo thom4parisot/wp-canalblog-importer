@@ -69,8 +69,30 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
     $importer = new CanalblogImporterImporter($this);
 
     $operation = $importer->dispatch();
-    $importer->printPage($operation);
     $importer->process($operation);
+    //$importer->preProcess($operation);
+    $importer->printPage($operation);
+  }
+  
+  /**
+   * Executes the real stuff through AJAX
+   * 
+   * @since 1.2
+   */
+  public function processRemoteOperation()
+  {
+  	$response = new WP_Ajax_Response();
+  	
+  	$importer = new CanalblogImporterImporter($this);
+  	$operation = $importer->dispatch();
+ 
+  	if (wp_verify_nonce($_REQUEST['_wpnonce'], 'import-canalblog'))
+  	{
+  		$operation->processRemote($response);
+  	}
+  	
+  	$response->send();
+  	exit;
   }
 
   /**
@@ -78,11 +100,28 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
    *
    * @author oncletom
    * @since 1.0
-   * @version 1.0
+   * @version 1.1
    */
   public function registerAdminHooks()
   {
     register_importer('canalblog', __('Canalblog'), __('Import posts, comments, and users from a Canalblog blog.', 'canalblog-importer'), array ($this, 'importPage'));
+    add_action('admin_enqueue_scripts', array($this, 'registerAssets'));
+    add_action('wp_ajax_canalblog_import_remote_operation', array($this, 'processRemoteOperation'));
     add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 3);
+  }
+  
+  /**
+   * JavaScripts registration, if needed
+   * 
+   * @since 1.2
+   * @version 1.0
+   */
+  public function registerAssets()
+  {
+  	if (isset($_GET['import']) && 'canalblog' === $_GET['import'])
+  	{
+  		 wp_enqueue_script('canalblog_importer', $this->configuration->getPluginUri().'/assets/javascripts/import.js', array('jquery'), CanalblogImporterConfiguration::VERSION);
+  		 wp_enqueue_style('canalblog_importer', $this->configuration->getPluginUri().'/assets/stylesheets/import.css', array(), CanalblogImporterConfiguration::VERSION);
+  	}
   }
 }

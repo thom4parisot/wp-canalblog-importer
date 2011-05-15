@@ -18,11 +18,10 @@
     <?php wp_nonce_field('import-canalblog') ?>
     <input type="hidden" name="process-import" value="1" />
 
-    <p><?php printf(__('<strong>%s months of posts</strong> to import &mdash; currently %s/%s &mdash; %s remaining month(s).', 'canalblog-importer'), count($months), $months[$page]['month'], $months[$page]['year'], count($months) - $page) ?></p>
+    <p><?php printf(__('<strong>%s months of posts</strong> to scan before import.', 'canalblog-importer'), count($months), $months[$page]['month'], $months[$page]['year'], count($months) - $page) ?></p>
 
-    <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Archives', 'canalblog-importer') ?>" />
-      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel', 'canalblog-importer') ?>" />
-    </p>
+    <?php include dirname(__FILE__).'/form-submit.php' ?>
   </form>
+  
+  <?php include dirname(__FILE__).'/ajax-results.php' ?>
 </div>

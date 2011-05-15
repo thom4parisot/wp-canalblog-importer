@@ -19,9 +19,8 @@
 
     <p><?php printf(__('About to import <strong>%s categories</strong>.', 'canalblog-importer'), count($categories)) ?></p>
 
-    <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Categories', 'canalblog-importer') ?>" />
-      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel', 'canalblog-importer') ?>" />
-    </p>
+    <?php include dirname(__FILE__).'/form-submit.php' ?>
   </form>
+  
+  <?php include dirname(__FILE__).'/ajax-results.php' ?>
 </div>
