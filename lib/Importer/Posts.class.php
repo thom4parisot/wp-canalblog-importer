@@ -13,7 +13,9 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     }
 
     $this->arguments['pagination_limit'] = 250;
+    $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
     $this->arguments['months'] = $this->getMonths();
+
     ini_set('memory_limit', '128M');
 
     return true;
@@ -24,71 +26,34 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	if (!!get_transient('canablog_have_finished_archives'))
-  	{
-  		delete_transient('canablog_have_finished_archives');
-  		delete_transient('canalblog_months');
-  		delete_transient('canalblog_step_offset');
-
-  		return true;
-  	}
- 
   	return false;
-  }
-
-  public function processRemote(WP_Ajax_Response $response)
-  { 
-  	$months = $this->arguments['months'];
-  	$permalinks = get_transient('canalblog_permalinks');
-  	$offset = (int)get_transient('canalblog_step_offset');
-  	$new_offset = $offset + 1;
-  	$progress = floor(($offset / count($months)) * 100);
-  	$is_finished = false;
-  	
-  	if (!is_array($permalinks))
-  	{
-  		$permalinks = array();
-  	}
-  	
-  	for ($i = $offset; $i < $new_offset; $i++)
-  	{
-  		if (!isset($months[$i]))
-  		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($months);
-  			set_transient('canablog_have_finished_archives', 1);
-  			break;
-  		}
-
-	    $archives_index = $months[$i];
-	    $month_permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
-	    
-	    exit;
-	    $permalinks = array_merge($permalinks, $month_permalinks);
-	    set_transient('canalblog_permalinks', $permalinks);
-	    
-	    $message = sprintf(__('<strong>%s/%s</strong>: found %s posts.', 'canalblog-importer'),
-	    	$archives_index['year'],
-	    	$archives_index['month'],
-	    	count($month_permalinks)
-	    );
-  		
-  		$response->add(array(
-  			'data' => $message,
-  		));
-  	}
-  	
-  	set_transient('canalblog_step_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
-  }
   
+    /*
+     * No index defined? We can go the next step
+     */
+    if (empty($this->arguments['months']) || !isset($this->arguments['months'][$this->arguments['page']]))
+    {
+      return true;
+    }
+
+    $archives_index = $this->arguments['months'][$this->arguments['page']];
+    $permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
+
+    foreach ($permalinks as $permalink)
+    {
+      /*
+       * Importing post content
+       */
+      $post = new CanalblogImporterImporterPost($this->getConfiguration());
+      $post->setUri($permalink);
+      $post->process();
+    }
+
+    update_option('canalblog_importer_archives_current_index', $this->arguments['page'] + 1);
+    $url = '?import=canalblog&step='.get_option('canalblog_importer_step').'&process-import=1&_wpnonce='.wp_create_nonce('import-canalblog');
+    echo '<script type="text/javascript">window.location.href = "'.$url.'";</script>';
+  }
+
   /**
    * Retrieves all permalinks within a month archive
    * @param unknown_type $year
@@ -99,7 +64,6 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   {
     $uri_suffix = sprintf('%s/%s/p0-%s.html', $year, $month, $this->arguments['pagination_limit']);
     $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
-    echo $dom->saveHTML();
     $xpath = new DOMXPath($dom);
     $permalinks = array();
     
