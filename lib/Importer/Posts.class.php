@@ -1,6 +1,6 @@
 <?php
 
-class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
+class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
 {
   /**
    * @see lib/Importer/CanalblogImporterImporterBase#dispatch()
@@ -12,11 +12,8 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       return false;
     }
 
-    $this->arguments['pagination_limit'] = 250;
-    $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
-    $this->arguments['months'] = $this->getMonths();
-
     ini_set('memory_limit', '128M');
+    $this->arguments['permalinks'] = get_transient('canalblog_permalinks');
 
     return true;
   }
@@ -26,94 +23,71 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	return false;
-  
-    /*
-     * No index defined? We can go the next step
-     */
-    if (empty($this->arguments['months']) || !isset($this->arguments['months'][$this->arguments['page']]))
-    {
-      return true;
-    }
-
-    $archives_index = $this->arguments['months'][$this->arguments['page']];
-    $permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
-
-    foreach ($permalinks as $permalink)
-    {
-      /*
-       * Importing post content
-       */
-      $post = new CanalblogImporterImporterPost($this->getConfiguration());
-      $post->setUri($permalink);
-      $post->process();
-    }
-
-    update_option('canalblog_importer_archives_current_index', $this->arguments['page'] + 1);
-    $url = '?import=canalblog&step='.get_option('canalblog_importer_step').'&process-import=1&_wpnonce='.wp_create_nonce('import-canalblog');
-    echo '<script type="text/javascript">window.location.href = "'.$url.'";</script>';
-  }
-
-  /**
-   * Retrieves all permalinks within a month archive
-   * @param unknown_type $year
-   * @param unknown_type $month
-   * @return unknown_type
-   */
-  protected function getMonth($year, $month)
-  {
-    $uri_suffix = sprintf('%s/%s/p0-%s.html', $year, $month, $this->arguments['pagination_limit']);
-    $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
-    $xpath = new DOMXPath($dom);
-    $permalinks = array();
-    
-    foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
-    {
-      $permalinks[] = $node->getAttribute('href');
-    }
-
-    /*
-     * Collecting other pages
-     * Skipping first link and next page
-     */
-    foreach ($xpath->query("//div[@id='content']//div[last()]/a[position()>1 and position()<last()]") as $node)
-    {
-      if (preg_match('#/archives/\d{4}/\d{2}/p\d+-\d+\.html#U', $node->getAttribute('href')))
-      {
-        foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@id='content']//a[@rel='bookmark']") as $node)
-        {
-          $permalinks[] = $node->getAttribute('href');
-        }
-      }
-    }
-    
-    return $permalinks;
-  }
-
-  /**
-   * Retrieves categories from Canalblog
-   *
-   * @author oncletom
-   * @return unknown_type
-   */
-  protected function getMonths()
-  {
-  	if ($months = get_transient('canalblog_months'))
+  	if (!!get_transient('canablog_have_finished_posts'))
   	{
-  		return $months;
+  		delete_transient('canablog_have_finished_posts');
+  		delete_transient('canalblog_permalinks');
+  		delete_transient('canalblog_step_offset');
+
+  		return true;
   	}
  
-    foreach ($this->getRemoteXpath(get_option('canalblog_importer_blog_uri').'/archives/', "//div[@id='content']//p/a[@href]") as $node)
-    {
-      if (preg_match('#archives/(\d{4})/(\d{2})/index.html$#iU', $node->getAttribute('href'), $matches))
-      {
-        $months[] = array('year' => $matches[1], 'month' => $matches[2]);
-      }
-    }
+  	return false;
+  }
+  
+  public function processRemote(WP_Ajax_Response $response)
+  {
+  	$offset = (int)get_transient('canalblog_step_offset');
+  	$new_offset = $offset + 10;
+  	$progress = floor(($offset / count($this->arguments['permalinks'])) * 100);
+  	$is_finished = false;
 
-    unset($dom, $http);
-    set_transient('canalblog_months', $months);
-
-    return $months;
+  	for ($i = $offset; $i < $new_offset; $i++)
+  	{
+  		if (!isset($this->arguments['permalinks'][$i]))
+  		{
+  			$is_finished = true;
+  			$progress = 100;
+  			$new_offset = count($this->arguments['permalinks']);
+  			set_transient('canablog_have_finished_posts', 1);
+  			break;
+  		}
+  		
+  		$permalink = $this->arguments['permalinks'][$i];
+      $post = new CanalblogImporterImporterPost($this->getConfiguration());
+      $post->setUri($permalink);
+      $data = $post->process();
+  		
+      $message = sprintf(__('<strong>%s</strong> post import: %s', 'canalblog-importer'),
+      	$data['post']['title'],
+      	$data['post']['status']
+      );
+      $message .= '<ul>';
+      	$message .= '<li>'.sprintf(__('<em>%s comments</em>: %s new, %s skipped, %s overwritten', 'canalblog-importer'),
+      		$data['comments']['count'],
+      		$data['comments']['new'],
+      		$data['comments']['skipped'],
+      		$data['comments']['overwritten']
+      	).'</li>';
+      	$message .= '<li>'.sprintf(__('<em>%s medias</em>: %s new, %s skipped', 'canalblog-importer'),
+      		$data['medias']['count'],
+      		$data['medias']['new'],
+      		$data['medias']['skipped']
+      	).'</li>';
+      $message .= '</ul>';
+      
+  		$response->add(array(
+  			'data' => $message,
+  		));
+  	}
+  	
+  	set_transient('canalblog_step_offset', $new_offset);
+  	$response->add(array(
+  		'what' => 'operation',
+  		'supplemental' => array(
+  			'finished' => (int)$is_finished,
+  			'progress' => $progress,
+  		)
+  	));
   }
 }

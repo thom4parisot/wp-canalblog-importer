@@ -8,6 +8,7 @@
     <li><strong><?php _e('Tags', 'canalblog-importer') ?></strong></li>
     <li><?php _e('Categories', 'canalblog-importer') ?></li>
     <li><?php _e('Archives', 'canalblog-importer') ?></li>
+    <li><?php _e('Posts, comments and media', 'canalblog-importer') ?></li>
     <li><?php _e('Cleanup', 'canalblog-importer') ?></li>
   </ol>
 
