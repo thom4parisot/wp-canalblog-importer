@@ -41,7 +41,7 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
   
   public function processRemote(WP_Ajax_Response $response)
   {
-  	$tags = get_transient('canalblog_tags');
+  	$tags = $this->arguments['tags'];
   	$offset = (int)get_transient('canalblog_tags_offset');
   	$new_offset = $offset + 50;
   	$progress = floor(($offset / count($tags)) * 100);
