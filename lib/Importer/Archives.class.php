@@ -12,9 +12,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       return false;
     }
 
-    $this->arguments['pagination_limit'] = 250;
     $this->arguments['months'] = $this->getMonths();
-    ini_set('memory_limit', '128M');
 
     return true;
   }
@@ -62,9 +60,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   		}
 
 	    $archives_index = $months[$i];
-	    $month_permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
-	    
-	    exit;
+	    $month_permalinks = $this->getMonthPermalinks($archives_index['year'], $archives_index['month']);
 	    $permalinks = array_merge($permalinks, $month_permalinks);
 	    set_transient('canalblog_permalinks', $permalinks);
 	    
@@ -95,18 +91,41 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    * @param unknown_type $month
    * @return unknown_type
    */
-  protected function getMonth($year, $month)
+  protected function getMonthPermalinks($year, $month)
   {
-    $uri_suffix = sprintf('%s/%s/p0-%s.html', $year, $month, $this->arguments['pagination_limit']);
-    $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
-    echo $dom->saveHTML();
-    $xpath = new DOMXPath($dom);
-    $permalinks = array();
-    
-    foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
-    {
-      $permalinks[] = $node->getAttribute('href');
-    }
+  	$offset = 0;
+  	$permalinks = array();
+
+  	/*
+  	 * Browsing page per page
+  	 */
+  	while ($offset !== -1)
+  	{
+  		$uri_suffix = sprintf('%s/%s/p%s-0.html', $year, $month, $offset);
+  		$dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
+  		$xpath = new DOMXPath($dom);
+ 
+  		/*
+  		 * Collecting archive permalinks
+  		 */
+  		foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
+	    {
+	      $permalinks[] = $node->getAttribute('href');
+	    }
+
+	    /*
+	     * Going to next page?
+	     */
+	    $next = $xpath->query("//div[@id='content']//div[last()]/a[contains(@title,'suivant')]");
+	    if ($next instanceof DOMNodeList && $next->length > 0)
+	    {
+	    	$offset += 10;
+	    }
+	    else 
+	    {
+	    	$offset = -1;
+	    }
+  	}
 
     /*
      * Collecting other pages

@@ -23,8 +23,8 @@
 	
 	CI.PrepareNextOperation = function(){
 		$('#ajax-results .worker-container').addClass('hidden');
-		$('.submit .button-primary.start-remote-operation').addClass('hidden');
-		$('.submit .button-primary.next-operation').removeClass('hidden');
+		$('.submit .start-remote-operation').addClass('hidden');
+		$('.submit .next-operation').removeClass('hidden');
 	};
 	
 	CI.HandleResponse = function(response){
