@@ -18,8 +18,9 @@
 
     <p><?php printf(__('About to import <strong>%s tags</strong>.', 'canalblog-importer'), count($tags)) ?></p>
 
-    <?php include dirname(__FILE__).'/form-submit.php' ?>
+    <p class="submit">
+      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Import Tags', 'canalblog-importer') ?>" />
+      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel', 'canalblog-importer') ?>" />
+    </p>
   </form>
-  
-	<?php include dirname(__FILE__).'/ajax-results.php' ?>
 </div>

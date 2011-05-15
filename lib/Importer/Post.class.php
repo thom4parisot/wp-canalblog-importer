@@ -44,7 +44,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	return false;
     $query = $this->getRemoteXpath($this->uri, "//div[@id='content']", $html);
     $dom = new DomDocument();
     $dom->appendChild($dom->importNode($query->item(0), true));

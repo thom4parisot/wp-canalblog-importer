@@ -12,8 +12,10 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       return false;
     }
 
-    $this->arguments['pagination_limit'] = 250;
+    $this->arguments['page'] =   get_option('canalblog_importer_archives_current_index', 0);
     $this->arguments['months'] = $this->getMonths();
+
+    set_time_limit(60);
     ini_set('memory_limit', '128M');
 
     return true;
@@ -24,105 +26,75 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	if (!!get_transient('canablog_have_finished_archives'))
-  	{
-  		delete_transient('canablog_have_finished_archives');
-  		delete_transient('canalblog_months');
-  		delete_transient('canalblog_step_offset');
+    /*
+     * No index defined? We can go the next step
+     */
+    if (empty($this->arguments['months']) || !isset($this->arguments['months'][$this->arguments['page']]))
+    {
+      return true;
+    }
 
-  		return true;
-  	}
- 
-  	return false;
+    $archives_index = $this->arguments['months'][$this->arguments['page']];
+    $permalinks = $this->getMonthPermalinks($archives_index['year'], $archives_index['month']);
+
+    foreach ($permalinks as $permalink)
+    {
+      /*
+       * Importing post content
+       */
+      $post = new CanalblogImporterImporterPost($this->getConfiguration());
+      $post->setUri($permalink);
+      $post->process();
+    }
+
+    update_option('canalblog_importer_archives_current_index', $this->arguments['page'] + 1);
+    $url = '?import=canalblog&step='.get_option('canalblog_importer_step').'&process-import=1&_wpnonce='.wp_create_nonce('import-canalblog');
+    echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$url.'";}, 1000);</script>';
   }
 
-  public function processRemote(WP_Ajax_Response $response)
-  { 
-  	$months = $this->arguments['months'];
-  	$permalinks = get_transient('canalblog_permalinks');
-  	$offset = (int)get_transient('canalblog_step_offset');
-  	$new_offset = $offset + 1;
-  	$progress = floor(($offset / count($months)) * 100);
-  	$is_finished = false;
-  	
-  	if (!is_array($permalinks))
-  	{
-  		$permalinks = array();
-  	}
-  	
-  	for ($i = $offset; $i < $new_offset; $i++)
-  	{
-  		if (!isset($months[$i]))
-  		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($months);
-  			set_transient('canablog_have_finished_archives', 1);
-  			break;
-  		}
-
-	    $archives_index = $months[$i];
-	    $month_permalinks = $this->getMonth($archives_index['year'], $archives_index['month']);
-	    
-	    exit;
-	    $permalinks = array_merge($permalinks, $month_permalinks);
-	    set_transient('canalblog_permalinks', $permalinks);
-	    
-	    $message = sprintf(__('<strong>%s/%s</strong>: found %s posts.', 'canalblog-importer'),
-	    	$archives_index['year'],
-	    	$archives_index['month'],
-	    	count($month_permalinks)
-	    );
-  		
-  		$response->add(array(
-  			'data' => $message,
-  		));
-  	}
-  	
-  	set_transient('canalblog_step_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
-  }
-  
   /**
    * Retrieves all permalinks within a month archive
-   * @param unknown_type $year
-   * @param unknown_type $month
-   * @return unknown_type
+   * 
+   * @param string $year
+   * @param string $month
+   * @return array
    */
-  protected function getMonth($year, $month)
+  protected function getMonthPermalinks($year, $month)
   {
-    $uri_suffix = sprintf('%s/%s/p0-%s.html', $year, $month, $this->arguments['pagination_limit']);
-    $dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
-    echo $dom->saveHTML();
-    $xpath = new DOMXPath($dom);
-    $permalinks = array();
-    
-    foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
-    {
-      $permalinks[] = $node->getAttribute('href');
-    }
+  	$offset = 0;
+  	$permalinks = array();
 
-    /*
-     * Collecting other pages
-     * Skipping first link and next page
-     */
-    foreach ($xpath->query("//div[@id='content']//div[last()]/a[position()>1 and position()<last()]") as $node)
-    {
-      if (preg_match('#/archives/\d{4}/\d{2}/p\d+-\d+\.html#U', $node->getAttribute('href')))
-      {
-        foreach ($this->getRemoteXpath($node->getAttribute('href'), "//div[@id='content']//a[@rel='bookmark']") as $node)
-        {
-          $permalinks[] = $node->getAttribute('href');
-        }
-      }
-    }
-    
+  	/*
+  	 * Browsing page per page
+  	 */
+  	while ($offset !== -1)
+  	{
+  		$uri_suffix = sprintf('%s/%s/p%s-0.html', $year, $month, $offset);
+  		$dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
+  		$xpath = new DOMXPath($dom);
+ 
+  		/*
+  		 * Collecting archive permalinks
+  		 */
+  		foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
+	    {
+	      $permalinks[] = $node->getAttribute('href');
+	    }
+
+	    /*
+	     * Going to next page?
+	     */
+	    $next = $xpath->query("//div[@id='content']//div[last()]/a[contains(@title,'suivant')]");
+	    if ($next instanceof DOMNodeList && $next->length > 0)
+	    {
+	    	$offset += 10;
+	    }
+	    else 
+	    {
+	    	$offset = -1;
+	    }
+  	}
+
     return $permalinks;
   }
 
@@ -134,11 +106,6 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   protected function getMonths()
   {
-  	if ($months = get_transient('canalblog_months'))
-  	{
-  		return $months;
-  	}
- 
     foreach ($this->getRemoteXpath(get_option('canalblog_importer_blog_uri').'/archives/', "//div[@id='content']//p/a[@href]") as $node)
     {
       if (preg_match('#archives/(\d{4})/(\d{2})/index.html$#iU', $node->getAttribute('href'), $matches))
@@ -148,8 +115,6 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
     }
 
     unset($dom, $http);
-    set_transient('canalblog_months', $months);
-
     return $months;
   }
 }

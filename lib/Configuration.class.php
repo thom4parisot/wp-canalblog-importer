@@ -10,7 +10,7 @@ class CanalblogImporterConfiguration extends WPPluginToolkitConfiguration
   /**
    * Refers to the version of the plugin
    */
-  const VERSION =   '1.2-dev';
+  const VERSION =   '1.1.8';
 
   protected $wordpress_importer_locations = array();
 
