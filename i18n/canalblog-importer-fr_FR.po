@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Oncle Tom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-15 18:21+0100\n"
-"PO-Revision-Date: 2011-05-15 18:21+0100\n"
+"POT-Creation-Date: 2011-05-15 19:28+0100\n"
+"PO-Revision-Date: 2011-05-15 19:29+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team: Oncle Tom <thomas+i18n@oncle-tom.net>\n"
 "MIME-Version: 1.0\n"
@@ -23,14 +23,6 @@ msgstr ""
 #: ../bootstrap.php:17
 msgid "Enables content importing from a blog hosted on Canalblog platform."
 msgstr "Active l'import du contenu d'un blog hébergé sur la plateforme Canalblog."
-
-#: ../lib/Importer.class.php:53
-msgid "Cancel"
-msgstr "Annuler"
-
-#: ../lib/Importer.class.php:53
-msgid "Done"
-msgstr "Terminé"
 
 #: ../lib/Plugin.class.php:54
 msgid "Import a Canalblog blog"
@@ -89,6 +81,11 @@ msgstr "Catégorie <strong>%s</strong> créée."
 #, php-format
 msgid "<strong>%s</strong> category creation failed."
 msgstr "<strong>%s</strong> : échec de la création de la catégorie."
+
+#: ../lib/Importer/Cleanup.class.php:54
+#, php-format
+msgid "%s posts cleanup up."
+msgstr "%s billets nettoyés."
 
 #: ../lib/Importer/Post.class.php:74
 msgid "error"
@@ -403,6 +400,10 @@ msgstr "Et pour terminer ..."
 msgid "Once you're done, delete your Canalblog account and <a href='http://www.canalblog.com/cf/contact.cfm' target='_blank'>write a mail to their team</a> explaining why you left. They have not evolved, you did."
 msgstr "Une fois que vous en avez fini, supprimez votre compte Canalblog et <a href='http://www.canalblog.com/cf/contact.cfm' target='_blank'>adressez un email à leur équipe</a> en expliquant les raisons de votre départ. Ils n'ont pas évolué, vous oui."
 
+#: ../pages/07-ccln.php:45
+msgid "Done"
+msgstr "Terminé"
+
 #: ../pages/07-ccln.php:46
 msgid "I'm aware I've finally left Canalblog and this importer saved my life. Almost."
 msgstr "Je suis conscient(e) que j'ai finalement quitté Canalblog et que cet outil m'a sauvé la vie. Enfin presque."
@@ -421,7 +422,11 @@ msgstr "Démarrer l'import"
 
 #: ../pages/form-submit.php:3
 msgid "Next Step &rarr;"
-msgstr "Étape suivante &arr;"
+msgstr "Étape suivante &rarr;"
+
+#: ../pages/form-submit.php:4
+msgid "Cancel"
+msgstr "Annuler"
 
 #: ../pages/wordpress-importer-missing.php:3
 #, php-format

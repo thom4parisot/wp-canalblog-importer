@@ -27,9 +27,9 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	if (!!get_transient('canablog_have_finished_tags'))
+  	if (!!get_transient('canalblog_have_finished_tags'))
   	{
-  		delete_transient('canablog_have_finished_tags');
+  		delete_transient('canalblog_have_finished_tags');
   		delete_transient('canalblog_tags');
   		delete_transient('canalblog_tags_offset');
   		
@@ -54,7 +54,7 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
   			$is_finished = true;
   			$progress = 100;
   			$new_offset = count($tags);
-  			set_transient('canablog_have_finished_tags', 1);
+  			set_transient('canalblog_have_finished_tags', 1);
   			break;
   		}
   		

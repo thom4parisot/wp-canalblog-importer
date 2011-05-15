@@ -50,10 +50,12 @@ class CanalblogImporterImporter
     /*
      * Do we cancel sometime?
      */
-    if (isset($_REQUEST['submit']) && in_array($_REQUEST['submit'], array(__('Cancel', 'canalblog-importer'), __('Done', 'canalblog-importer')), true))
+    if (isset($_REQUEST['cancel'], $_REQUEST['_wpnonce']) && 1 === (int)$_REQUEST['cancel'] && wp_verify_nonce($_REQUEST['_wpnonce'], 'import-canalblog-cancel'))
     {
-      $this->stop();
-      wp_redirect(get_admin_url(null, 'import.php?import=canalblog&canceled=true'), 307);
+    	$this->stop();
+      printf('<script type="text/javascript">document.location.href="%s";</script>',
+      	get_admin_url(null, 'import.php?import=canalblog&canceled=1')
+      );
     }
 
     $this->is_ready_to_process = !!$operation->dispatch();
@@ -159,10 +161,14 @@ class CanalblogImporterImporter
     delete_transient('canalblog_tags');
     delete_transient('canalblog_categories');
     delete_transient('canalblog_months');
+    delete_transient('canalblog_permalinks');
     delete_transient('canalblog_post_uris');
     
-    delete_transient('canablog_have_finished_tags');
-    delete_transient('canablog_have_finished_categories');
-    delete_transient('canablog_have_finished_archives');
+    delete_transient('canalblog_step_offset');
+    delete_transient('canalblog_have_finished_tags');
+    delete_transient('canalblog_have_finished_categories');
+    delete_transient('canalblog_have_finished_archives');
+    delete_transient('canalblog_have_finished_posts');
+    delete_transient('canalblog_have_finished_cleanup');
   }
 }

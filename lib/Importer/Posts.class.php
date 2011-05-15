@@ -23,9 +23,9 @@ class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	if (!!get_transient('canablog_have_finished_posts'))
+  	if (!!get_transient('canalblog_have_finished_posts'))
   	{
-  		delete_transient('canablog_have_finished_posts');
+  		delete_transient('canalblog_have_finished_posts');
   		delete_transient('canalblog_permalinks');
   		delete_transient('canalblog_step_offset');
 
@@ -49,7 +49,7 @@ class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
   			$is_finished = true;
   			$progress = 100;
   			$new_offset = count($this->arguments['permalinks']);
-  			set_transient('canablog_have_finished_posts', 1);
+  			set_transient('canalblog_have_finished_posts', 1);
   			break;
   		}
   		

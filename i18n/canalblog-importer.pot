@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Canalblog Importer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-15 18:21+0100\n"
-"PO-Revision-Date: 2011-05-15 18:21+0100\n"
+"POT-Creation-Date: 2011-05-15 19:28+0100\n"
+"PO-Revision-Date: 2011-05-15 19:28+0100\n"
 "Last-Translator: Oncle Tom <thomas@oncle-tom.net>\n"
 "Language-Team:  <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,14 +21,6 @@ msgstr ""
 
 #: ../bootstrap.php:17
 msgid "Enables content importing from a blog hosted on Canalblog platform."
-msgstr ""
-
-#: ../lib/Importer.class.php:53
-msgid "Cancel"
-msgstr ""
-
-#: ../lib/Importer.class.php:53
-msgid "Done"
 msgstr ""
 
 #: ../lib/Plugin.class.php:54
@@ -87,6 +79,11 @@ msgstr ""
 #: ../lib/Importer/Categories.class.php:67
 #, php-format
 msgid "<strong>%s</strong> category creation failed."
+msgstr ""
+
+#: ../lib/Importer/Cleanup.class.php:54
+#, php-format
+msgid "%s posts cleanup up."
 msgstr ""
 
 #: ../lib/Importer/Post.class.php:74
@@ -402,6 +399,10 @@ msgstr ""
 msgid "Once you're done, delete your Canalblog account and <a href='http://www.canalblog.com/cf/contact.cfm' target='_blank'>write a mail to their team</a> explaining why you left. They have not evolved, you did."
 msgstr ""
 
+#: ../pages/07-ccln.php:45
+msgid "Done"
+msgstr ""
+
 #: ../pages/07-ccln.php:46
 msgid "I'm aware I've finally left Canalblog and this importer saved my life. Almost."
 msgstr ""
@@ -420,6 +421,10 @@ msgstr ""
 
 #: ../pages/form-submit.php:3
 msgid "Next Step &rarr;"
+msgstr ""
+
+#: ../pages/form-submit.php:4
+msgid "Cancel"
 msgstr ""
 
 #: ../pages/wordpress-importer-missing.php:3

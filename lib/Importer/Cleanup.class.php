@@ -20,6 +20,18 @@ class CanalblogImporterImporterCleanup extends CanalblogImporterImporterBase
    */
   public function process()
   {
+  	if (!!get_transient('canalblog_have_finished_cleanup'))
+  	{
+  		delete_transient('canalblog_have_finished_cleanup');
+
+  		return true;
+  	}
+  	
+    return false;
+  }
+
+  public function processRemote(WP_Ajax_Response $response)
+  {
     /*
      * Retrieves posts IDs
      */
@@ -37,10 +49,20 @@ class CanalblogImporterImporterCleanup extends CanalblogImporterImporterBase
     {
       $wpdb->query($wpdb->prepare("UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, '%s', '%s')", $old_uri, $new_uri));
     }
+    
+    $response->add(array(
+  		'data' => sprintf(__('%s posts cleanup up.', 'canalblog-importer'), count($replacements)),
+  	));
 
-    return true;
+  	set_transient('canalblog_have_finished_cleanup', 1);
+  	$response->add(array(
+  		'what' => 'operation',
+  		'supplemental' => array(
+  			'finished' => true,
+  			'progress' => 100,
+  		)
+  	));
   }
-
 
   // sort by strlen, longest string first
   function cmpr_strlen($a, $b) {

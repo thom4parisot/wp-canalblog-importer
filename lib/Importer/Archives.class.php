@@ -22,9 +22,9 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    */
   public function process()
   {
-  	if (!!get_transient('canablog_have_finished_archives'))
+  	if (!!get_transient('canalblog_have_finished_archives'))
   	{
-  		delete_transient('canablog_have_finished_archives');
+  		delete_transient('canalblog_have_finished_archives');
   		delete_transient('canalblog_months');
   		delete_transient('canalblog_step_offset');
 
@@ -55,7 +55,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   			$is_finished = true;
   			$progress = 100;
   			$new_offset = count($months);
-  			set_transient('canablog_have_finished_archives', 1);
+  			set_transient('canalblog_have_finished_archives', 1);
   			break;
   		}
 
