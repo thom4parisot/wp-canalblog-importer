@@ -48,11 +48,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $dom = new DomDocument();
     $dom->appendChild($dom->importNode($query->item(0), true));
 
-    $post_id = $this->savePost($dom, $html);
-    $this->saveComments($dom, $html);
-    $this->saveMedias($dom, $html);
+    $data['post'] = $this->savePost($dom, $html);
+    $data['comments'] = $this->saveComments($dom, $html);
+    $data['medias'] = $this->saveMedias($dom, $html);
 
-    return $post_id;
+    return $data;
   }
 
   /**
@@ -70,6 +70,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $data = array(
       'post_status' => 'publish',
     );
+    $stats = array('title' => $this->uri, 'status' => __('error', 'canalblog-importer'));
 
     /*
      * Initial stuff
@@ -79,12 +80,21 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     preg_match('#/(\d+)\.html$#U', $this->uri, $matches);
     $canalblog_id = $matches[1];
 
-    $tmpdom = new DomDocument();
-    $tmpdom->appendChild($tmpdom->importNode($xpath->query("//div[@class='blogbody']//div[@class='itemfooter']")->item(0), true));
-    $itemfooter = $tmpdom->saveHTML();
+   	if ($footerdom = $xpath->query("//div[@class='blogbody']//div[@class='itemfooter']")->item(0))
+   	{
+   		$tmpdom = new DomDocument();
+	    $tmpdom->appendChild($tmpdom->importNode($footerdom, true));
+	    $itemfooter = $tmpdom->saveHTML();
+   	}
+   	else 
+   	{
+   		return $stats;
+   	}
+
     preg_match('#archives/(?P<post_year>\d{4})/(?P<post_month>\d{2})/(?P<post_day>\d{2})/(?P<post_id>\d+).html$#U', $this->uri, $matches);
     extract($matches);
-    unset($matches, $tmpdom);
+    unset($matches, $tmpdom, $footerdom);
+	    
 
     /*
      * Determining title
@@ -148,11 +158,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     if ($post_id = post_exists($data['post_title'], '', $data['post_date']))
     {
       $data['ID'] = $post_id;
+      $stats['status'] = __('skipped', 'canalblog-importer');
 
       if ($this->overwrite_contents)
       {
         wp_untrash_post($post_id);
         wp_update_post($data);
+        $stats['status'] = __('overwritten', 'canalblog-importer');
       }
 
       $post_existed = true;
@@ -161,7 +173,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     {
       $post_id = wp_insert_post($data);
       $data['ID'] = $post_id;
+      $stats['status'] = __('imported', 'canalblog-importer');
     }
+    
+    $stats['id'] = $data['ID'];
+    $stats['title'] = $data['post_title'];
 
     /*
      * Post save extras
@@ -205,7 +221,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $this->data = $data;
     $this->id =   $post_id;
 
-    return $post_id;
+    return $stats;
   }
 
   /**
@@ -218,9 +234,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveComments(DomDocument $dom, $html)
   {
+  	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);
+
     if ($this->data['comment_status'] == 'closed')
     {
-      return false;
+      return $stats;
     }
 
     /*
@@ -234,11 +252,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">.+</div>#siU', $html_comments, $matches);
     $found_comments = $matches[0];
+ 		$stats['count'] = count($found_comments);
     unset($matches);
 
     if (empty($found_comments))
     {
-      return 0;
+      return $stats;
     }
 
     $comments = get_comments(array('post_id' => $this->id));
@@ -303,6 +322,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       //happens rarely, don't know why: we skip the import of this comment
       if (null === $commentFooterNode)
       {
+      	$stats['skipped']++;
         continue;
       }
 
@@ -342,12 +362,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
           }
 
           wp_update_comment($data);
+          $stats['overwritten']++;
+        }
+        else
+        {
+        	$stats['skipped']++;
         }
       }
       else
       {
         $comment_id = wp_insert_comment($data);
         add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
+        $stats['new']++;
       }
 
       unset($tmp, $data);
@@ -357,6 +383,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
      * Recounting comments for this post
      */
     wp_update_comment_count_now($this->id);
+    return $stats;
   }
 
   /**
@@ -371,6 +398,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveMedias(DomDocument $dom)
   {
+  	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);
+
     /*
      * Initialize WordPress importer
      */
@@ -379,7 +408,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     }
     catch (CanalblogImporterException $e)
     {
-      return false;
+      return $stats;
     }
 
     $wpImport = new WP_Import();
@@ -409,13 +438,14 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     }
 
     $remote_uris = array_unique($remote_uris);
+    $stats['count'] = count($remote_uris);
 
     /*
      * No picture? No need to go furthermore
      */
     if (empty($remote_uris))
     {
-      return false;
+      return $stats;
     }
 
     $upload = wp_upload_dir($post['post_date']);
@@ -436,6 +466,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
        */
       if (!empty($candidates))
       {
+      	$stats['skipped']++;
         continue;
       }
 
@@ -451,6 +482,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $attachment_id = $wpImport->process_attachment($postdata, $remote_uri);
       add_post_meta($attachment_id, 'canalblog_attachment_uri', $remote_uri, true);
       $attachments[$remote_uri] = $attachment_id;
+      $stats['new']++;
     }
 
     /*
@@ -510,6 +542,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     {
       $wpImport->backfill_attachment_urls();
     }
+    
+    return $stats;
   }
 
   protected function thumbnailFilenameFixNew($uri)

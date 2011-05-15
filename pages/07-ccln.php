@@ -42,7 +42,7 @@
     </ol>
 
     <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Done', 'canalblog-importer') ?>" />
+      <a href="<?php echo wp_nonce_url('import.php?import=canalblog&cancel=1', 'import-canalblog-cancel') ?>" class="button button-primary next-operation"><?php echo esc_attr__('Done', 'canalblog-importer') ?></a>
       − <?php _e("I'm aware I've finally left Canalblog and this importer saved my life. Almost.", 'canalblog-importer') ?>
     </p>
   </form>

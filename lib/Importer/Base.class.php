@@ -64,7 +64,7 @@ abstract class CanalblogImporterImporterBase
     //removing all scripts (we don't want them)
     if (!!$stripJavaScript)
     {
-      $html = preg_replace('#<script[^>]*>[^>]+<\/script>#siU', '', trim($html));
+      $html = preg_replace('#<script[^>]*>.+<\/script>#siU', '', trim($html));
     }
 
     /*
@@ -205,7 +205,7 @@ abstract class CanalblogImporterImporterBase
       }
     }
 
-    return false;
+    return null;
   }
 
   /**
@@ -217,7 +217,7 @@ abstract class CanalblogImporterImporterBase
    */
   public static function isWordPressImporterInstalled(CanalblogImporterConfiguration $configuration)
   {
-    return self::getWordPressImporterLocation($configuration) ? true : false;
+    return file_exists(self::getWordPressImporterLocation($configuration));
   }
 
   /**
@@ -230,6 +230,11 @@ abstract class CanalblogImporterImporterBase
   {
     if (self::isWordPressImporterInstalled($configuration))
     {
+    	if (!defined('WP_LOAD_IMPORTERS'))
+    	{
+    		define('WP_LOAD_IMPORTERS', true);
+    	}
+
       require_once self::getWordPressImporterLocation($configuration);
     }
     else

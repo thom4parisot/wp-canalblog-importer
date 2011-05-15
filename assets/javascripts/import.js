@@ -23,25 +23,35 @@
 	
 	CI.PrepareNextOperation = function(){
 		$('#ajax-results .worker-container').addClass('hidden');
-		$('.submit .button-primary.start-remote-operation').addClass('hidden');
-		$('.submit .button-primary.next-operation').removeClass('hidden');
+		$('.submit .start-remote-operation').addClass('hidden');
+		$('.submit .next-operation').removeClass('hidden');
 	};
 	
 	CI.HandleResponse = function(response){
-		var $AjaxResponseHolder = $('#ajax-responses');
+		var $AjaxResponseHolder = $('#ajax-responses'),
+			progress = $('operation progress', response).text();
 
 		/*
 		 * Adding messages to the UI
 		 */
 		$('object > response_data', response).each(function(){
 			$AjaxResponseHolder.prepend('<li>'+$(this).text()+'</li>');
+			isOK = true;
 		});
-		$('#import-progress-value').text($('operation progress', response).text());
+		$('#import-progress-value').text(progress);
+		
+		/*
+		 * No progress? Means error
+		 */
+		if ('' === progress)
+		{
+			$AjaxResponseHolder.prepend('<li>'+response+'</li>');
+		}
 		
 		/*
 		 * Continue batch
 		 */
-		if (1 !== parseInt($('operation finished', response).text(), 10))
+		else if (1 !== parseInt($('operation finished', response).text(), 10))
 		{
 			return CI.ExecuteRemoteOperation();
 		}

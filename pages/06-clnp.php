@@ -8,6 +8,7 @@
     <li><?php _e('Tags', 'canalblog-importer') ?></li>
     <li><?php _e('Categories', 'canalblog-importer') ?></li>
     <li><?php _e('Archives', 'canalblog-importer') ?></li>
+    <li><?php _e('Posts, comments and media', 'canalblog-importer') ?></li>
     <li><strong><?php _e('Cleanup', 'canalblog-importer') ?></strong></li>
   </ol>
 
@@ -19,9 +20,8 @@
 
     <p><?php _e('This operation will basically fix all links on your blog and cleanup temporary data stored for all previous steps. It will be quick, promise!', 'canalblog-importer') ?></p>
 
-    <p class="submit">
-      <input type="submit" name="submit" class="button-primary" value="<?php echo esc_attr__('Cleanup and tell me what to do', 'canalblog-importer') ?>" />
-      <input type="submit" name="submit" class="button" value="<?php echo esc_attr__('Cancel', 'canalblog-importer') ?>" />
-    </p>
+    <?php include dirname(__FILE__).'/form-submit.php' ?>
   </form>
+  
+  <?php include dirname(__FILE__).'/ajax-results.php' ?>
 </div>

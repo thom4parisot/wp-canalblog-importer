@@ -8,11 +8,12 @@
     <li><?php _e('Tags', 'canalblog-importer') ?></li>
     <li><?php _e('Categories', 'canalblog-importer') ?></li>
     <li><strong><?php _e('Archives', 'canalblog-importer') ?></strong></li>
+    <li><?php _e('Posts, comments and media', 'canalblog-importer') ?></li>
     <li><?php _e('Cleanup', 'canalblog-importer') ?></li>
   </ol>
 
   <h3><?php _e('Archives', 'canalblog-importer') ?></h3>
-  <p><?php _e('This step includes posts, comments, authors and attachments. This is done month by month so if you have a huge blog, be patient ;-)', 'canalblog-importer') ?></p>
+  <p><?php _e('This step scans the presence of all the public posts for your whole history. Their content will be imported during the next step.', 'canalblog-importer') ?></p>
   <form action="?import=canalblog" method="post">
     <?php wp_nonce_field('import-canalblog') ?>
     <input type="hidden" name="process-import" value="1" />
