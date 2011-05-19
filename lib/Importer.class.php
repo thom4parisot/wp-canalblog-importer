@@ -59,7 +59,7 @@ class CanalblogImporterImporter
     }
 
     $this->is_ready_to_process = !!$operation->dispatch();
-
+    
     return $operation;
   }
   
@@ -118,6 +118,11 @@ class CanalblogImporterImporter
   {
     if (true === $this->is_ready_to_process && isset($_REQUEST['process-import']) && (int)$_REQUEST['process-import'] === 1 && wp_verify_nonce($_REQUEST['_wpnonce'], 'import-canalblog'))
     {
+      if (!defined('WP_IMPORTING'))
+      {
+      	define('WP_IMPORTING', true);
+      }
+
       try{
         $return = $operation->process();
 

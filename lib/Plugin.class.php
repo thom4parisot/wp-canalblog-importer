@@ -88,6 +88,11 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
  
   	if (wp_verify_nonce($_REQUEST['_wpnonce'], 'import-canalblog'))
   	{
+      if (!defined('WP_IMPORTING'))
+      {
+      	define('WP_IMPORTING', true);
+      }
+
   		$operation->processRemote($response);
   	}
   	

@@ -57,6 +57,11 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.2.2 =
+
+* correction liée à la manière dont WordPress 3.1 gère les imports
+* correction du nombre de billets importés
+
 = Version 1.2.1 =
 
 * amélioration de la détection des billets de blog
