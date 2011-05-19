@@ -57,6 +57,11 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.2.1 =
+
+* correction d'une division par zéro
+* nettoyage du code
+
 = Version 1.2 =
 
 * amélioration de l'import : vous voyez tout ce qui se passe

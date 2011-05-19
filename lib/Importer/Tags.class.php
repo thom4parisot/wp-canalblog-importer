@@ -31,7 +31,7 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
   	{
   		delete_transient('canalblog_have_finished_tags');
   		delete_transient('canalblog_tags');
-  		delete_transient('canalblog_tags_offset');
+  		delete_transient('canalblog_step_offset');
   		
   		return true;
   	}
@@ -42,19 +42,18 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
   public function processRemote(WP_Ajax_Response $response)
   {
   	$tags = $this->arguments['tags'];
-  	$offset = (int)get_transient('canalblog_tags_offset');
-  	$new_offset = $offset + 50;
-  	$progress = floor(($offset / count($tags)) * 100);
-  	$is_finished = false;
   	
-  	for ($i = $offset; $i < $new_offset; $i++)
+  	$this->setupProcess(array(
+  		'offset' => get_transient('canalblog_step_offset'),
+  		'limit' => 50,
+  		'total' => count($tags),
+  	));
+  	
+  	for ($i = $this->offset; $i < $this->new_offset; $i++)
   	{
   		if (!isset($tags[$i]))
   		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($tags);
-  			set_transient('canalblog_have_finished_tags', 1);
+  			$this->setProcessFinished('canalblog_have_finished_tags');
   			break;
   		}
   		
@@ -77,14 +76,7 @@ class CanalblogImporterImporterTags extends CanalblogImporterImporterBase
   		));
   	}
   	
-  	set_transient('canalblog_tags_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
+  	$this->processRemoteShutdown($response);
   }
 
   /**

@@ -38,24 +38,23 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   { 
   	$months = $this->arguments['months'];
   	$permalinks = get_transient('canalblog_permalinks');
-  	$offset = (int)get_transient('canalblog_step_offset');
-  	$new_offset = $offset + 1;
-  	$progress = floor(($offset / count($months)) * 100);
-  	$is_finished = false;
+  	
+  	$this->setupProcess(array(
+  		'offset' => get_transient('canalblog_step_offset'),
+  		'limit' => 1,
+  		'total' => count($months),
+  	));
   	
   	if (!is_array($permalinks))
   	{
   		$permalinks = array();
   	}
   	
-  	for ($i = $offset; $i < $new_offset; $i++)
+  	for ($i = $this->offset; $i < $this->new_offset; $i++)
   	{
   		if (!isset($months[$i]))
   		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($months);
-  			set_transient('canalblog_have_finished_archives', 1);
+  			$this->setProcessFinished('canalblog_have_finished_archives');
   			break;
   		}
 
@@ -74,15 +73,8 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   			'data' => $message,
   		));
   	}
-  	
-  	set_transient('canalblog_step_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
+
+  	$this->processRemoteShutdown($response);
   }
   
   /**

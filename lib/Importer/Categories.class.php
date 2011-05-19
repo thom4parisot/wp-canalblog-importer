@@ -37,19 +37,18 @@ class CanalblogImporterImporterCategories extends CanalblogImporterImporterBase
   public function processRemote(WP_Ajax_Response $response)
   { 
   	$categories = $this->arguments['categories'];
-  	$offset = (int)get_transient('canalblog_step_offset');
-  	$new_offset = $offset + 50;
-  	$progress = floor(($offset / count($categories)) * 100);
-  	$is_finished = false;
   	
-  	for ($i = $offset; $i < $new_offset; $i++)
+  	$this->setupProcess(array(
+  		'offset' => get_transient('canalblog_step_offset'),
+  		'limit' => 50,
+  		'total' => count($categories),
+  	));
+  	
+  	for ($i = $this->offset; $i < $this->new_offset; $i++)
   	{
   		if (!isset($categories[$i]))
   		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($categories);
-  			set_transient('canalblog_have_finished_categories', 1);
+  			$this->setProcessFinished('canalblog_have_finished_categories');
   			break;
   		}
   		
@@ -72,14 +71,7 @@ class CanalblogImporterImporterCategories extends CanalblogImporterImporterBase
   		));
   	}
   	
-  	set_transient('canalblog_step_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
+  	$this->processRemoteShutdown($response);
   }
 
   /**

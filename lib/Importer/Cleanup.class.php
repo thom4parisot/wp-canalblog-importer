@@ -54,14 +54,8 @@ class CanalblogImporterImporterCleanup extends CanalblogImporterImporterBase
   		'data' => sprintf(__('%s posts cleanup up.', 'canalblog-importer'), count($replacements)),
   	));
 
-  	set_transient('canalblog_have_finished_cleanup', 1);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => true,
-  			'progress' => 100,
-  		)
-  	));
+  	$this->setProcessFinished('canalblog_have_finished_cleanup');
+  	$this->processRemoteShutdown($response);
   }
 
   // sort by strlen, longest string first

@@ -242,6 +242,77 @@ abstract class CanalblogImporterImporterBase
       throw new CanalblogImporterException("WordPress Importer could not be found.");
     }
   }
+  
+  /**
+   * Shutdown of the remote process
+   * 
+   * Basically, cleanup and last reponse element
+   * @param WP_Ajax_Response $response
+   */
+  protected function processRemoteShutdown(WP_Ajax_Response $response)
+  {
+  	set_transient('canalblog_step_offset', $this->new_offset);
+  	$response->add(array(
+  		'what' => 'operation',
+  		'supplemental' => array(
+  			'finished' => (int)$this->is_finished,
+  			'progress' => $this->progress,
+  		)
+  	));
+  }
+  
+  /**
+   * Sets everything related to the ending of the process
+   * 
+   * @protected
+   * @param string $transient_id
+   * @return boolean transient storage success
+   */
+  protected function setProcessFinished($transient_id)
+  {
+  	$this->is_finished = true;
+  	$this->progress = 100;
+  	$this->new_offset = $this->total;
+
+  	return set_transient($transient_id, 1);
+  }
+  
+  /**
+   * Setups a process phase
+   * 
+   * @protected
+   * @param array $options
+   */
+  protected function setupProcess(array $options)
+  {
+  	$this->is_finished = false;
+  	$this->limit = 25;
+  	$this->new_offset = 0;
+  	$this->offset = 0;
+  	$this->progress = 0;
+  	$this->total = 0;
+  	
+  	if (isset ($options['offset']))
+  	{
+  		$this->offset = intval($options['offset']);
+  	}
+  	
+  	if (isset($options['limit']))
+  	{
+  		$this->limit = intval($options['limit']);
+  		$this->new_offset = $this->offset + $this->limit;
+  	}
+  	
+  	if (isset ($options['total']))
+  	{
+  		$this->total = intval($options['total']);
+  	}
+  	
+  	if ($this->total > 0)
+  	{
+  		$this->progress = floor(($this->offset / $this->total) * 100);
+  	}
+  }
 
   /**
    * Checks if the import step is ready to run

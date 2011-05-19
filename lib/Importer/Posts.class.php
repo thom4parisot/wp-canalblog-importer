@@ -13,7 +13,6 @@ class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
     }
 
     ini_set('memory_limit', '128M');
-    $this->arguments['permalinks'] = get_transient('canalblog_permalinks');
 
     return true;
   }
@@ -37,25 +36,25 @@ class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
   
   public function processRemote(WP_Ajax_Response $response)
   {
+    $permalinks = get_transient('canalblog_permalinks');
   	$offset = (int)get_transient('canalblog_step_offset');
-  	$new_offset = $offset + 10;
-  	$progress = floor(($offset / count($this->arguments['permalinks'])) * 100);
-  	$is_finished = false;
+  	
+  	$this->setupProcess(array(
+  		'offset' => get_transient('canalblog_step_offset'),
+  		'limit' => 10,
+  		'total' => count($permalinks),
+  	));
 
-  	for ($i = $offset; $i < $new_offset; $i++)
+  	for ($i = $this->offset; $i < $this->new_offset; $i++)
   	{
-  		if (!isset($this->arguments['permalinks'][$i]))
+  		if (!isset($permalinks[$i]))
   		{
-  			$is_finished = true;
-  			$progress = 100;
-  			$new_offset = count($this->arguments['permalinks']);
-  			set_transient('canalblog_have_finished_posts', 1);
+  			$this->setProcessFinished('canalblog_have_finished_posts');
   			break;
   		}
-  		
-  		$permalink = $this->arguments['permalinks'][$i];
+
       $post = new CanalblogImporterImporterPost($this->getConfiguration());
-      $post->setUri($permalink);
+      $post->setUri($permalinks[$i]);
       $data = $post->process();
   		
       $message = sprintf(__('<strong>%s</strong> post import: %s', 'canalblog-importer'),
@@ -81,13 +80,6 @@ class CanalblogImporterImporterPosts extends CanalblogImporterImporterBase
   		));
   	}
   	
-  	set_transient('canalblog_step_offset', $new_offset);
-  	$response->add(array(
-  		'what' => 'operation',
-  		'supplemental' => array(
-  			'finished' => (int)$is_finished,
-  			'progress' => $progress,
-  		)
-  	));
+  	$this->processRemoteShutdown($response);
   }
 }
