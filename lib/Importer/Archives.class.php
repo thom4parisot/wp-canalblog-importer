@@ -61,6 +61,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 	    $archives_index = $months[$i];
 	    $month_permalinks = $this->getMonthPermalinks($archives_index['year'], $archives_index['month']);
 	    $permalinks = array_merge($permalinks, $month_permalinks);
+	    $permalinks = array_unique($permalinks);
 	    set_transient('canalblog_permalinks', $permalinks);
 	    
 	    $message = sprintf(__('<strong>%s/%s</strong>: found %s posts.', 'canalblog-importer'),
@@ -134,7 +135,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
       }
     }
     
-    return $permalinks;
+    return array_unique($permalinks);
   }
 
   /**
