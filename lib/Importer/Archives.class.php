@@ -101,7 +101,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   		/*
   		 * Collecting archive permalinks
   		 */
-  		foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark']") as $node)
+  		foreach ($xpath->query("//div[@id='content']//a[@rel='bookmark' or .='#']") as $node)
 	    {
 	      $permalinks[] = $node->getAttribute('href');
 	    }
@@ -109,7 +109,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 	    /*
 	     * Going to next page?
 	     */
-	    $next = $xpath->query("//div[@id='content']//div[last()]/a[contains(@title,'suivant')]");
+	    $next = $xpath->query("//div[@id='content']//div[last()]/a[contains(@title,'suivant') or contains(.,'suivant')]");
 	    if ($next instanceof DOMNodeList && $next->length > 0)
 	    {
 	    	$offset += 10;

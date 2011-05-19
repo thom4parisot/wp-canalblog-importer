@@ -59,7 +59,9 @@ Encore quelques clics et ça sera terminé !
 == Changelog ==
 = Version 1.2.1 =
 
+* amélioration de la détection des billets de blog
 * correction d'une division par zéro
+* dédoublonnage des permaliens à inspecter (accélère l'import)
 * nettoyage du code
 
 = Version 1.2 =
