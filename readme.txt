@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: canalblog, wordpress, migration, import, admin, importer
 Requires at least: 3.0
 Tested up to: 3.2
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 
 
 Fatigué(e) d'avoir à gérer un blog sur Canalblog ? Cette extension va vous permettre de TOUT récupérer en quelques clics.
@@ -57,6 +57,10 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+= Version 1.2.3 =
+
+* désactivation automatique du plugin WordPress Importer si nécessaire
+
 = Version 1.2.2 =
 
 * correction liée à la manière dont WordPress 3.1 gère les imports

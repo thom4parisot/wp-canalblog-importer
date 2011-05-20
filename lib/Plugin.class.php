@@ -66,6 +66,7 @@ class CanalblogImporterPlugin extends WPPluginToolkitPlugin
    */
   public function importPage()
   {
+  	deactivate_plugins('wordpress-importer/wordpress-importer.php', true);
     $importer = new CanalblogImporterImporter($this);
 
     $operation = $importer->dispatch();
