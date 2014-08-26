@@ -57,5 +57,15 @@ class ImportInit extends WP_UnitTestCase {
 
     $this->assertFalse($this->operation->assertCanalblogByHtml($html));
   }
+
+  function testProcess() {
+    $_POST = array(
+      'blog_url' => 'http://atoutcuisine.canalblog.com/index.html'
+    );
+
+    $this->operation->process();
+
+    $this->assertEquals('http://atoutcuisine.canalblog.com', get_option('canalblog_importer_blog_uri'));
+  }
 }
 

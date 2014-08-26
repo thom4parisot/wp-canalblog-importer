@@ -56,7 +56,7 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
       $uri = $this->cleanUri($_POST['blog_url']);
 
       try{
-        if ($this->assertCanalblogUri($uri) || $this->assertCanalblogByHtml($this->getRemoteHtml($uri)))
+        if ($this->assertCanalblogByUri($uri) || $this->assertCanalblogByHtml($this->getRemoteHtml($uri)))
         {
           update_option('canalblog_importer_blog_uri', $uri);
           update_option('canalblog_overwrite_contents', isset($_POST['overwrite_contents']) ? 1 : 0);
