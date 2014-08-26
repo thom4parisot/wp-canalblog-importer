@@ -1,5 +1,7 @@
 .git
 .idea
+.project
+.settings
 .gitignore
 tests
 phpunit.xml

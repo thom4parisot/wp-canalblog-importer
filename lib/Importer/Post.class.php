@@ -6,13 +6,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
   protected static $media_pattern = array(
     'new' => array(
-      'detection_pattern' => '#(http://storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
-      'detection_pattern_inline' => '#^http://storage.canalblog.com/#',
+      'detection_pattern' => '#(http://(p\d+\.)?storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern_inline' => '#^http://(p\d+\.)?storage.canalblog.com/#',
       'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixNew'),
     ),
     'old' => array(
       'detection_pattern' => '#(%canalblog_domain%/images/[^t][^\/]+(?:\.|t-\.)[a-z0-9]+)[^a-z0-9]#iUs',
-      'detection_pattern_inline' => '#^%canalblog_domain%/images/#',
+      'detection_pattern_inline' => '#http://%canalblog_domain%/images/#',
+      'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixOld'),
+    ),
+    'storagev1' => array(
+      'detection_pattern' => '#(%canalblog_domain%/images/[^t][^\/]+(?:\.|t-\.)[a-z0-9]+)[^a-z0-9]#iUs',
+      'detection_pattern_inline' => '#storagev1/%canalblog_domain%/images/#',
       'thumbnail_replacement_callback' => array(__CLASS__, 'thumbnailFilenameFixOld'),
     ),
   );
@@ -24,6 +29,10 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $this->overwrite_contents = get_option('canalblog_overwrite_contents', 0);
     $this->comments_status =    get_option('canalblog_comments_status', 'open');
     $this->trackbacks_status =  get_option('canalblog_trackbacks_status', 'open');
+  }
+
+  public static function getMediaPattern($id) {
+    return self::$media_pattern[$id];
   }
 
   /**
@@ -39,21 +48,54 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return true;
   }
 
+  public function getContentFromUri($uri) {
+    $html = null;
+
+    $query = $this->getRemoteXpath($uri, "//div[@id='content']", $html);
+    $dom = new DomDocument();
+    $dom->appendChild($dom->importNode($query->item(0), true));
+
+    return array('dom' => $dom, 'html' => $html);
+  }
+
   /**
    * @see lib/Importer/CanalblogImporterImporterBase#process()
    */
   public function process()
   {
   	$data = array();
-    $query = $this->getRemoteXpath($this->uri, "//div[@id='content']", $html);
-    $dom = new DomDocument();
-    $dom->appendChild($dom->importNode($query->item(0), true));
+    $remote = $this->getContentFromUri($this->uri);
 
-    $data['post'] = $this->savePost($dom, $html);
-    $data['comments'] = $this->saveComments($dom, $html);
-    $data['medias'] = $this->saveMedias($dom, $html);
+    $data['post'] = $this->savePost($remote['dom'], $remote['html']);
+    $data['comments'] = $this->saveComments($remote['dom'], $remote['html']);
+    $data['medias'] = $this->saveMedias($remote['dom'], $remote['html']);
 
     return $data;
+  }
+
+  public function getData() {
+    return $this->data;
+  }
+
+  public function extractTitle($xpath) {
+    $title = '';
+    $attempt = $xpath->query("//div[@class='blogbody']//a[@rel='bookmark']");
+
+    if ($attempt->length) {
+      $title = $attempt->item(0)->getAttribute('title');
+    }
+    else {
+      $title = $xpath->query("//div[@class='blogbody']//h3")->item(0)->textContent;
+    }
+
+    return trim($title);
+  }
+
+  public function isImageSrcPattern($src, $media_pattern, $host) {
+    $hostname = parse_url($host, PHP_URL_HOST);
+    $media_pattern['detection_pattern_inline'] = str_replace('%canalblog_domain%', $hostname, $media_pattern['detection_pattern_inline']);
+
+    return preg_match($media_pattern['detection_pattern_inline'], $src) === 1;
   }
 
   /**
@@ -87,7 +129,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 	    $tmpdom->appendChild($tmpdom->importNode($footerdom, true));
 	    $itemfooter = $tmpdom->saveHTML();
    	}
-   	else 
+   	else
    	{
    		return $stats;
    	}
@@ -95,12 +137,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     preg_match('#archives/(?P<post_year>\d{4})/(?P<post_month>\d{2})/(?P<post_day>\d{2})/(?P<post_id>\d+).html$#U', $this->uri, $matches);
     extract($matches);
     unset($matches, $tmpdom, $footerdom);
-	    
+
 
     /*
      * Determining title
      */
-    $data['post_title'] = trim($xpath->query("//div[@class='blogbody']/h3[1]")->item(0)->textContent);
+    $data['post_title'] = $this->extractTitle($xpath);
 
     /*
      * Determining date
@@ -118,9 +160,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     {
       foreach (self::$media_pattern as &$config)
       {
-        $config['detection_pattern_inline'] = str_replace('%canalblog_domain%', get_option('canalblog_importer_blog_uri'), $config['detection_pattern_inline']);
-
-        if (preg_match($config['detection_pattern_inline'], $imgNode->getAttribute('src')))
+        if ($this->isImageSrcPattern($imgNode->getAttribute('src'), $config, get_option('canalblog_importer_blog_uri')))
         {
           $imgNode->removeAttribute('height');
           $imgNode->removeAttribute('width');
@@ -176,7 +216,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $data['ID'] = $post_id;
       $stats['status'] = __('imported', 'canalblog-importer');
     }
-    
+
     $stats['id'] = $data['ID'];
     $stats['title'] = $data['post_title'];
 
@@ -543,7 +583,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     {
       $wpImport->backfill_attachment_urls();
     }
-    
+
     return $stats;
   }
 
