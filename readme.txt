@@ -57,6 +57,11 @@ Encore quelques clics et ça sera terminé !
 
 
 == Changelog ==
+
+= Version 1.2.5 =
+
+* correction d'une typo dans le code
+
 = Version 1.2.4 =
 
 * l'import fonctionne désormais sur des noms de domaine personnalisés
