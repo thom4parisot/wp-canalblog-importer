@@ -162,6 +162,91 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $tmpDom;
   }
 
+  public function extractComments($xpath) {
+    $comments = array();
+
+    foreach ($xpath->query("//*[@itemprop='comment']") as $commentNode) {
+      if (!$commentNode->hasAttribute('data-pid')) {
+        continue;
+      }
+
+      $data = array(
+        '__comment_id' => $commentNode->getAttribute('data-pid'),
+        'comment_approved' => 1,
+        'comment_karma' => 1,
+        'comment_post_ID' =>  $this->id,
+        'comment_author_email' => 'nobody@canalblog',
+        'comment_agent' => 'Canalblog Importer',
+        'comment_author_IP' => '127.0.0.1',
+        'comment_type' => 'comment',
+        'comment_author_url' => '',
+      );
+
+      /*
+       * Content
+       */
+      $tmpdom = new DomDocument();
+      $tmpNode = $tmpdom->importNode($commentNode, true);
+      $tmpdom->appendChild($tmpNode);
+      $finder = new DomXpath($tmpdom);
+
+      foreach($finder->query("//h3") as $item) {
+        $item->parentNode->removeChild($item);
+      }
+
+      foreach($finder->query("//*[@class='itemfooter']") as $item) {
+        $item->parentNode->removeChild($item);
+      }
+
+      $data['comment_content'] = trim($tmpdom->textContent);
+      unset($tmpdom, $tmpnode);
+
+      /*
+       * Author
+       */
+      $commentAuthor = $xpath->query("div[@class='itemfooter']/a", $commentNode);
+
+      if ($commentAuthor->length) {
+        $data['comment_author_url'] = $commentAuthor->item(0)->getAttribute('href');
+        $data['comment_author'] = $commentAuthor->item(0)->textContent;
+      }
+      else {
+        preg_match('#^Posté par (?P<author>[^,]+),#U', $xpath->query("div[@class='itemfooter']", $commentNode)->item(0)->textContent,  $matches);
+
+        if (!empty($matches)) {
+          $data['comment_author'] = $matches['author'];
+        }
+      }
+
+      /*
+       * Date
+       */
+      // Modern Mode
+      $commentDate = $xpath->query("//div[@class='itemfooter']/*[@class='timeago']", $commentNode);
+
+      if ($commentDate->length) {
+        $data['comment_date'] = str_replace('T', ' ', $commentDate->item(0)->getAttribute('title'));
+      }
+
+      // Legacy Mode
+      else {
+        $tmp = trim(str_replace(array("\r\n", "\r", "\n"), ' ', $xpath->query("div[@class='itemfooter']", $commentNode)->item(0)->textContent));
+        $tmp = str_replace('  ', ' ', $tmp);
+        preg_match('#, (le )?(?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) (à|&agrave;?) (?P<hour>[^:]+):(?P<minute>.+)$#iUs', $tmp, $matches);
+        $matches['strptime'] = strptime(sprintf('%s %s %s %s:%s', $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
+        $matches['month'] = sprintf('%02s', $matches['strptime']['tm_mon'] + 1);
+
+        $data['comment_date'] = sprintf('%s-%s-%s %s:%s:00', $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']);
+      }
+
+      $data['comment_date_gmt'] = $data['comment_date'];
+
+      array_push($comments, $data);
+    }
+
+    return $comments;
+  }
+
   public function isImageSrcPattern($src, $media_pattern, $host) {
     $hostname = parse_url($host, PHP_URL_HOST);
     $media_pattern['detection_pattern_inline'] = str_replace('%canalblog_domain%', $hostname, $media_pattern['detection_pattern_inline']);
@@ -325,6 +410,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveComments(DomDocument $dom, $html)
   {
+    $xpath = new DomXpath($dom);
   	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);
 
     if ($this->data['comment_status'] == 'closed')
@@ -336,106 +422,20 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
      * Canalblog is only in french, hopefully for us (and me...)
      */
     setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR@euro', 'fr_FR', 'fr', 'french');
-    $date_pattern = '%s %s %s %s:%s';
 
-    list($tmp, $html_comments) = explode('<a id="comments">', $html);
-    unset($tmpdom, $tmp);
-
-    preg_match_all('#<a id="c\d+"></a>(.+)<div class="itemfooter">.+</div>#siU', $html_comments, $matches);
-    $found_comments = $matches[0];
+    $found_comments = $this->extractComments($xpath);
  		$stats['count'] = count($found_comments);
     unset($matches);
 
-    if (empty($found_comments))
-    {
+    if (empty($found_comments)) {
       return $stats;
     }
 
     $comments = get_comments(array('post_id' => $this->id));
 
-    foreach ($found_comments as $commentHtml)
-    {
-      $commentDom = $this->getDomDocumentFromHtml($commentHtml);
-
-      $xpath = new DomXpath($commentDom);
-      $commentNode = $commentDom->getElementsByTagName('body')->item(0);
-
-      if ($xpath->query("a[@id]", $commentNode)->length === 0)
-      {
-        continue;
-      }
-
-      /*
-       * Determining Canalblog comment ID
-       */
-      $canalblog_comment_id = $xpath->query("a[@id]", $commentNode)->item(0)->getAttribute('id');
-
-      $data = array(
-        'comment_approved' => 1,
-        'comment_karma' => 1,
-        'comment_post_ID' =>  $this->id,
-        'comment_author_email' => 'nobody@canalblog',
-        'comment_agent' => 'Canalblog Importer',
-        'comment_author_IP' => '127.0.0.1',
-        'comment_type' => 'comment',
-        'comment_author_url' => '',
-      );
-
-      /*
-       * Comment Title
-       * We agregate it in comment
-       */
-      $tmpdom = new DomDocument();
-      if ($titleNode = $xpath->query('h3', $commentNode)->item(0))
-      {
-        $tmpnode = $tmpdom->createElement('p');
-        $tmpnode->appendChild($tmpdom->createElement('strong', esc_html($titleNode->textContent)));
-        $tmpdom->appendChild($tmpnode);
-      }
-
-      /*
-       * Comment content
-       * It's basically all direct <p>
-       */
-      foreach ($xpath->query('//p', $commentNode) as $comment_p)
-      {
-        $tmpdom->appendChild($tmpdom->importNode($comment_p, true));
-      }
-
-      $data['comment_content'] = trim(preg_replace('#<p>[\s]*</p>#U', '', $tmpdom->saveHTML()));
-      unset($tmpdom, $tmpnode);
-
-      /*
-       * Comment footer
-       */
-      $commentFooterNode = $xpath->query("div[@class='itemfooter']", $commentNode)->item(0);
-
-      //happens rarely, don't know why: we skip the import of this comment
-      if (null === $commentFooterNode)
-      {
-      	$stats['skipped']++;
-        continue;
-      }
-
-      /*
-       * Comment author + URI + date
-       */
-      if ($uriNode = $xpath->query("a", $commentFooterNode)->item(0))
-      {
-        $data['comment_author_url'] = $uriNode->getAttribute('href');
-      }
-      unset($uriNode);
-
-      $tmp = trim(str_replace(array("\r\n", "\r", "\n"), ' ', $commentFooterNode->textContent));
-      $tmp = str_replace('  ', ' ', $tmp);
-      preg_match('#^Post(é|&eacute;?) par (?P<comment_author>.+), (le )?(?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) (à|&agrave;?) (?P<hour>[^:]+):(?P<minute>.+)$#iUs', $tmp, $matches);
-      $matches['strptime'] = strptime(sprintf($date_pattern, $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
-      $matches['month'] = sprintf('%02s', $matches['strptime']['tm_mon'] + 1);
-
-      $data['comment_author'] =   $matches['comment_author'];
-      $data['comment_date'] =     sprintf('%s-%s-%s %s:%s:00', $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']);
-      $data['comment_date_gmt'] = $data['comment_date'];
-      unset($matches);
+    foreach ($found_comments as $data) {
+      $canalblog_comment_id = $data['__comment_id'];
+      unset($data['__comment_id']);
 
       /*
        * Saving (only if not exists)

@@ -73,7 +73,7 @@ class ImportPort extends WP_UnitTestCase {
 
 	public function extractPostDateProvider() {
 	  return array(
-	    array('boiremanger', '2014-08-24 19:09'),
+	    array('boiremanger', '2014-08-23 06:55'),
 	    array('couturejulie', '2013-01-02 14:18'),
 	    array('maflo', '2010-08-03 11:41')
 	  );
@@ -111,11 +111,55 @@ class ImportPort extends WP_UnitTestCase {
 
 	public function extractPostContentProvider() {
 	  return array(
-	    array('boiremanger', 'Les pigeons (3 pièces pour 6 personnes)'),
+	    array('boiremanger', 'Ce plat a été fait exprès pour un flacon vénérable de Grande'),
 	    array('couturejulie', 'et oui fini le rose bonbon et les rayures...'),
 	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????"),
 	  );
 	}
+
+	/**
+	 * @dataProvider extractCommentsProvider
+	 */
+	public function testExtractComments($contentId, $expectedCount, $firstCommentData) {
+    $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+    $dom = $this->operation->getDomDocumentFromHtml($html);
+    $xpath = new DomXpath($dom);
+
+    $comments = $this->operation->extractComments($xpath);
+
+    $this->assertCount($expectedCount, $comments);
+
+    if (!empty($comments)) {
+      $firstComment = $comments[0];
+
+      $this->assertEquals($firstCommentData['__comment_id'], $firstComment['__comment_id']);
+      $this->assertEquals($firstCommentData['comment_author'], $firstComment['comment_author']);
+      $this->assertEquals($firstCommentData['comment_date'], $firstComment['comment_date']);
+      $this->assertStringStartsWith($firstCommentData['comment_content'], $firstComment['comment_content']);
+      $this->assertEquals($firstCommentData['comment_author_url'], $firstComment['comment_author_url']);
+    }
+	}
+
+	public function extractCommentsProvider() {
+	  return array(
+	    array('boiremanger', 3, array(
+	      '__comment_id' => '30458956',
+	      'comment_author' => 'Celoweb',
+	      'comment_date' => '2014-08-23 18:29:06',
+	      'comment_content' => 'Je confirme tes dires Eric',
+	      'comment_author_url' => '',
+	    )),
+	    array('couturejulie', 0, array()),
+	    array('maflo', 24, array(
+	      '__comment_id' => '18732506',
+	      'comment_author' => 'opio',
+	      'comment_date' => '2010-01-18 16:45:00',
+	      'comment_content' => 'bah la 3 après avoir failli',
+	      'comment_author_url' => 'http://www.familyandthecity.com',
+	    )),
+	  );
+	}
+
 
 	/**
    * @dataProvider postContentProvider
@@ -134,7 +178,7 @@ class ImportPort extends WP_UnitTestCase {
 
 	public function postContentProvider() {
 	  return array(
-	    array('boiremanger', 'http://www.boiremanger.net/archives/2014/08/24/30467749.html', 'Pigeon en deux cuissons, purée de céleri rôti, coulis de framboises, croustillants aux cèpes et cacao'),
+	    array('boiremanger', 'http://www.boiremanger.net/archives/2014/08/23/30458956.html', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche'),
 	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...'),
 	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????')
 	  );
