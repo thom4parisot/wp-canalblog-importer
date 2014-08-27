@@ -91,6 +91,77 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return trim($title);
   }
 
+  public function extractPostDate($xpath) {
+    $result = $xpath->query("//meta[@itemprop='dateCreated']");
+
+    if (!$result->length) {
+      return null;
+    }
+
+    preg_match('#^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})T(?P<hour>\d{2}):(?P<minutes>\d{2})$#U', $result->item(0)->getAttribute('content'), $matches);
+    extract($matches);
+
+    return sprintf('%s-%s-%s %s:%s', $year, $month, $day, $hour, $minutes);
+  }
+
+  public function extractPostAuthorName($xpath) {
+    $result = $xpath->query("//*[@class='articlecreator' and @itemprop='creator']");
+
+    if (!$result->length) {
+      return 'admin';
+    }
+
+    return $result->item(0)->textContent;
+  }
+
+  public function extractPostContent($xpath) {
+    $tmpDom = new DomDocument();
+    $finder = new DomXpath($tmpDom);
+
+    $result = $xpath->query("//div[@itemtype='http://schema.org/Article']")->item(0);
+    $result = $tmpDom->importNode($result, true);
+    $tmpDom->appendChild($result);
+
+    // remove footer
+    foreach($finder->query("//div[@class='itemfooter']") as $item) {
+      $item->parentNode->removeChild($item);
+    }
+
+    // remove itemprops
+    foreach($finder->query("//*[boolean(@itemprop)]") as $item) {
+      $item->parentNode->removeChild($item);
+    }
+
+    // remove titles
+    $anchor = $finder->query("//a[@name='". $result->getAttribute('id') ."']")->item(0);
+    $childCursor = 0;
+    $parentNode = $anchor->parentNode;
+
+    while ($childCursor < $parentNode->childNodes->length) {
+      $childNode = $parentNode->childNodes->item($childCursor);
+
+      $parentNode->removeChild($childNode);
+
+      // and we remove the next one as it's the real title
+      if ($childNode->isSameNode($anchor)) {
+        $parentNode->removeChild($parentNode->childNodes->item($childCursor + 1));
+        break;
+      }
+
+      $childCursor++;
+    }
+
+    //remove attributes
+    $tmpDom->firstChild->removeAttribute('id');
+    $tmpDom->firstChild->removeAttribute('itemscope');
+    $tmpDom->firstChild->removeAttribute('itemtype');
+    $tmpDom->firstChild->removeAttribute('itemref');
+    $tmpDom->firstChild->removeAttribute('class');
+    $tmpDom->firstChild->removeAttribute('data-edittype');
+
+    return $tmpDom;
+  }
+
   public function isImageSrcPattern($src, $media_pattern, $host) {
     $hostname = parse_url($host, PHP_URL_HOST);
     $media_pattern['detection_pattern_inline'] = str_replace('%canalblog_domain%', $hostname, $media_pattern['detection_pattern_inline']);
@@ -123,34 +194,15 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     preg_match('#/(\d+)\.html$#U', $this->uri, $matches);
     $canalblog_id = $matches[1];
 
-   	if ($footerdom = $xpath->query("//div[@class='blogbody']//div[@class='itemfooter']")->item(0))
-   	{
-   		$tmpdom = new DomDocument();
-	    $tmpdom->appendChild($tmpdom->importNode($footerdom, true));
-	    $itemfooter = $tmpdom->saveHTML();
-   	}
-   	else
-   	{
-   		return $stats;
-   	}
-
-    preg_match('#archives/(?P<post_year>\d{4})/(?P<post_month>\d{2})/(?P<post_day>\d{2})/(?P<post_id>\d+).html$#U', $this->uri, $matches);
-    extract($matches);
-    unset($matches, $tmpdom, $footerdom);
-
-
     /*
-     * Determining title
+     * Determining title and date
      */
     $data['post_title'] = $this->extractTitle($xpath);
+    $data['post_date'] = $this->extractPostDate($xpath);
 
-    /*
-     * Determining date
-     *
-     * @todo handle multiple date formats (now, default date formating)
-     */
-    preg_match('#(\d{2}:\d{2})#U', $itemfooter, $dates);
-    $data['post_date'] = sprintf('%s-%s-%s %s:00', $post_year, $post_month, $post_day, $dates[1]);
+    if (!$data['post_date']) {
+      return $stats;
+    }
 
     /*
      * Striping images attributes such as their size
@@ -175,14 +227,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     /*
      * Determining content
      */
-    preg_match('#<a name="\d+"></a>(.+)<div class="itemfooter">#sU', $dom->saveHTML(), $matches);
-    $data['post_content'] = preg_replace('#^.+(\r|\n)#sU', '', trim($matches[1]));
+    $data['post_content'] = trim($this->extractPostContent($xpath)->saveHTML());
 
     /*
      * Determining author
      */
-    preg_match('#Post(&eacute;|é) par (.+) (&agrave;|à)#siU', $itemfooter, $matches);
-    $author_name = $matches[2];
+    $author_name = $this->extractPostAuthorName($xpath);
     $data['post_author'] = $this->getOrCreateAuthorByUsername($author_name);
 
     /*
@@ -260,7 +310,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     add_post_meta($post_id, 'canalblog_uri', $this->uri, true);
 
     $this->data = $data;
-    $this->id =   $post_id;
+    $this->id = $post_id;
 
     return $stats;
   }
@@ -613,7 +663,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   protected function getOrCreateAuthorByUsername($username)
   {
-    if ($user_infos = get_userdatabylogin($username))
+    if ($user_infos = get_user_by('login', $username))
     {
       return $user_infos->ID;
     }
