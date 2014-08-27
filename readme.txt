@@ -58,6 +58,10 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+= Version 1.3.0 =
+
+* amélioration de la compatibilité d'import des titres, commentaires, images etc.
+
 = Version 1.2.5 =
 
 * correction d'une typo dans le code
