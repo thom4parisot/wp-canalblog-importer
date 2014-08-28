@@ -75,7 +75,8 @@ class ImportPort extends WP_UnitTestCase {
 	  return array(
 	    array('boiremanger', '2014-08-23 06:55'),
 	    array('couturejulie', '2013-01-02 14:18'),
-	    array('maflo', '2010-08-03 11:41')
+	    array('maflo', '2010-08-03 11:41'),
+	    array('masbou', '2014-07-15 07:53'),
 	  );
 	}
 
@@ -94,26 +95,31 @@ class ImportPort extends WP_UnitTestCase {
 	  return array(
 	    array('boiremanger', 'admin'),
 	    array('couturejulie', 'lacouturedejulie'),
-	    array('maflo', 'maflo')
+	    array('maflo', 'maflo'),
+	    array('masbou', 'Olivier Masbou'),
 	  );
 	}
 
 	/**
 	 * @dataProvider extractPostContentProvider
 	 */
-	public function testExtractPostContent($contentId, $startWith) {
+	public function testExtractPostContent($contentId, $startsWith, $endsWith) {
     $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
     $dom = $this->operation->getDomDocumentFromHtml($html);
     $xpath = new DomXpath($dom);
 
-    $this->assertStringStartsWith($startWith, trim($this->operation->extractPostContent($xpath)->textContent));
+    $content = trim($this->operation->extractPostContent($xpath)->textContent, " \n\r\t\0\x0b\xc2\xa0");
+
+    $this->assertStringStartsWith($startsWith, $content);
+    $this->assertStringEndsWith($endsWith, $content);
 	}
 
 	public function extractPostContentProvider() {
 	  return array(
-	    array('boiremanger', 'Ce plat a été fait exprès pour un flacon vénérable de Grande'),
-	    array('couturejulie', 'et oui fini le rose bonbon et les rayures...'),
-	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????"),
+	    array('boiremanger', 'Ce plat a été fait exprès pour un flacon vénérable de Grande', "L'accord était magnifique."),
+	    array('couturejulie', 'et oui fini le rose bonbon et les rayures...', "Pensez à changer vos liens et merci de votre fidélité..."),
+	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????", "Allez à vos méninges et rdv le 18 septembre!"),
+	    array('masbou', "Augmentation des surfaces de pommes de terre en Europe", "atteint 355 millions d’euros."),
 	  );
 	}
 
@@ -157,6 +163,7 @@ class ImportPort extends WP_UnitTestCase {
 	      'comment_content' => 'bah la 3 après avoir failli',
 	      'comment_author_url' => 'http://www.familyandthecity.com',
 	    )),
+	    array('masbou', 0, array()),
 	  );
 	}
 
@@ -180,7 +187,8 @@ class ImportPort extends WP_UnitTestCase {
 	  return array(
 	    array('boiremanger', 'http://www.boiremanger.net/archives/2014/08/23/30458956.html', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche'),
 	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...'),
-	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????')
+	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????'),
+	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches'),
 	  );
 	}
 }

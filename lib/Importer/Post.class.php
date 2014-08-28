@@ -122,13 +122,37 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $result = $tmpDom->importNode($result, true);
     $tmpDom->appendChild($result);
 
-    // remove footer
-    foreach($finder->query("//div[@class='itemfooter']") as $item) {
-      $item->parentNode->removeChild($item);
+    // remove footer and everything after
+    $footer = $finder->query("//div[@class='itemfooter']");
+
+    if ($footer->length) {
+      $footer = $footer->item(0);
+
+      $childCursor = 0;
+      $parentNode = $footer->parentNode;
+      $delete = false;
+
+      while ($childCursor < $parentNode->childNodes->length) {
+        $item = $parentNode->childNodes->item($childCursor);
+
+        if ($item->isSameNode($footer)) {
+          $delete = true;
+        }
+
+        if ($delete) {
+          $parentNode->removeChild($item);
+        }
+
+        $childCursor++;
+      }
     }
 
     // remove itemprops
     foreach($finder->query("//*[boolean(@itemprop)]") as $item) {
+      if ($item->getAttribute('itemprop') === 'articleBody') {
+        continue;
+      }
+
       $item->parentNode->removeChild($item);
     }
 
@@ -136,6 +160,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $anchor = $finder->query("//a[@name='". $result->getAttribute('id') ."']")->item(0);
     $childCursor = 0;
     $parentNode = $anchor->parentNode;
+
 
     while ($childCursor < $parentNode->childNodes->length) {
       $childNode = $parentNode->childNodes->item($childCursor);
