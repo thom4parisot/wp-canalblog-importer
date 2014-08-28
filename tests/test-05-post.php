@@ -6,7 +6,7 @@ class ImportPort extends WP_UnitTestCase {
   protected $operation;
 
   public function setUp() {
-    $plugin = WPPluginToolkitPlugin::create('CanalblogImporter', __DIR__ . '/../bootstrap.php');
+    $plugin = WPPluginToolkitPlugin::create('CanalblogImporter', dirname(__FILE__) . '/../bootstrap.php');
 
     $this->importer = new CanalblogImporterImporter($plugin);
     $this->operation = new CanalblogImporterImporterPost($plugin->getConfiguration());
@@ -27,7 +27,7 @@ class ImportPort extends WP_UnitTestCase {
 	 extractTitle()
 	 */
 	function testExtractTitleFromH3() {
-	  $html = file_get_contents(__DIR__ . '/fixtures/post-maflo.html');
+	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-maflo.html');
 	  $dom = $this->operation->getDomDocumentFromHtml($html);
 	  $xpath = new DomXpath($dom);
 
@@ -35,7 +35,7 @@ class ImportPort extends WP_UnitTestCase {
 	}
 
 	function testExtractTitleFromBookmarkTitle() {
-	  $html = file_get_contents(__DIR__ . '/fixtures/post-couturejulie.html');
+	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-couturejulie.html');
 	  $dom = $this->operation->getDomDocumentFromHtml($html);
 	  $xpath = new DomXpath($dom);
 
@@ -64,7 +64,7 @@ class ImportPort extends WP_UnitTestCase {
    * @dataProvider extractPostDateProvider
    */
 	public function testExtractPostDate($contentId, $expected) {
-    $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
     $dom = $this->operation->getDomDocumentFromHtml($html);
     $xpath = new DomXpath($dom);
 
@@ -84,7 +84,7 @@ class ImportPort extends WP_UnitTestCase {
    * @dataProvider extractPostAuthorNameProvider
    */
 	public function testExtractPostAuthorName($contentId, $expected) {
-    $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
     $dom = $this->operation->getDomDocumentFromHtml($html);
     $xpath = new DomXpath($dom);
 
@@ -104,7 +104,7 @@ class ImportPort extends WP_UnitTestCase {
 	 * @dataProvider extractPostContentProvider
 	 */
 	public function testExtractPostContent($contentId, $startsWith, $endsWith) {
-    $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
     $dom = $this->operation->getDomDocumentFromHtml($html);
     $xpath = new DomXpath($dom);
 
@@ -127,7 +127,7 @@ class ImportPort extends WP_UnitTestCase {
 	 * @dataProvider extractCommentsProvider
 	 */
 	public function testExtractComments($contentId, $expectedCount, $firstCommentData) {
-    $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
     $dom = $this->operation->getDomDocumentFromHtml($html);
     $xpath = new DomXpath($dom);
 
@@ -172,7 +172,7 @@ class ImportPort extends WP_UnitTestCase {
    * @dataProvider postContentProvider
    */
 	function testSavePost($contentId, $uri, $title) {
-	  $html = file_get_contents(__DIR__ . '/fixtures/post-'. $contentId .'.html');
+	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
 	  $dom = $this->operation->getDomDocumentFromHtml($html);
 
 	  $this->operation->setUri($uri);

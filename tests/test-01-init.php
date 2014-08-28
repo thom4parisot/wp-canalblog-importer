@@ -6,7 +6,7 @@ class ImportInit extends WP_UnitTestCase {
   protected $operation;
 
   public function setUp() {
-    $plugin = WPPluginToolkitPlugin::create('CanalblogImporter', __DIR__ . '/../bootstrap.php');
+    $plugin = WPPluginToolkitPlugin::create('CanalblogImporter', dirname(__FILE__) . '/../bootstrap.php');
 
     $this->importer = new CanalblogImporterImporter($plugin);
     $this->operation = new CanalblogImporterImporterConfiguration($plugin->getConfiguration());
