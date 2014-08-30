@@ -3,7 +3,6 @@
 class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
   protected $uri, $id, $data;
-  protected static $remote_storage_base_domain = 'http://storage.canalblog.com';
   protected static $media_pattern = array(
     'new' => array(
       'detection_pattern' => '#(http://(p\d+\.)?storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
@@ -272,6 +271,24 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $comments;
   }
 
+  public function extractMediaUris($html, $canalblogDomain) {
+    $remote_uris = array();
+    $dom = $this->getDomDocumentFromHtml($html);
+    $xpath = new DomXpath($dom);
+
+    // Get storage hyperlinks
+    foreach ($xpath->query("//a[contains(@href, 'canalblog.com/storagev1') or contains(@href, 'storage.canalblog.com') or contains(@href, 'canalblog.com/docs')]") as $link) {
+      array_push($remote_uris, $link->getAttribute('href'));
+    }
+
+    // Get image sources
+    foreach ($xpath->query("//img[contains(@src, 'canalblog.com/storagev1') or contains(@src, 'storage.canalblog.com') or contains(@src, 'canalblog.com/images')]") as $link) {
+      array_push($remote_uris, $link->getAttribute('src'));
+    }
+
+    return array_unique($remote_uris);
+  }
+
   public function isImageSrcPattern($src, $media_pattern, $host) {
     $hostname = parse_url($host, PHP_URL_HOST);
     $media_pattern['detection_pattern_inline'] = str_replace('%canalblog_domain%', $hostname, $media_pattern['detection_pattern_inline']);
@@ -536,28 +553,13 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $post = get_post($this->id, ARRAY_A);
 
     /*
-     * Looping on different patterns of medias
-     * Canalblog changed its media pattern around 2006 june
+     * Collecting attachment URIs
      */
-    foreach (self::$media_pattern as $type => &$config)
-    {
-      $config['detection_pattern'] = str_replace('%canalblog_domain%', get_option('canalblog_importer_blog_uri'), $config['detection_pattern']);
-      preg_match_all($config['detection_pattern'], $post['post_content'], $matches);
-
-      if (empty($matches) || empty($matches[0]))
-      {
-        continue;
-      }
-
-      $remote_uris = array_merge($remote_uris, $matches[1]);
-      $remote_uris_mapping[$type] = $matches[1];
-    }
-
-    $remote_uris = array_unique($remote_uris);
+    $remote_uris = $this->extractMediaUris($post['post_content'], get_option('canalblog_importer_blog_uri'));
     $stats['count'] = count($remote_uris);
 
     /*
-     * No picture? No need to go furthermore
+     * No attachment? We skip the rest
      */
     if (empty($remote_uris))
     {

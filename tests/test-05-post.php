@@ -191,5 +191,17 @@ class ImportPort extends WP_UnitTestCase {
 	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches'),
 	  );
 	}
+
+	function testExtractMediaUris(){
+	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/media-suite.html');
+	  $uris = $this->operation->extractMediaUris($html);
+
+	  $this->assertCount(5, $uris);
+	  $this->assertContains('http://storage.canalblog.com/65/79/829482/64555901.pdf', $uris);
+	  $this->assertContains('http://p1.storage.canalblog.com/12/96/1014282/94464164.pdf', $uris);
+	  $this->assertContains('http://static.canalblog.com/storagev1/concoursattache.canalblog.com/docs/introduction.pdf', $uris);
+	  $this->assertContains('http://frances1.canalblog.com/docs/Caractere.pdf', $uris);
+	  $this->assertContains('http://postaisportugal.canalblog.com/images/Fond_d_ecran9.jpg', $uris);
+	}
 }
 
