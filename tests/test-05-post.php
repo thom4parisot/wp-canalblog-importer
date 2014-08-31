@@ -192,7 +192,7 @@ class ImportPort extends WP_UnitTestCase {
 	  );
 	}
 
-	function testExtractMediaUris(){
+	public function testExtractMediaUris(){
 	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/media-suite.html');
 	  $uris = $this->operation->extractMediaUris($html);
 
@@ -202,6 +202,85 @@ class ImportPort extends WP_UnitTestCase {
 	  $this->assertContains('http://static.canalblog.com/storagev1/concoursattache.canalblog.com/docs/introduction.pdf', $uris);
 	  $this->assertContains('http://frances1.canalblog.com/docs/Caractere.pdf', $uris);
 	  $this->assertContains('http://postaisportugal.canalblog.com/images/Fond_d_ecran9.jpg', $uris);
+	}
+	/**
+   * @dataProvider importAttachmentsProvider
+   */
+	public function testImportAttachments($uri) {
+	  $this->operation->requireWordPressImporter($this->operation->getConfiguration());
+
+	  $post = get_post(3, ARRAY_A);
+
+    $stats = array('skipped' => 0, 'new' => 0);
+    $wpImport = new WP_Import();
+    $wpImport->fetch_attachments = true;
+
+    $attachments = $this->operation->importAttachments($wpImport, $post, array($uri), $stats);
+
+    $this->assertArrayHasKey($uri, $wpImport->url_remap);
+    $this->assertEquals(1, $stats['new']);
+    $this->assertInternalType('integer', $attachments[$uri]);
+	}
+
+	public function importAttachmentsProvider() {
+	  return array(
+	    array('http://storage.canalblog.com/65/79/829482/64555901.pdf'),
+	    array('http://postaisportugal.canalblog.com/images/Fond_d_ecran9.jpg')
+	  );
+	}
+
+  /**
+   * @dataProvider updateAttachmentsRemapProvider
+   */
+	public function testUpdateAttachmentsRemap($oldUri, $newUri, $expectedNewUri) {
+    $result = $this->operation->updateAttachmentsRemap(array($oldUri => $newUri), array($oldUri => 8));
+
+    $this->assertContains($expectedNewUri, $result);
+	}
+
+	public function updateAttachmentsRemapProvider() {
+	  return array(
+	    array(
+        'http://storage.canalblog.com/09/65/501700/34561690_p.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690_p.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690-300x300.jpg',
+	    ),
+	    array(
+        'http://storage.canalblog.com/09/65/501700/34561690.thumbnail.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690.thumbnail.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690-300x300.jpg',
+	    ),
+	    array(
+        'http://postaisportugal.canalblog.com/images/t-Fond_d_ecran9.jpg',
+        'http://example.org/wp-content/uploads/2014/08/t-Fond_d_ecran9.jpg',
+        'http://example.org/wp-content/uploads/2014/08/Fond_d_ecran9-150x150.jpg',
+	    ),
+	    array(
+        'http://storage.canalblog.com/09/65/501700/34561690_q.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690_q.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690-150x150.jpg',
+	    ),
+	    array(
+        'http://storage.canalblog.com/09/65/501700/34561690_o.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690_o.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690.jpg',
+	    ),
+	    array(
+        'http://storage.canalblog.com/09/65/501700/34561690.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690.jpg',
+        'http://example.org/wp-content/uploads/2014/08/34561690.jpg',
+	    ),
+	    array(
+        'http://p7.storage.canalblog.com/79/42/1295810/98533741.to_resize_150x3000.jpg',
+        'http://example.org/wp-content/uploads/2014/08/98533741.to_resize_150x3000.jpg',
+        'http://example.org/wp-content/uploads/2014/08/98533741-300x300.jpg',
+	    ),
+	    array(
+        'http://storage.canalblog.com/65/79/829482/64555901.pdf',
+        'http://example.org/wp-content/uploads/2014/08/64555901.pdf',
+        'http://example.org/wp-content/uploads/2014/08/64555901.pdf',
+	    ),
+	  );
 	}
 }
 
