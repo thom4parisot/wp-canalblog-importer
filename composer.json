@@ -20,17 +20,8 @@
           "dist": {
             "type": "zip",
             "url": "http://downloads.wordpress.org/plugin/wordpress-importer.zip"
-          },
-          "source": {
-            "url": "http://plugins.svn.wordpress.org/wordpress-importer/",
-            "type": "svn",
-            "reference": "trunk"
           }
         }
       }
-    ],
-    "scripts": {
-      "post-install-cmd": "find ./vendor -type d -name .svn -exec rm -rf {} \\;",
-      "post-update-cmd": "find ./vendor -type d -name .svn -exec rm -rf {} \\;"
-    }
+    ]
 }
