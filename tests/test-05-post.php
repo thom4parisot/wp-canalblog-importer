@@ -238,6 +238,12 @@ class ImportPort extends WP_UnitTestCase {
     $this->assertContains($expectedNewUri, $result);
 	}
 
+	public function testUpdateAttachmentsRemapWithEmptydata() {
+    $result = $this->operation->updateAttachmentsRemap(array(), array());
+
+    $this->assertEmpty($result);
+	}
+
 	public function updateAttachmentsRemapProvider() {
 	  return array(
 	    array(
@@ -280,6 +286,26 @@ class ImportPort extends WP_UnitTestCase {
         'http://example.org/wp-content/uploads/2014/08/64555901.pdf',
         'http://example.org/wp-content/uploads/2014/08/64555901.pdf',
 	    ),
+	  );
+	}
+
+  /**
+   * @dataProvider savePostMediasProvider
+   */
+	public function testSavePostMedias($post_id, $expectedCount) {
+    $result = $this->operation->saveMedias(get_post($post_id, ARRAY_A));
+
+    $this->assertEquals($expectedCount, $result['new']);
+    $this->assertEquals(0, $result['overwritten']);
+    $this->assertEquals(0, $result['skipped']);
+    $this->assertEquals($expectedCount, $result['count']);
+	}
+
+	public function savePostMediasProvider() {
+	  return array(
+	    array(4, 0),
+	    array(5, 0),
+	    array(3, 2),
 	  );
 	}
 }

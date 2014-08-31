@@ -67,7 +67,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     $data['post'] = $this->savePost($remote['dom'], $remote['html']);
     $data['comments'] = $this->saveComments($remote['dom'], $remote['html']);
-    $data['medias'] = $this->saveMedias($remote['dom'], $remote['html']);
+    $data['medias'] = $this->saveMedias(get_post($this->id, ARRAY_A));
 
     return $data;
   }
@@ -528,7 +528,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * @since 1.0
    * @version 1.0
    */
-  public function saveMedias()
+  public function saveMedias(array $post)
   {
   	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);
 
@@ -549,7 +549,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $attachments = array();
     $remote_uris = array();
     $remote_uris_mapping = array();
-    $post = get_post($this->id, ARRAY_A);
 
     /*
      * Collecting attachment URIs
