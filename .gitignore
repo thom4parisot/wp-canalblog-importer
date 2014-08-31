@@ -4,3 +4,4 @@
 *.mo
 
 /vendor/
+composer.lock
