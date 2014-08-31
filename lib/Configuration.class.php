@@ -20,7 +20,7 @@ class CanalblogImporterConfiguration extends WPPluginToolkitConfiguration
   protected function configureOptions()
   {
     $this->wordpress_importer_locations = array(
-      ABSPATH.'wp-admin/import/wordpress.php',
+      $this->getDirname() . '/vendor/wordpress/wordpress-importer/wordpress-importer.php',
       WP_PLUGIN_DIR.'/wordpress-importer/wordpress-importer.php'
     );
   }
