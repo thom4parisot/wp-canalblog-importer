@@ -28,5 +28,9 @@
           }
         }
       }
-    ]
+    ],
+    "scripts": {
+      "post-install-cmd": "find ./vendor -type d -name .svn -exec rm -rf {} \\;",
+      "post-update-cmd": "find ./vendor -type d -name .svn -exec rm -rf {} \\;"
+    }
 }
