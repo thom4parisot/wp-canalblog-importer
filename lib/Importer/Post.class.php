@@ -614,6 +614,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         $postdata['post_date'] = $post['post_date'];
         $postdata['post_date_gmt'] = $post['post_date_gmt'];
         $postdata['post_author'] = $post['post_author'];
+        $postdata['post_title'] = '';
 
         $attachment_id = $wpImport->process_attachment($postdata, $remote_uri);
         add_post_meta($attachment_id, 'canalblog_attachment_uri', $remote_uri, true);
