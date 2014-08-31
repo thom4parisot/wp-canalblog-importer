@@ -2,3 +2,6 @@
 .project
 .settings
 *.mo
+
+/vendor/
+composer.lock

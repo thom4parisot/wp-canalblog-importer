@@ -58,6 +58,11 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+= Version 1.4 =
+
+* import des documents PDF
+* meilleure prise en charge des formats d'images Canalblog
+
 = Version 1.3.1 =
 
 * amélioration de la compatibilité d'import des titres, commentaires, images etc.
@@ -151,6 +156,13 @@ Encore quelques clics et ça sera terminé !
 
  * version initiale, avec tout ce qu'il faut pour devenir autonome
 
+== Upgrade Notice ==
+
+= 1.4 =
+
+Le code n'est testé qu'à partir de PHP 5.3.
+
+Mais en même temps, vous ne devriez plus utiliser une version de PHP inférieure à PHP 5.3.
 
 == Screenshots ==
 

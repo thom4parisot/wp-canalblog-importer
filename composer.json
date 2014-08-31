@@ -1,0 +1,32 @@
+{
+    "name": "oncletom/canalblog-importer",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "oncletom",
+            "email": "hi@oncletom.io"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "wordpress/wordpress-importer": "dev-trunk"
+    },
+    "repositories": [
+      {
+        "type": "package",
+        "package": {
+          "name": "wordpress/wordpress-importer",
+          "version": "dev-trunk",
+          "dist": {
+            "type": "zip",
+            "url": "http://downloads.wordpress.org/plugin/wordpress-importer.zip"
+          },
+          "source": {
+            "url": "http://plugins.svn.wordpress.org/wordpress-importer/",
+            "type": "svn",
+            "reference": "trunk"
+          }
+        }
+      }
+    ]
+}
