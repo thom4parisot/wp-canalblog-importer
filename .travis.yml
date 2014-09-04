@@ -6,8 +6,8 @@ php:
 - '5.3'
 
 env:
-- WP_VERSION=latest
-- WP_VERSION=4.0-RC1
+- WP_VERSION=4.0.0
+- WP_VERSION=3.9.2
 - WP_VERSION=3.8.4
 - WP_VERSION=3.7.4
 - WP_VERSION=3.6.1
