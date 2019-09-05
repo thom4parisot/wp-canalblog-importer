@@ -4,6 +4,9 @@ cache:
   directories:
     - $HOME/.composer/cache/files
 
+addons:
+  mariadb: '10.0'
+
 env:
 - WP_VERSION=5.2
 - WP_VERSION=4.0
