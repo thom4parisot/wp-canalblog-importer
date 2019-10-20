@@ -1,7 +1,9 @@
-name: Deploy to wordress.org/extend/plugins/
+name: Deploy to wordress.org
+
 on:
   push:
-    tags: '*'
+    tags:
+    - '*'
 
 jobs:
   publish:
