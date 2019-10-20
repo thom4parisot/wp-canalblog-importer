@@ -77,6 +77,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', '2013-01-02 14:18'),
 	    array('maflo', '2010-08-03 11:41'),
 	    array('masbou', '2014-07-15 07:53'),
+	    array('evacuisine', '2019-10-15 15:42'),
 	  );
 	}
 
@@ -97,6 +98,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', 'lacouturedejulie'),
 	    array('maflo', 'maflo'),
 	    array('masbou', 'Olivier Masbou'),
+	    array('evacuisine', 'admin'),
 	  );
 	}
 
@@ -120,6 +122,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', 'et oui fini le rose bonbon et les rayures...', "Pensez à changer vos liens et merci de votre fidélité..."),
 	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????", "Allez à vos méninges et rdv le 18 septembre!"),
 	    array('masbou', "Augmentation des surfaces de pommes de terre en Europe", "atteint 355 millions d’euros."),
+	    array('evacuisine', "Aujourd'hui, voici une délicieuse pizza aux légumes", "Bonne journée et bon week-end ! On se retrouve lundi avec une nouvelle recette très gourmande."),
 	  );
 	}
 
@@ -164,6 +167,13 @@ class ImportPort extends WP_UnitTestCase {
 	      'comment_author_url' => 'http://www.familyandthecity.com',
 	    )),
 	    array('masbou', 0, array()),
+      array('evacuisine', 1, array(
+	      '__comment_id' => '37714699',
+	      'comment_author' => 'chez mouma',
+	      'comment_date' => '2019-10-18 16:30:26',
+	      'comment_content' => 'Hummmm jolie pizza très appétissante. Bon week-end !!',
+	      'comment_author_url' => 'http://mouma31.canalblog.com/',
+	    )),
 	  );
 	}
 
@@ -189,6 +199,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...'),
 	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????'),
 	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches'),
+	    array('evacuisine', 'http://www.evacuisine.fr/archives/2019/10/18/37714699.html', 'Pizza aux légumes vert et curcuma'),
 	  );
 	}
 

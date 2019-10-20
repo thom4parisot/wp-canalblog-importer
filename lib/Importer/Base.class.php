@@ -64,7 +64,7 @@ abstract class CanalblogImporterImporterBase
     //removing all scripts (we don't want them)
     if (!!$stripJavaScript)
     {
-      $html = preg_replace('#<script[^>]*>.+<\/script>#siU', '', trim($html));
+      $html = preg_replace('#<script[^>]*>.*<\/script>#siU', '', trim($html));
     }
 
     /*
