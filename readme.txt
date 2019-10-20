@@ -2,8 +2,8 @@
 Contributors: oncletom
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=752034
 Tags: canalblog, wordpress, migration, import, admin, importer
-Requires at least: 3.5
-Tested up to: 3.9
+Requires at least: 4.9
+Tested up to: 5.2
 Stable tag: trunk
 
 

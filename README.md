@@ -1,6 +1,6 @@
 # Canalblog Importer [![Build Status](https://travis-ci.org/oncletom/wp-canalblog-importer.svg?branch=master)](https://travis-ci.org/oncletom/wp-canalblog-importer)
 
-**Requires at least:** 4.0
+**Requires at least:** 4.9
 **Tested up to:** 5.2
 **Stable tag:** trunk
 
@@ -73,6 +73,9 @@ composer run test
 ## Changelog ##
 
 ### Version 1.4.0 ###
+
+* import des documents PDF
+* meilleure prise en charge des formats d'images Canalblog
 
 ### Version 1.3.1 ###
 
