@@ -3,7 +3,7 @@
 Plugin Name: Canalblog Importer
 Description: Enables content importing from a blog hosted on Canalblog platform.
 Author: Oncle Tom
-Version: 1.4
+Version: 1.5
 Text Domain: canalblog-importer
 Domain Path: /i18n
 Author URI: http://case.oncle-tom.net/
@@ -16,9 +16,9 @@ Plugin URI: http://wordpress.org/extend/plugins/canalblog-importer/
 /* needed to enable automatic extraction with Poedit for plugin listing */
 __('Enables content importing from a blog hosted on Canalblog platform.', 'canalblog-importe');
 
-if (phpversion() < '5.2')
+if (phpversion() < '7.1')
 {
-  printf("Canalblog Importer nécessite PHP 5.2 ou plus (votre version : <code>%s</code>). <a href='http://www.wordpress-fr.net/support/sujet-31932-1.html' target='_blank'>Comment faire</a> ?", phpversion());
+  printf("Canalblog Importer nécessite PHP 7.1 ou plus (votre version : <code>%s</code>).", phpversion());
   exit;
 }
 
