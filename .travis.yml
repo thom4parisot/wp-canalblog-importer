@@ -1,14 +1,23 @@
 language: php
+
+dist:
+- xenial
+- trusty
+
 php:
 - '7.3'
-- '6'
-- '5'
-cache:
-  directories:
-  - $HOME/.composer/cache/files
+- '5.0'
 
 services:
 - mariadb
+
+jobs:
+  fast_finish: true
+  include:
+  - dist: xenial
+    php: '7.3'
+  - dist: trusty
+    php: '5.0'
 
 env:
 - WP_VERSION=5.2
