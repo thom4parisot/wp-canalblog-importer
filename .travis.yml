@@ -8,8 +8,8 @@ php:
 - '7.3'
 - '5.0'
 
-services:
-- mariadb
+addons:
+  mariadb: '10.1'
 
 jobs:
   fast_finish: true
