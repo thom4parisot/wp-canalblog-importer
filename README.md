@@ -72,6 +72,12 @@ composer run test
 
 ## Changelog ##
 
+### Version 1.5.0 ###
+
+* corrige un défaut d'import lorsque certains scripts sont présents sur votre blog d'origine
+* PHP 7.1 minimum
+* WordPress 5.0 minimum
+
 ### Version 1.4.0 ###
 
 * import des documents PDF

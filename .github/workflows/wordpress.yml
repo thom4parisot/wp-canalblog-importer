@@ -1,0 +1,16 @@
+name: Deploy to wordress.org/extend/plugins/
+on:
+  push:
+    tags: '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: WordPress Plugin Deploy
+      uses: 10up/action-wordpress-plugin-deploy@1.3.0
+      env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SLUG: wp-canalblog-importer
