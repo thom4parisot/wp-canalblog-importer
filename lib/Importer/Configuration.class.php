@@ -16,7 +16,7 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
   }
 
   public function cleanUri($input) {
-    $uri = esc_url_raw(strtolower($input), array('http', 'https'));
+    $uri = esc_url_raw(strtolower(trim($input)), array('http', 'https'));
     $parts = parse_url($uri);
 
     if (!$uri) {

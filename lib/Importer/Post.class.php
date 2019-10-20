@@ -115,10 +115,14 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
   public function extractPostContent($xpath) {
     $tmpDom = new DomDocument();
+    $tmpDom->formatOutput = TRUE;
+    $tmpDom->preserveWhiteSpace = FALSE;
+    $tmpDom->normalizeDocument();
     $finder = new DomXpath($tmpDom);
 
     $result = $xpath->query("//div[@itemtype='http://schema.org/Article']")->item(0);
     $result = $tmpDom->importNode($result, true);
+    $articleId = $result->getAttribute('id');
     $tmpDom->appendChild($result);
 
     // remove footer and everything after
@@ -156,23 +160,26 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     }
 
     // remove titles
-    $anchor = $finder->query("//a[@name='". $result->getAttribute('id') ."']")->item(0);
-    $childCursor = 0;
+    $anchor = $finder->query("//a[@name='". $articleId ."']")->item(0);
     $parentNode = $anchor->parentNode;
 
-
-    while ($childCursor < $parentNode->childNodes->length) {
-      $childNode = $parentNode->childNodes->item($childCursor);
-
-      $parentNode->removeChild($childNode);
+    while (true) {
+      $childNode = $parentNode->childNodes->item(0);
 
       // and we remove the next one as it's the real title
       if ($childNode->isSameNode($anchor)) {
-        $parentNode->removeChild($parentNode->childNodes->item($childCursor + 1));
+        if ($parentNode->childNodes->item(1)->nodeName !== '#text') {
+          $parentNode->removeChild($parentNode->childNodes->item(1));
+        }
+        else {
+          $parentNode->removeChild($parentNode->childNodes->item(2));
+        }
+
         break;
       }
-
-      $childCursor++;
+      else {
+        $parentNode->removeChild($childNode);
+      }
     }
 
     //remove attributes
@@ -606,7 +613,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         /*
          * Saving attachment
          */
-        $postdata = compact('post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_excerpt', 'post_title', 'post_status', 'post_name', 'comment_status', 'ping_status', 'guid', 'post_parent', 'menu_order', 'post_type', 'post_password');
+        $postdata = array();
         $postdata['guid'] = $remote_uri;
         $postdata['post_parent'] = $post['ID'];
         $postdata['upload_date'] = $post['post_date'];

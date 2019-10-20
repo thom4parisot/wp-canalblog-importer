@@ -59,17 +59,20 @@ Encore quelques clics et ça sera terminé !
 ## Développement
 
 ```bash
-docker-compose up
+brew install mariadb
+mysql.server start
 composer install
 
-sh bin/install-wp-tests.sh wordpress_test root pass $(docker-compose port mysql 3306) 5.2
+sh bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 5.2
 ```
 
 ```bash
-compose run test
+composer run test
 ```
 
 ## Changelog ##
+
+### Version 1.4.0 ###
 
 ### Version 1.3.1 ###
 

@@ -205,11 +205,12 @@ class ImportPort extends WP_UnitTestCase {
 	}
 	/**
    * @dataProvider importAttachmentsProvider
+   * @depends testSavePost
    */
 	public function testImportAttachments($uri) {
 	  $this->operation->requireWordPressImporter($this->operation->getConfiguration());
 
-	  $post = get_post(3, ARRAY_A);
+	  $post = get_post(3, 'ARRAY_A');
 
     $stats = array('skipped' => 0, 'new' => 0);
     $wpImport = new WP_Import();
@@ -291,10 +292,10 @@ class ImportPort extends WP_UnitTestCase {
 
   /**
    * @dataProvider savePostMediasProvider
+   * @depends testSavePost
    */
 	public function testSavePostMedias($post_id, $expectedCount) {
     $result = $this->operation->saveMedias(get_post($post_id, ARRAY_A));
-
     $this->assertEquals($expectedCount, $result['new']);
     $this->assertEquals(0, $result['overwritten']);
     $this->assertEquals(0, $result['skipped']);
@@ -303,10 +304,9 @@ class ImportPort extends WP_UnitTestCase {
 
 	public function savePostMediasProvider() {
 	  return array(
-	    array(4, 0),
+	    array(4, 2),
 	    array(5, 0),
-	    array(3, 2),
+	    array(6, 0),
 	  );
 	}
 }
-
