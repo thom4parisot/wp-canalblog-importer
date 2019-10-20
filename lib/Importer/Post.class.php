@@ -84,7 +84,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $title = $attempt->item(0)->getAttribute('title');
     }
     else {
-      $title = $xpath->query("//div[@class='blogbody']//h3")->item(0)->textContent;
+      $title = $xpath->query("//div[@class='blogbody']//a[@name]/following-sibling::*")->item(0)->textContent;
     }
 
     return trim($title);
@@ -115,9 +115,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
   public function extractPostContent($xpath) {
     $tmpDom = new DomDocument();
-    $tmpDom->formatOutput = TRUE;
-    $tmpDom->preserveWhiteSpace = FALSE;
-    $tmpDom->normalizeDocument();
     $finder = new DomXpath($tmpDom);
 
     $result = $xpath->query("//div[@itemtype='http://schema.org/Article']")->item(0);

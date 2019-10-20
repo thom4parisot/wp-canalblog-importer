@@ -23,24 +23,29 @@ class ImportPort extends WP_UnitTestCase {
 //		$this->assertInternalType('string', $result['html']);
 //	}
 
-	/*
-	 extractTitle()
+	/**
+   * @dataProvider extractTitleProvider
 	 */
-	function testExtractTitleFromH3() {
-	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-maflo.html');
+	function testExtractTitle($contentId, $expectation) {
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
 	  $dom = $this->operation->getDomDocumentFromHtml($html);
 	  $xpath = new DomXpath($dom);
 
-	  $this->assertEquals('personne ne veut de mes places de cinéma à gagner ????', $this->operation->extractTitle($xpath));
+	  $this->assertEquals($expectation, $this->operation->extractTitle($xpath));
 	}
 
-	function testExtractTitleFromBookmarkTitle() {
-	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-couturejulie.html');
-	  $dom = $this->operation->getDomDocumentFromHtml($html);
-	  $xpath = new DomXpath($dom);
-
-	  $this->assertEquals('Je déménage...', $this->operation->extractTitle($xpath));
-	}
+  public function extractTitleProvider(){
+    return array(
+      // h3
+      array('maflo', 'personne ne veut de mes places de cinéma à gagner ????'),
+      // bookmark title
+      array('couturejulie', 'Je déménage...'),
+      array('masbou', 'Nouvelles fraîches'),
+      // next h1/h3 after <a name>
+      array('evacuisine', 'Pizza aux légumes vert et curcuma'),
+      array('boiremanger', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche'),
+    );
+  }
 
 	/**
    * @dataProvider mediaPatternProvider
