@@ -58,6 +58,9 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.5.1 ###
+
+* ajoute de la souplesse sur certains appels à Canalblog qui sont trop longs
 
 = Version 1.5.0 =
 

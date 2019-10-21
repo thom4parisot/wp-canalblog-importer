@@ -52,7 +52,7 @@ msgstr ""
 
 #: ../lib/Importer/Base.class.php:120
 #, php-format
-msgid "Tried to request an unavailable page [%s]"
+msgid "Tried to request an unavailable page [%s] (status code: %d)"
 msgstr ""
 
 #: ../lib/Importer/Base.class.php:124
@@ -431,4 +431,3 @@ msgstr ""
 #, php-format
 msgid "Sorry but no WordPress Importer has been found. It is used to import post images. <a href='%s'>Please install it</a>, or import without getting back your pictures attachment."
 msgstr ""
-

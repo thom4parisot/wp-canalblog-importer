@@ -105,7 +105,11 @@ abstract class CanalblogImporterImporterBase
     $http = new Wp_HTTP();
 
     try{
-      $result = $http->get($uri);
+      $result = $http->get($uri, array(
+        'redirection' =>  5,
+        'timeout' =>      20,
+        'user-agent' =>   'WordPress/'.get_bloginfo('version')
+      ));
 
       if (is_wp_error($result))
       {
@@ -115,9 +119,9 @@ abstract class CanalblogImporterImporterBase
       {
         throw new CanalblogImporterException(sprintf(__("HTTP request did not returned an expected result [%s]", 'canalblog-importer'), $uri));
       }
-      elseif (!isset($result['response']['code']) || (int)$result['response']['code'] !== 200)
+      elseif (!isset($result['response']['code']) || preg_match('#^[4,5]\d{2}#sU', (int)$result['response']['code']))
       {
-        throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s]", 'canalblog-importer'), $uri));
+        throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s] (status code: %d)", 'canalblog-importer'), $uri, $result['response']['code']));
       }
       elseif (!isset($result['body']) || empty($result['body']))
       {
@@ -126,6 +130,7 @@ abstract class CanalblogImporterImporterBase
       else
       {
         unset($http);
+        self::$http_retry_count = 0;
         return $result['body'];
       }
     }
@@ -242,10 +247,10 @@ abstract class CanalblogImporterImporterBase
       throw new CanalblogImporterException("WordPress Importer could not be found.");
     }
   }
-  
+
   /**
    * Shutdown of the remote process
-   * 
+   *
    * Basically, cleanup and last reponse element
    * @param WP_Ajax_Response $response
    */
@@ -260,10 +265,10 @@ abstract class CanalblogImporterImporterBase
   		)
   	));
   }
-  
+
   /**
    * Sets everything related to the ending of the process
-   * 
+   *
    * @protected
    * @param string $transient_id
    * @return boolean transient storage success
@@ -276,10 +281,10 @@ abstract class CanalblogImporterImporterBase
 
   	return set_transient($transient_id, 1);
   }
-  
+
   /**
    * Setups a process phase
-   * 
+   *
    * @protected
    * @param array $options
    */
@@ -291,23 +296,23 @@ abstract class CanalblogImporterImporterBase
   	$this->offset = 0;
   	$this->progress = 0;
   	$this->total = 0;
-  	
+
   	if (isset ($options['offset']))
   	{
   		$this->offset = intval($options['offset']);
   	}
-  	
+
   	if (isset($options['limit']))
   	{
   		$this->limit = intval($options['limit']);
   		$this->new_offset = $this->offset + $this->limit;
   	}
-  	
+
   	if (isset ($options['total']))
   	{
   		$this->total = intval($options['total']);
   	}
-  	
+
   	if ($this->total > 0)
   	{
   		$this->progress = floor(($this->offset / $this->total) * 100);

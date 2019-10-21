@@ -67,5 +67,10 @@ class ImportInit extends WP_UnitTestCase {
 
     $this->assertEquals('http://atoutcuisine.canalblog.com', get_option('canalblog_importer_blog_uri'));
   }
-}
 
+  function testGetRemoteHtml () {
+    $body = $this->operation->getRemoteHtml('http://www.miaam.canalblog.com/archives/2010/05/p0-0.html');
+
+    $this->assertNotEmpty($body);
+  }
+}

@@ -72,6 +72,10 @@ composer run test
 
 ## Changelog ##
 
+### Version 1.5.1 ###
+
+* ajoute de la souplesse sur certains appels à Canalblog qui sont trop longs
+
 ### Version 1.5.0 ###
 
 * corrige un défaut d'import lorsque certains scripts sont présents sur votre blog d'origine

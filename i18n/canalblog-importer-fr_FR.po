@@ -53,8 +53,8 @@ msgstr "La requête HTTP n'a pas renvoyé le résultat escompté [%s]"
 
 #: ../lib/Importer/Base.class.php:120
 #, php-format
-msgid "Tried to request an unavailable page [%s]"
-msgstr "Tentative d'accès à une page indisponible [%s]"
+msgid "Tried to request an unavailable page [%s] (status code: %d)"
+msgstr "Tentative d'accès à une page indisponible [%s] (code statut : %d)"
 
 #: ../lib/Importer/Base.class.php:124
 #, php-format
@@ -136,7 +136,7 @@ msgstr "<strong>%s</strong> : échec de la création du mot-clé."
 #: ../pages/06-clnp.php:3
 #: ../pages/07-ccln.php:3
 msgid "Canalblog Importer"
-msgstr ""
+msgstr "Canalblog Importer"
 
 #: ../pages/01-init.php:5
 msgid "You are only a few steps to your Canalblog to WordPress migration. Please fill in the fields and press <em>Start import</em>."
@@ -362,7 +362,7 @@ msgstr "Gérer les utilisateurs"
 
 #: ../pages/07-ccln.php:22
 msgid "Blogroll"
-msgstr ""
+msgstr "Blogroll"
 
 #: ../pages/07-ccln.php:23
 msgid "Canalblog importer is not able to retrieve your friends links list. You'll have to retype it from scratch. Sorry ;-("
