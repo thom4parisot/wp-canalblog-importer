@@ -70,7 +70,13 @@ class ImportInit extends WP_UnitTestCase {
 
   function testGetRemoteHtml () {
     $body = $this->operation->getRemoteHtml('http://www.miaam.canalblog.com/archives/2010/05/p0-0.html');
-
     $this->assertNotEmpty($body);
+
+    try {
+      $this->operation->getRemoteHtml('https://httpstat.us/500');
+    }
+    catch (CanalblogImporterException $e) {
+      $this->assertInstanceOf(CanalblogImporterException::class, $e);
+    }
   }
 }

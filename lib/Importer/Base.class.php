@@ -11,7 +11,7 @@ abstract class CanalblogImporterImporterBase
   protected $arguments = array();
   protected $configuration;
   protected static $http_retry_count =  0;
-  public static $http_retry_delay =     500000;    //milliseconds for usleep usage (0.5s)
+  public static $http_retry_delay =     2;    //in seconds, for sleep
   public static $http_max_retry_count = 5;
   protected static $wordpress_importer_locations = array();
 
@@ -121,7 +121,13 @@ abstract class CanalblogImporterImporterBase
       }
       elseif (!isset($result['response']['code']) || preg_match('#^[4,5]\d{2}#sU', (int)$result['response']['code']))
       {
-        throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s] (status code: %d)", 'canalblog-importer'), $uri, $result['response']['code']));
+        throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s] (%d, %s)<br><strong>Redirects</strong>: <code>%s</code><br><strong>Content</strong>: <details>%s</details>", 'canalblog-importer'),
+          $uri,
+          $result['response']['code'],
+          $result['response']['message'],
+          join(', ', $result['http_response']->get_response_object()->history),
+          $result['body']
+        ));
       }
       elseif (!isset($result['body']) || empty($result['body']))
       {
@@ -131,6 +137,7 @@ abstract class CanalblogImporterImporterBase
       {
         unset($http);
         self::$http_retry_count = 0;
+        self::$http_retry_delay = 2;
         return $result['body'];
       }
     }
@@ -141,7 +148,7 @@ abstract class CanalblogImporterImporterBase
        */
       if (++self::$http_retry_count <= self::$http_max_retry_count)
       {
-        usleep(self::$http_retry_delay);
+        sleep(self::$http_retry_delay++);
         return $this->getRemoteHtml($uri);
       }
       else

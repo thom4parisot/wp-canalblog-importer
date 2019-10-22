@@ -16,7 +16,7 @@ class CanalblogImporterException extends Exception
    */
   public function __toString()
   {
-    wp_die($this->getMessage().'<br /><pre>'.$this->getTraceAsString().'</pre>', 'Canalblog Importer exception');
+    wp_die($this->getMessage().'<details><pre>'.$this->getTraceAsString().'</pre></details>', 'Canalblog Importer exception');
   }
 
   /**
