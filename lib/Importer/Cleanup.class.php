@@ -26,7 +26,7 @@ class CanalblogImporterImporterCleanup extends CanalblogImporterImporterBase
 
   		return true;
   	}
-  	
+
     return false;
   }
 
@@ -48,8 +48,12 @@ class CanalblogImporterImporterCleanup extends CanalblogImporterImporterBase
     foreach ($replacements as $old_uri => $new_uri)
     {
       $wpdb->query($wpdb->prepare("UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, '%s', '%s')", $old_uri, $new_uri));
+
+      if ($wpdb->last_error) {
+        throw new CanalblogImporterException(sprintf(__("Failed to execute query: %s", 'canalblog-importer'), $wpdb->last_error));
+      }
     }
-    
+
     $response->add(array(
   		'data' => sprintf(__('%s posts cleanup up.', 'canalblog-importer'), count($replacements)),
   	));

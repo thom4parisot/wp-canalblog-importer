@@ -509,6 +509,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       else
       {
         $comment_id = wp_insert_comment($data);
+
+        if ($comment_id === false) {
+          throw new CanalblogImporterException(sprintf(__("Failed to execute query: %s", 'canalblog-importer'), $wpdb->last_error));
+        }
+
         add_comment_meta($comment_id, 'canalblog_id', $canalblog_comment_id, true);
         $stats['new']++;
       }
