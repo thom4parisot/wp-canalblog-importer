@@ -3,6 +3,7 @@
 class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
   protected $uri, $id, $data;
+  protected static $COMMENTS_LIMIT = 1000;
   protected static $media_pattern = array(
     'new' => array(
       'detection_pattern' => '#(http://(p\d+\.)?storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
@@ -49,6 +50,17 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
   public function getContentFromUri($uri) {
     $html = null;
+
+    // hack the url so as we get all the comments at once.
+    // To import 1000 comments (instead of 50), this permalink
+    // http://www.evacuisine.fr/archives/2009/02/28/12603374.html
+    // will indeed be called as
+    // http://www.evacuisine.fr/archives/2009/02/28/12603374-p0-1000.html
+    $uri = str_replace(
+      '.html',
+      sprintf('-p0-%d.html', self::$COMMENTS_LIMIT),
+      $uri
+    );
 
     $query = $this->getRemoteXpath($uri, "//div[@id='content']", $html);
     $dom = new DomDocument();
