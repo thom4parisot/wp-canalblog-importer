@@ -67,15 +67,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     $data['post'] = $this->savePost($remote['dom'], $remote['html']);
     $data['medias'] = $this->saveMedias(get_post($this->id, ARRAY_A));
-
-    $data['comments'] = $this->saveComments($remote['dom'], $remote['html']);
-    $commentsUris = $this->extractCommentsPagination($remote['dom']);
-
-    foreach ($commentsUris as $uri) {
-      $remote = $this->getContentFromUri($uri);
-      $extra_comments = $this->saveComments($remote['dom'], $remote['html']);
-      $data['comments'] = array_merge($data['comments'], $extra_comments);
-    }
+    $data['comments'] = $this->savePaginatedComments($remote['dom'], $remote['html']);
 
     return $data;
   }
@@ -467,6 +459,24 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $stats;
   }
 
+  public function savePaginatedComments(DomDocument $dom, $html)
+  {
+    $cumulatedStats = $this->saveComments($dom, $html);
+    $commentsUris = $this->extractCommentsPagination($dom);
+
+    foreach ($commentsUris as $uri) {
+      $remote = $this->getContentFromUri($uri);
+      $stats = $this->saveComments($remote['dom'], $remote['html']);
+
+      $cumulatedStats['count'] += $stats['count'];
+      $cumulatedStats['new'] += $stats['new'];
+      $cumulatedStats['skipped'] += $stats['skipped'];
+      $cumulatedStats['overwritten'] += $stats['overwritten'];
+    }
+
+    return $cumulatedStats;
+  }
+
   /**
    * Save comments from a post
    *
@@ -475,7 +485,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * @version 2.0
    * @param DomDocument $dom
    */
-  public function saveComments(DomDocument $dom, $html, array $uris)
+  public function saveComments(DomDocument $dom, $html)
   {
     $xpath = new DomXpath($dom);
   	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);

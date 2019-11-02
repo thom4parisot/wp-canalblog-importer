@@ -206,25 +206,27 @@ class ImportPort extends WP_UnitTestCase {
 	/**
    * @dataProvider postContentProvider
    */
-	function testSavePost($contentId, $uri, $title) {
+	function testSavePost($contentId, $uri, $title, $commentsCount) {
 	  $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
 	  $dom = $this->operation->getDomDocumentFromHtml($html);
 
 	  $this->operation->setUri($uri);
 	  $result = $this->operation->savePost($dom, $html);
+	  $comments = $this->operation->savePaginatedComments($dom, $html);
 
 	  $this->assertInternalType('integer', $result['id']);
 	  $this->assertEquals('imported', $result['status']);
 	  $this->assertEquals($title, $result['title']);
+	  $this->assertEquals($comments['count'], $commentsCount);
 	}
 
 	public function postContentProvider() {
 	  return array(
-	    array('boiremanger', 'http://www.boiremanger.net/archives/2014/08/23/30458956.html', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche'),
-	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...'),
-	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????'),
-	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches'),
-	    array('evacuisine', 'http://www.evacuisine.fr/archives/2009/02/28/12603374.html', 'Moelleux au citron dans un citron'),
+	    array('boiremanger', 'http://www.boiremanger.net/archives/2014/08/23/30458956.html', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche', 3),
+	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...', 0),
+	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????', 24),
+	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches', 0),
+	    array('evacuisine', 'http://www.evacuisine.fr/archives/2009/02/28/12603374.html', 'Moelleux au citron dans un citron', 69),
 	  );
 	}
 
