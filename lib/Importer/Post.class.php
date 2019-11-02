@@ -3,7 +3,6 @@
 class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 {
   protected $uri, $id, $data;
-  protected static $COMMENTS_LIMIT = 1000;
   protected static $media_pattern = array(
     'new' => array(
       'detection_pattern' => '#(http://(p\d+\.)?storage.canalblog.com/[^_]+(?:\.|_p\.)[a-z0-9]+)[^a-z0-9]#iUs',
@@ -51,17 +50,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   public function getContentFromUri($uri) {
     $html = null;
 
-    // hack the url so as we get all the comments at once.
-    // To import 1000 comments (instead of 50), this permalink
-    // http://www.evacuisine.fr/archives/2009/02/28/12603374.html
-    // will indeed be called as
-    // http://www.evacuisine.fr/archives/2009/02/28/12603374-p0-1000.html
-    $uri = str_replace(
-      '.html',
-      sprintf('-p0-%d.html', self::$COMMENTS_LIMIT),
-      $uri
-    );
-
     $query = $this->getRemoteXpath($uri, "//div[@id='content']", $html);
     $dom = new DomDocument();
     $dom->appendChild($dom->importNode($query->item(0), true));
@@ -78,8 +66,16 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $remote = $this->getContentFromUri($this->uri);
 
     $data['post'] = $this->savePost($remote['dom'], $remote['html']);
-    $data['comments'] = $this->saveComments($remote['dom'], $remote['html']);
     $data['medias'] = $this->saveMedias(get_post($this->id, ARRAY_A));
+
+    $data['comments'] = $this->saveComments($remote['dom'], $remote['html']);
+    $commentsUris = $this->extractCommentsPagination($remote['dom']);
+
+    foreach ($commentsUris as $uri) {
+      $remote = $this->getContentFromUri($uri);
+      $extra_comments = $this->saveComments($remote['dom'], $remote['html']);
+      $data['comments'] = array_merge($data['comments'], $extra_comments);
+    }
 
     return $data;
   }
@@ -202,16 +198,29 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     return $tmpDom;
   }
 
+  public function extractCommentsPagination(DomDocument $dom) {
+    $finder = new DomXpath($dom);
+    $uris = array();
+
+    foreach ($finder->query("//a[contains(@href, '-0.html#comments')]") as $link) {
+      if (is_numeric($link->textContent)) {
+        array_push($uris, $link->getAttribute('href'));
+      }
+    }
+
+    return array_unique($uris);
+  }
+
   public function extractComments($xpath) {
     $comments = array();
 
     foreach ($xpath->query("//*[@itemprop='comment']") as $commentNode) {
-      if (!$commentNode->hasAttribute('data-pid')) {
+      if (!$commentNode->hasAttribute('data-cid')) {
         continue;
       }
 
       $data = array(
-        '__comment_id' => $commentNode->getAttribute('data-pid'),
+        '__comment_id' => $commentNode->getAttribute('data-cid'),
         'comment_approved' => 1,
         'comment_karma' => 1,
         'comment_post_ID' =>  $this->id,
@@ -466,7 +475,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    * @version 2.0
    * @param DomDocument $dom
    */
-  public function saveComments(DomDocument $dom, $html)
+  public function saveComments(DomDocument $dom, $html, array $uris)
   {
     $xpath = new DomXpath($dom);
   	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);

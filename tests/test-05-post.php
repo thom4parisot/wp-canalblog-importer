@@ -42,8 +42,28 @@ class ImportPort extends WP_UnitTestCase {
       array('couturejulie', 'Je déménage...'),
       array('masbou', 'Nouvelles fraîches'),
       // next h1/h3 after <a name>
-      array('evacuisine', 'Pizza aux légumes vert et curcuma'),
+      array('evacuisine', 'Moelleux au citron dans un citron'),
       array('boiremanger', 'Médaillons de langouste, champignons snackés, émulsion aux cèpes et brioche'),
+    );
+  }
+
+  /**
+   * @dataProvider commentsPaginationProvider
+   */
+  function testExtractCommentsPagination($contentId, $expectedUris) {
+    $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
+    $dom = $this->operation->getDomDocumentFromHtml($html);
+
+    $this->assertEquals($this->operation->extractCommentsPagination($dom), $expectedUris);
+  }
+
+  public function commentsPaginationProvider(){
+    return array(
+      array('maflo', array()),
+      array('couturejulie', array()),
+      array('masbou', array()),
+      array('evacuisine', array('http://www.evacuisine.fr/archives/2009/02/28/12603374-p50-0.html#comments')),
+      array('boiremanger', array()),
     );
   }
 
@@ -82,7 +102,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', '2013-01-02 14:18'),
 	    array('maflo', '2010-08-03 11:41'),
 	    array('masbou', '2014-07-15 07:53'),
-	    array('evacuisine', '2019-10-15 15:42'),
+	    array('evacuisine', '2009-02-18 20:54'),
 	  );
 	}
 
@@ -127,7 +147,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', 'et oui fini le rose bonbon et les rayures...', "Pensez à changer vos liens et merci de votre fidélité..."),
 	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????", "Allez à vos méninges et rdv le 18 septembre!"),
 	    array('masbou', "Augmentation des surfaces de pommes de terre en Europe", "atteint 355 millions d’euros."),
-	    array('evacuisine', "Aujourd'hui, voici une délicieuse pizza aux légumes", "Bonne journée et bon week-end ! On se retrouve lundi avec une nouvelle recette très gourmande."),
+	    array('evacuisine', "Aujourd'hui, voici une délicieuse recette de moelleux au citron !", "Bonne journée, et à bientôt avec pleins de nouvelles recettes !"),
 	  );
 	}
 
@@ -157,7 +177,7 @@ class ImportPort extends WP_UnitTestCase {
 	public function extractCommentsProvider() {
 	  return array(
 	    array('boiremanger', 3, array(
-	      '__comment_id' => '30458956',
+	      '__comment_id' => '62701644',
 	      'comment_author' => 'Celoweb',
 	      'comment_date' => '2014-08-23 18:29:06',
 	      'comment_content' => 'Je confirme tes dires Eric',
@@ -165,19 +185,19 @@ class ImportPort extends WP_UnitTestCase {
 	    )),
 	    array('couturejulie', 0, array()),
 	    array('maflo', 24, array(
-	      '__comment_id' => '18732506',
+	      '__comment_id' => '36284068',
 	      'comment_author' => 'opio',
 	      'comment_date' => '2010-01-18 16:45:00',
 	      'comment_content' => 'bah la 3 après avoir failli',
 	      'comment_author_url' => 'http://www.familyandthecity.com',
 	    )),
 	    array('masbou', 0, array()),
-      array('evacuisine', 1, array(
-	      '__comment_id' => '37714699',
-	      'comment_author' => 'chez mouma',
-	      'comment_date' => '2019-10-18 16:30:26',
-	      'comment_content' => 'Hummmm jolie pizza très appétissante. Bon week-end !!',
-	      'comment_author_url' => 'http://mouma31.canalblog.com/',
+      array('evacuisine', 50, array(
+	      '__comment_id' => '21981351',
+	      'comment_author' => "sam's cook",
+	      'comment_date' => '2009-02-28 11:14:00',
+	      'comment_content' => "y'a pas mieux comme présentation, tu en as de l'imagination! et le citron, j'aime tellement",
+	      'comment_author_url' => 'http://missnature.canalblog.com',
 	    )),
 	  );
 	}
@@ -204,7 +224,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('couturejulie', 'http://lacouturedejulie.canalblog.com/archives/2013/01/02/26050095.html', 'Je déménage...'),
 	    array('maflo', 'http://maflo.canalblog.com/archives/2010/09/07/18732506.html', 'personne ne veut de mes places de cinéma à gagner ????'),
 	    array('masbou', 'http://www.leblognotesdoliviermasbou.info/archives/2014/07/15/30252678.html', 'Nouvelles fraîches'),
-	    array('evacuisine', 'http://www.evacuisine.fr/archives/2019/10/18/37714699.html', 'Pizza aux légumes vert et curcuma'),
+	    array('evacuisine', 'http://www.evacuisine.fr/archives/2009/02/28/12603374.html', 'Moelleux au citron dans un citron'),
 	  );
 	}
 

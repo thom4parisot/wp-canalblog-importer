@@ -58,6 +58,11 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.0 ###
+
+* importe _vraiment_ tous les commentaires d'une publication (et non les 50 premiers)
+* rectifie l'identifiant des commentaires (le bon identifiant est désormais récupéré)
+
 ### Version 1.5.4 ###
 
 * ralentit l'import en cas d'erreurs ; utile sur des blogs avec beaucoup de publications
