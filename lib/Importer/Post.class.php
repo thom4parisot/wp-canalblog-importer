@@ -570,7 +570,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
    */
   public function saveMedias(array $post)
   {
-  	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0);
+  	$stats = array('count' => 0, 'new' => 0, 'skipped' => 0, 'overwritten' => 0, 'remap' => array());
 
     /*
      * Initialize WordPress importer
@@ -608,14 +608,12 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     $attachments = $this->importAttachments($wpImport, $post, $remote_uris, $stats);
     $wpImport->url_remap = $this->updateAttachmentsRemap($wpImport->url_remap, $attachments);
+    $stats['remap'] = $wpImport->url_remap;
 
     /*
      * Saving mapping
      */
-    if (!empty($wpImport->url_remap))
-    {
-      $wpImport->backfill_attachment_urls();
-    }
+    $wpImport->backfill_attachment_urls();
 
     return $stats;
   }
