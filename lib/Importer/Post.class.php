@@ -91,14 +91,23 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   }
 
   public function extractPostDate($xpath) {
-    $result = $xpath->query("//meta[@itemprop='dateCreated']");
+    $dateResult = $xpath->query("//meta[@itemprop='url']");
+    $timeResult = $xpath->query("//div[@itemtype='http://schema.org/Article']/div[@class='itemfooter']");
 
-    if (!$result->length) {
+    if (!$dateResult->length) {
       return null;
     }
 
-    preg_match('#^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})T(?P<hour>\d{2}):(?P<minutes>\d{2})$#U', $result->item(0)->getAttribute('content'), $matches);
+    // http://xxx/archives/2013/09/02/27910679.html
+    preg_match('#\/(?P<year>\d{4})\/(?P<month>\d{2})\/(?P<day>\d{2})\/.+.html#U', $dateResult->item(0)->getAttribute('content'), $matches);
     extract($matches);
+
+    extract(array('hour' => '09', 'minutes' => '00'));
+    if ($timeResult->length) {
+      // xxx à 10:35
+      preg_match('# à (?P<hour>\d{2}):(?P<minutes>\d{2})#U', $timeResult->item(0)->textContent, $matches);
+      extract($matches);
+    }
 
     return sprintf('%s-%s-%s %s:%s', $year, $month, $day, $hour, $minutes);
   }

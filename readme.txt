@@ -58,6 +58,10 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.1 ###
+
+* rectifie la date de publication (je collectais la date de création d'article, au lieu de la date de publication)
+
 ### Version 1.6.0 ###
 
 * importe _vraiment_ tous les commentaires d'une publication (et non les 50 premiers)

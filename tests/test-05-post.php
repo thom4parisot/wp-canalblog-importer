@@ -98,11 +98,11 @@ class ImportPort extends WP_UnitTestCase {
 
 	public function extractPostDateProvider() {
 	  return array(
-	    array('boiremanger', '2014-08-23 06:55'),
-	    array('couturejulie', '2013-01-02 14:18'),
-	    array('maflo', '2010-08-03 11:41'),
-	    array('masbou', '2014-07-15 07:53'),
-	    array('evacuisine', '2009-02-18 20:54'),
+	    array('boiremanger', '2014-08-23 09:00'),
+	    array('couturejulie', '2013-01-02 20:58'),
+	    array('maflo', '2010-09-07 13:41'),
+	    array('masbou', '2014-07-15 09:54'),
+	    array('evacuisine', '2009-02-28 11:10'),
 	  );
 	}
 
