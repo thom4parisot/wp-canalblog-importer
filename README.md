@@ -1,7 +1,7 @@
 # Canalblog Importer [![Build Status](https://travis-ci.org/oncletom/wp-canalblog-importer.svg?branch=master)](https://travis-ci.org/oncletom/wp-canalblog-importer)
 
 **Requires at least:** 5.0
-**Tested up to:** 5.3-RC2
+**Tested up to:** 5.3
 **Stable tag:** trunk
 
 > Fatigué(e) d'avoir à gérer un blog sur Canalblog ?
