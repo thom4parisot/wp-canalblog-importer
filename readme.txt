@@ -61,6 +61,7 @@ Encore quelques clics et ça sera terminé !
 ### Version 1.6.1 ###
 
 * rectifie la date de publication (je collectais la date de création d'article, au lieu de la date de publication)
+* les images sont importées dans leur taille d'origine, et redimensionnées en fonction de vos réglages Média
 
 ### Version 1.6.0 ###
 

@@ -21,6 +21,33 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     ),
   );
 
+  protected static $filename_pattern = array(
+    array(
+      'filter' =>'\/t-(.+).(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'thumbnail',
+    ),
+    array(
+      'filter' =>'\/(.+)_q.(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'thumbnail',
+    ),
+    array(
+      'filter' =>'\/(.+).thumbnail.(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'thumbnail',
+    ),
+    array(
+      'filter' =>'\/(.+)_p.(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'medium',
+    ),
+    array(
+      'filter' =>'\/(.+).to_resize_\d+x\d+.(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'medium',
+    ),
+    array(
+      'filter' =>'\/(.+)_o.(a?png|jpe?g|gif|webp|bmp)$',
+      'size' => 'full',
+    ),
+  );
+
   public function __construct(CanalblogImporterConfiguration $configuration)
   {
     parent::__construct($configuration);
@@ -304,15 +331,28 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     // Get storage hyperlinks
     foreach ($xpath->query("//a[contains(@href, 'canalblog.com/storagev1') or contains(@href, 'storage.canalblog.com') or contains(@href, 'canalblog.com/docs')]") as $link) {
-      array_push($remote_uris, $link->getAttribute('href'));
+      array_push($remote_uris, $this->cleanupMediaUri($link->getAttribute('href')));
     }
 
     // Get image sources
     foreach ($xpath->query("//img[contains(@src, 'canalblog.com/storagev1') or contains(@src, 'storage.canalblog.com') or contains(@src, 'canalblog.com/images')]") as $link) {
-      array_push($remote_uris, $link->getAttribute('src'));
+      array_push($remote_uris, $this->cleanupMediaUri($link->getAttribute('src')));
     }
 
-    return array_unique($remote_uris);
+    return $remote_uris;
+  }
+
+  protected function cleanupMediaUri ($uri) {
+    foreach (self::$filename_pattern as $pattern) {
+      // $size, $filter
+      extract($pattern);
+
+      if (preg_match('#'.$filter.'#iU', $uri)) {
+        return array('uri' => $uri, 'size' => $size, 'original_uri' => preg_replace('#'.$filter.'#iU', '/\\1.\\2', $uri));
+      }
+    }
+
+    return array('uri' => $uri, 'original_uri' => $uri, 'size' => 'full');
   }
 
   public function isImageSrcPattern($src, $media_pattern, $host) {
@@ -589,6 +629,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     }
     catch (CanalblogImporterException $e)
     {
+      printf('wordpress-importer is missing');
       return $stats;
     }
 
@@ -602,7 +643,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     /*
      * Collecting attachment URIs
      */
-    $remote_uris = $this->extractMediaUris($post['post_content'], get_option('canalblog_importer_blog_uri'));
+    $remote_uris = $this->extractMediaUris($post['post_content']);
     $stats['count'] = count($remote_uris);
 
     /*
@@ -616,7 +657,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $upload = wp_upload_dir($post['post_date']);
 
     $attachments = $this->importAttachments($wpImport, $post, $remote_uris, $stats);
-    $wpImport->url_remap = $this->updateAttachmentsRemap($wpImport->url_remap, $attachments);
+    $wpImport->url_remap = $this->updateAttachmentsRemap($attachments);
     $stats['remap'] = $wpImport->url_remap;
 
     /*
@@ -630,14 +671,16 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   public function importAttachments(WP_Import &$wpImport, $post, array $remote_uris, &$stats) {
     $attachments = array();
 
-    foreach ($remote_uris as $remote_uri)
-      {
+    foreach ($remote_uris as $pair) {
+        // $uri, $original_uri, $size
+        extract($pair);
+
         /*
          * Checking it does not exists yet
          */
         $candidates = get_posts(array(
           'meta_key' =>   'canalblog_attachment_uri',
-          'meta_value' => $remote_uri,
+          'meta_value' => $original_uri,
           'post_type' =>  'attachment',
         ));
 
@@ -647,6 +690,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         if (!empty($candidates))
         {
         	$stats['skipped']++;
+          $attachments[$uri] = array_merge($pair, array('id' => $candidates[0]->ID));
           continue;
         }
 
@@ -654,7 +698,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
          * Saving attachment
          */
         $postdata = array();
-        $postdata['guid'] = $remote_uri;
+        $postdata['guid'] = $original_uri;
         $postdata['post_parent'] = $post['ID'];
         $postdata['upload_date'] = $post['post_date'];
         $postdata['post_date'] = $post['post_date'];
@@ -662,40 +706,24 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         $postdata['post_author'] = $post['post_author'];
         $postdata['post_title'] = '';
 
-        $attachment_id = $wpImport->process_attachment($postdata, $remote_uri);
-        add_post_meta($attachment_id, 'canalblog_attachment_uri', $remote_uri, true);
-        $attachments[$remote_uri] = $attachment_id;
+        $attachment_id = $wpImport->process_attachment($postdata, $original_uri);
+        add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);
+        $attachments[$uri] = array_merge($pair, array('id' => $attachment_id));
         $stats['new']++;
       }
 
     return $attachments;
   }
 
-  public function updateAttachmentsRemap(array $url_remap, $attachments) {
-    $new_map = array_merge($url_remap, array());
+  public function updateAttachmentsRemap($attachments) {
+    $new_map = array();
 
-    $size_pattern = '-%sx%s';
-    $thumbnail_size_pattern = sprintf($size_pattern, intval(get_option('thumbnail_size_w')), intval(get_option('thumbnail_size_h')));
-    $medium_size_pattern = sprintf($size_pattern, intval(get_option('medium_size_w')), intval(get_option('medium_size_h')));
-    $replacements = array(
-      '_q' => $thumbnail_size_pattern,
-      '.thumbnail' => $medium_size_pattern,
-      '_p' => $medium_size_pattern,
-      '.to_resize_\d+x\d+' => $medium_size_pattern,
-      '_o' => '',
-    );
+    foreach ($attachments as $old_uri => $attachment) {
+      // $uri, $original_uri, $id, $size
+      extract($attachment);
 
-    foreach ($new_map as $old_uri => &$new_uri) {
-      $image_size = 'medium';
-
-      if (preg_match('#canalblog.com/images/t-#', $old_uri)) {
-        $new_uri = preg_replace('#/t-(.+)\.([^\.]+)$#siU', '/\\1'. $thumbnail_size_pattern .'.\\2', $new_uri);
-        continue;
-      }
-
-      foreach ($replacements as $pattern => $replacement) {
-        $new_uri = preg_replace('#' . $pattern . '.(a?png|jpe?g|gif|webp|bmp)$#iU', $replacement . '.\\1', $new_uri);
-      }
+      list($new_url, $width, $height) = image_downsize($id, $size);
+      $new_map[ $old_uri ] = $new_url;
     }
 
     return $new_map;
