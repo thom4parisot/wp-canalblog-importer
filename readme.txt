@@ -42,7 +42,7 @@ En bonus, si vous avez lié vos articles entre eux sur Canalblog, l'outil va cor
 
 **Remarque**
 
-Cette extension nécessite au minimum `php@7.1`. Si vous avez un bon hébergeur, vous n'aurez même pas besoin d'y penser.
+Cette extension nécessite au minimum `php@7.3`. Si vous avez un bon hébergeur, vous n'aurez même pas besoin d'y penser.
 Sinon vous verrez plein d'erreurs et rien ne fonctionnera.
 
 == Installation ==
