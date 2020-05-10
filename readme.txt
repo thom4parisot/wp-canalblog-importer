@@ -3,7 +3,7 @@ Contributors: oncletom
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=752034
 Tags: canalblog, wordpress, migration, import, admin, importer
 Requires at least: 5.0
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: trunk
 
 
@@ -42,7 +42,7 @@ En bonus, si vous avez lié vos articles entre eux sur Canalblog, l'outil va cor
 
 **Remarque**
 
-Cette extension nécessite au minimum `php@7.1`. Si vous avez un bon hébergeur, vous n'aurez même pas besoin d'y penser.
+Cette extension nécessite au minimum `php@7.3`. Si vous avez un bon hébergeur, vous n'aurez même pas besoin d'y penser.
 Sinon vous verrez plein d'erreurs et rien ne fonctionnera.
 
 == Installation ==

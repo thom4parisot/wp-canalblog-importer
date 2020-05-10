@@ -1,7 +1,7 @@
-# Canalblog Importer [![Build Status](https://travis-ci.org/oncletom/wp-canalblog-importer.svg?branch=master)](https://travis-ci.org/oncletom/wp-canalblog-importer)
+# Canalblog Importer [![Build Status](https://travis-ci.com/oncletom/wp-canalblog-importer.svg?branch=master)](https://travis-ci.com/oncletom/wp-canalblog-importer)
 
 **Requires at least:** 5.0
-**Tested up to:** 5.3
+**Tested up to:** 5.4
 **Stable tag:** trunk
 
 > Fatigué(e) d'avoir à gérer un blog sur Canalblog ?
@@ -42,7 +42,7 @@ La classe !
 
 **Remarque**
 
-Cette extension nécessite au minimum `php@7.1`. Si vous avez un bon hébergeur,
+Cette extension nécessite au minimum `php@7.3`. Si vous avez un bon hébergeur,
 vous n'aurez même pas besoin d'y penser.
 Sinon vous verrez plein d'erreurs et rien ne fonctionnera.
 
@@ -59,15 +59,27 @@ Encore quelques clics et ça sera terminé !
 ## Développement
 
 ```bash
-brew install mariadb
-mysql.server start
-composer install
+# plugin (test) dependencies
+$ composer install
 
-sh bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 5.2
+# ephemeral database
+$ docker run --rm -p 3306:3306 -e MYSQL_ROOT_HOST=% -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_ROOT_PASSWORD='' mariadb:latest
+
+# setup a test WordPress instance
+$ sh bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 5.4
 ```
 
 ```bash
-composer run test
+$ composer run test
+> phpunit
+Installing...
+Running as single site... To run multisite, use -c tests/phpunit/multisite.xml
+Not running ajax tests. To execute these, use --group ajax.
+Not running ms-files tests. To execute these, use --group ms-files.
+Not running external-http tests. To execute these, use --group external-http.
+PHPUnit 7.5.16 by Sebastian Bergmann and contributors.
+
+........E.F.....................................E......F....      60 / 60 (100%)
 ```
 
 ## Changelog ##

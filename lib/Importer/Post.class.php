@@ -121,8 +121,11 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $dateResult = $xpath->query("//meta[@itemprop='url']");
     $timeResult = $xpath->query("//div[@itemtype='http://schema.org/Article']/div[@class='itemfooter']");
 
+    // old blogs have another metadata
     if (!$dateResult->length) {
-      return null;
+      $dateTimeResult = $xpath->query("//meta[@property='article:published_time']")->item(0)->getAttribute('content');
+
+      return str_replace('T', ' ', $dateTimeResult);
     }
 
     // http://xxx/archives/2013/09/02/27910679.html
@@ -140,7 +143,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   }
 
   public function extractPostAuthorName($xpath) {
-    $result = $xpath->query("//*[@class='articlecreator' and @itemprop='creator']");
+    $result = $xpath->query("//*[@class='articlecreator' or @itemprop='creator']");
 
     if (!$result->length) {
       return 'admin';
@@ -154,8 +157,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $finder = new DomXpath($tmpDom);
 
     $result = $xpath->query("//div[@itemtype='http://schema.org/Article']")->item(0);
+    $strategy = 'article';
+
+    if (!$result) {
+      $result = $xpath->query("//div[@itemprop='articleBody']")->item(0);
+      $strategy = 'articleBody';
+    }
+
+    if (!$result) {
+      throw new CanalblogImporterException(sprintf(__("Failed to identify blog content. Please inform the plugin author about it.", 'canalblog-importer')));
+    }
+
     $result = $tmpDom->importNode($result, true);
-    $articleId = $result->getAttribute('id');
     $tmpDom->appendChild($result);
 
     // remove footer and everything after
@@ -192,30 +205,37 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       $item->parentNode->removeChild($item);
     }
 
-    // remove titles
-    $anchor = $finder->query("//a[@name='". $articleId ."']")->item(0);
-    $parentNode = $anchor->parentNode;
+    // 'article' Strategy:
+    // we remove headlines because everything is mixed up
+    // this is the case with the 'article' Strategy (body is not clearly identifiable)
+    $articleId = $result->getAttribute('id');
 
-    while (true) {
-      $childNode = $parentNode->childNodes->item(0);
+    if ($articleId || $strategy === 'article') {
+      $anchor = $finder->query("//a[@name='". $articleId ."']")->item(0);
+      $parentNode = $anchor->parentNode;
 
-      // and we remove the next one as it's the real title
-      if ($childNode->isSameNode($anchor)) {
-        if ($parentNode->childNodes->item(1)->nodeName !== '#text') {
-          $parentNode->removeChild($parentNode->childNodes->item(1));
+      while (true) {
+        $childNode = $parentNode->childNodes->item(0);
+
+        // and we remove the next one as it's the real title
+        if ($childNode->isSameNode($anchor)) {
+          if ($parentNode->childNodes->item(1)->nodeName !== '#text') {
+            $parentNode->removeChild($parentNode->childNodes->item(1));
+          }
+          else {
+            $parentNode->removeChild($parentNode->childNodes->item(2));
+          }
+
+          break;
         }
         else {
-          $parentNode->removeChild($parentNode->childNodes->item(2));
+          $parentNode->removeChild($childNode);
         }
-
-        break;
-      }
-      else {
-        $parentNode->removeChild($childNode);
       }
     }
 
-    //remove attributes
+    // remove attributes
+    // it's ineffective with the 'articleBody' strategy
     $tmpDom->firstChild->removeAttribute('id');
     $tmpDom->firstChild->removeAttribute('itemscope');
     $tmpDom->firstChild->removeAttribute('itemtype');
@@ -242,7 +262,8 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   public function extractComments($xpath) {
     $comments = array();
 
-    foreach ($xpath->query("//*[@itemprop='comment']") as $commentNode) {
+    // article and articleBody strategies
+    foreach ($xpath->query("//*[@itemprop='comment' or @class='comment_item']") as $commentNode) {
       if (!$commentNode->hasAttribute('data-cid')) {
         continue;
       }
@@ -394,6 +415,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $data['post_date'] = $this->extractPostDate($xpath);
 
     if (!$data['post_date']) {
+      var_dump($data);
       return $stats;
     }
 
@@ -455,7 +477,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     }
     else
     {
-      $post_id = wp_insert_post($data);
+      $post_id = wp_insert_post($data, true);
       $data['ID'] = $post_id;
       $stats['status'] = __('imported', 'canalblog-importer');
     }
@@ -707,9 +729,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         $postdata['post_title'] = '';
 
         $attachment_id = $wpImport->process_attachment($postdata, $original_uri);
-        add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);
-        $attachments[$uri] = array_merge($pair, array('id' => $attachment_id));
-        $stats['new']++;
+
+        if ($attachment_id instanceof WP_Error) {
+          $stats['error']++;
+          var_dump($attachment_id);
+          throw new CanalblogImporterException(sprintf(__("Failed to import a distant image.", 'canalblog-importer')));
+        }
+        else {
+          add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);
+          $attachments[$uri] = array_merge($pair, array('id' => $attachment_id));
+          $stats['new']++;
+        }
+
       }
 
     return $attachments;
