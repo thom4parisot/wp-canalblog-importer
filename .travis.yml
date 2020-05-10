@@ -1,19 +1,22 @@
 language: php
+dist: xenial
 
 php:
 - '7.1'
 - '7.2'
+- '7.4'
 
 services:
 - mysql
 
-jobs:
-  fast_finish: true
+cache:
+  directories:
+  - $HOME/.composer/cache/files
 
 env:
 - WP_VERSION=5.0
 - WP_VERSION=5.2
-- WP_VERSION=5.3-RC2
+- WP_VERSION=5.4
 
 install:
 - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION

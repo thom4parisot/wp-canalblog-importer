@@ -1,7 +1,7 @@
 <?php
 
-include ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-include ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+// include ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+// include ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 
 class ImportPort extends WP_UnitTestCase {
 
@@ -20,12 +20,12 @@ class ImportPort extends WP_UnitTestCase {
    * WordPress will number assets uploads with the same filename
    * So we cleanup assets to avoid failures, due to multiple runs
    */
-  public static function setUpBeforeClass() {
-    $fs = new WP_Filesystem_Direct(array());
-
-    $fs->delete(wp_upload_dir()['basedir'], true);
-    $fs->mkdir(wp_upload_dir()['basedir'], true);
-  }
+  // public static function setUpBeforeClass() {
+  //   $fs = new WP_Filesystem_Direct(array());
+  //
+  //   $fs->delete(wp_upload_dir()['basedir'], true);
+  //   wp_mkdir_p(wp_upload_dir()['basedir']);
+  // }
 
   /*
    getContentFromUri()

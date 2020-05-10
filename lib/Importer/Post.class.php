@@ -729,9 +729,18 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
         $postdata['post_title'] = '';
 
         $attachment_id = $wpImport->process_attachment($postdata, $original_uri);
-        add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);
-        $attachments[$uri] = array_merge($pair, array('id' => $attachment_id));
-        $stats['new']++;
+
+        if ($attachment_id instanceof WP_Error) {
+          $stats['error']++;
+          var_dump($attachment_id);
+          throw new CanalblogImporterException(sprintf(__("Failed to import a distant image.", 'canalblog-importer')));
+        }
+        else {
+          add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);
+          $attachments[$uri] = array_merge($pair, array('id' => $attachment_id));
+          $stats['new']++;
+        }
+
       }
 
     return $attachments;
