@@ -1,5 +1,8 @@
 <?php
 
+include ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+include ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+
 class ImportPort extends WP_UnitTestCase {
 
   protected $importer;
@@ -13,8 +16,15 @@ class ImportPort extends WP_UnitTestCase {
 	  $this->operation->setUri('http://maflo.canalblog.com/archives/2010/09/07/18732506.html');
   }
 
+  /**
+   * WordPress will number assets uploads with the same filename
+   * So we cleanup assets to avoid failures, due to multiple runs
+   */
   public static function setUpBeforeClass() {
-    // array_map('unlink', glob(wp_upload_dir()->basedir . '/**/*'));
+    $fs = new WP_Filesystem_Direct(array());
+
+    $fs->delete(wp_upload_dir()['basedir'], true);
+    $fs->mkdir(wp_upload_dir()['basedir'], true);
   }
 
   /*
@@ -361,27 +371,26 @@ class ImportPort extends WP_UnitTestCase {
 	}
 
   /**
-   * @dataProvider updateAttachmentsRemapProvider
-   * @depends testSavePost
-   * @group content
-   */
-	// public function testUpdateAttachmentsRemap($attachments, $expectations) {
-  //   $wpImport = new WP_Import();
-  //   $wpImport->fetch_attachments = true;
-  //
-  //   $wpImport->url_remap = $this->operation->updateAttachmentsRemap($attachments);
-  //
-  //   $this->assertEquals($expectations, $wpImport->url_remap);
-	// }
-
-
-  /**
    * @depends testSavePost
    */
 	public function testUpdateAttachmentsRemapWithEmptydata() {
     $result = $this->operation->updateAttachmentsRemap(array());
 
     $this->assertEmpty($result);
+	}
+
+  /**
+   * @dataProvider updateAttachmentsRemapProvider
+   * @depends testSavePost
+   * @group content
+   */
+	public function testUpdateAttachmentsRemap($attachments, $expectations) {
+    $wpImport = new WP_Import();
+    $wpImport->fetch_attachments = true;
+
+    $wpImport->url_remap = $this->operation->updateAttachmentsRemap($attachments);
+
+    $this->assertEquals($expectations, $wpImport->url_remap);
 	}
 
 	public function updateAttachmentsRemapProvider() {
