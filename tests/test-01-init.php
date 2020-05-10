@@ -69,7 +69,7 @@ class ImportInit extends WP_UnitTestCase {
   }
 
   function testGetRemoteHtml () {
-    $body = $this->operation->getRemoteHtml('http://www.miaam.canalblog.com/archives/2010/05/p0-0.html');
+    $body = $this->operation->getRemoteHtml('https://httpstat.us/200');
     $this->assertNotEmpty($body);
 
     try {

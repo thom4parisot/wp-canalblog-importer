@@ -131,12 +131,13 @@ class ImportPort extends WP_UnitTestCase {
 	    array('maflo', 'maflo'),
 	    array('masbou', 'Olivier Masbou'),
 	    array('evacuisine', 'admin'),
-      array('grisfluo', 'gris fluo & green'),
+      array('grisfluo', 'gris fluo'),
 	  );
 	}
 
 	/**
 	 * @dataProvider extractPostContentProvider
+	 * @group content
 	 */
 	public function testExtractPostContent($contentId, $startsWith, $endsWith) {
     $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
@@ -156,7 +157,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('maflo', "ou y'a vraiment plus personne qui attérit sur mon blog????", "Allez à vos méninges et rdv le 18 septembre!"),
 	    array('masbou', "Augmentation des surfaces de pommes de terre en Europe", "atteint 355 millions d’euros."),
 	    array('evacuisine', "Aujourd'hui, voici une délicieuse recette de moelleux au citron !", "Bonne journée, et à bientôt avec pleins de nouvelles recettes !"),
-	    array('grisfluo', "Comment rentrer de Lisbonne sans rapporter quelques boîtes de sardines, maquereaux et autres poissons. Nous avons testé deux adresses."),
+	    array('grisfluo', "Comment rentrer de Lisbonne sans rapporter quelques boîtes de sardines, maquereaux et autres poissons.", "Le petit moins, lorsque nous y sommes allés, l'accueil a été très moyen, c'était peut être un jour \"sans\"! \n\nI"),
 	  );
 	}
 
@@ -209,11 +210,11 @@ class ImportPort extends WP_UnitTestCase {
 	      'comment_author_url' => 'http://missnature.canalblog.com',
 	    )),
       array('grisfluo', 2, array(
-	      '__comment_id' => '68343531',
-	      'comment_author' => "gris fluo",
-	      'comment_date' => '2016-01-19 23:09:02',
-	      'comment_content' => "Elles bonifient avec le temps .... Il suffit de les tourner de temps à autre ....",
-	      'comment_author_url' => 'http://grisfluo.canalblog.com',
+	      '__comment_id' => '68343351',
+	      'comment_author' => "Fée des Brumes",
+	      'comment_date' => '2016-01-19 22:46:28',
+	      'comment_content' => "Je crois qu'il me reste une boite de mon dernier WE à Lisbonne il y a … deux ans !",
+	      'comment_author_url' => 'http://www.feedesbrumes.com/',
 	    )),
 	  );
 	}
@@ -231,6 +232,7 @@ class ImportPort extends WP_UnitTestCase {
 	  $result = $this->operation->savePost($dom, $html);
 	  $comments = $this->operation->savePaginatedComments($dom, $html);
 
+    $this->assertEquals($result['status'], 'imported');
 	  $this->assertInternalType('integer', $result['id']);
 	  $this->assertEquals('imported', $result['status']);
 	  $this->assertEquals($title, $result['title']);
