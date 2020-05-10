@@ -59,15 +59,27 @@ Encore quelques clics et ça sera terminé !
 ## Développement
 
 ```bash
-brew install mariadb
-mysql.server start
-composer install
+# plugin (test) dependencies
+$ composer install
 
-sh bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 5.2
+# ephemeral database
+$ docker run --rm -p 3306:3306 -e MYSQL_ROOT_HOST=% -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_ROOT_PASSWORD='' mariadb:latest
+
+# setup a test WordPress instance
+$ sh bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 5.4
 ```
 
 ```bash
-composer run test
+$ composer run test
+> phpunit
+Installing...
+Running as single site... To run multisite, use -c tests/phpunit/multisite.xml
+Not running ajax tests. To execute these, use --group ajax.
+Not running ms-files tests. To execute these, use --group ms-files.
+Not running external-http tests. To execute these, use --group external-http.
+PHPUnit 7.5.16 by Sebastian Bergmann and contributors.
+
+........E.F.....................................E......F....      60 / 60 (100%)
 ```
 
 ## Changelog ##
