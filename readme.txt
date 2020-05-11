@@ -58,6 +58,17 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.2 ###
+
+* corrige un problème d'import avec certains thèmes Canalblog : l'étape 5
+  ne détectait pas les articles, et s'arrêtait en erreur.
+
+Au passage, j'ai détecté un potentiel problème avec PHP 7.4 —
+peut-être que l'import va fonctionner, mais peut-être pas.
+
+Si vous rencontrez un problème d'import de médias dans vos articles,
+basculez en PHP 7.3, ou patientez jusqu'à la prochaine mise à jour du plugin (dans la semaine ?).
+
 ### Version 1.6.1 ###
 
 * rectifie la date de publication (je collectais la date de création d'article, au lieu de la date de publication)
