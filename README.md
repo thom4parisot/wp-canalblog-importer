@@ -1,6 +1,6 @@
 # Canalblog Importer [![Build Status](https://travis-ci.com/oncletom/wp-canalblog-importer.svg?branch=master)](https://travis-ci.com/oncletom/wp-canalblog-importer)
 
-**Requires at least:** 5.0
+**Requires at least:** 5.2
 **Tested up to:** 5.4
 **Stable tag:** trunk
 

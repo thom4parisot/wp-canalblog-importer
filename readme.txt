@@ -2,7 +2,7 @@
 Contributors: oncletom
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=752034
 Tags: canalblog, wordpress, migration, import, admin, importer
-Requires at least: 5.0
+Requires at least: 5.2
 Tested up to: 5.4
 Stable tag: trunk
 
@@ -58,16 +58,15 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.3 ###
+
+* correction de la détection des dates pour les commentaires
+* les médias sont horodatés en fonction de la date de publication de l'article lié
+
 ### Version 1.6.2 ###
 
 * corrige un problème d'import avec certains thèmes Canalblog : l'étape 5
   ne détectait pas les articles, et s'arrêtait en erreur.
-
-Au passage, j'ai détecté un potentiel problème avec PHP 7.4 —
-peut-être que l'import va fonctionner, mais peut-être pas.
-
-Si vous rencontrez un problème d'import de médias dans vos articles,
-basculez en PHP 7.3, ou patientez jusqu'à la prochaine mise à jour du plugin (dans la semaine ?).
 
 ### Version 1.6.1 ###
 
