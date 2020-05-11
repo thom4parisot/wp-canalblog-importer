@@ -173,6 +173,7 @@ class ImportPort extends WP_UnitTestCase {
 
 	/**
 	 * @dataProvider extractCommentsProvider
+	 * @group content
 	 */
 	public function testExtractComments($contentId, $expectedCount, $firstCommentData) {
     $html = file_get_contents(dirname(__FILE__) . '/fixtures/post-'. $contentId .'.html');
@@ -207,7 +208,7 @@ class ImportPort extends WP_UnitTestCase {
 	    array('maflo', 24, array(
 	      '__comment_id' => '36284068',
 	      'comment_author' => 'opio',
-	      'comment_date' => '2010-01-18 16:45:00',
+	      'comment_date' => '2010-08-18 16:45:00',
 	      'comment_content' => 'bah la 3 après avoir failli',
 	      'comment_author_url' => 'http://www.familyandthecity.com',
 	    )),
