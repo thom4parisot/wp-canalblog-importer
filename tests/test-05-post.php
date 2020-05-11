@@ -304,7 +304,8 @@ class ImportPort extends WP_UnitTestCase {
     extract($attachment);
 	  $this->operation->requireWordPressImporter($this->operation->getConfiguration());
 
-	  $post = get_post(3, 'ARRAY_A');
+    // matches testSavePost()#boiremanger
+	  $post = get_post(4, ARRAY_A);
 
     $stats = array('skipped' => 0, 'new' => 0);
     $wpImport = new WP_Import();
@@ -394,6 +395,10 @@ class ImportPort extends WP_UnitTestCase {
     $this->assertEquals($expectations, $wpImport->url_remap);
 	}
 
+  /**
+   * Remaps are related to the post date
+   * Which is testSavePost()#boiremanger
+   */
 	public function updateAttachmentsRemapProvider() {
     $yearMonthNow = strftime('%Y/%m');
 
@@ -438,11 +443,11 @@ class ImportPort extends WP_UnitTestCase {
           ],
         ],
         'expectation' => [
-          'http://storage.canalblog.com/09/65/501700/34561690_p.jpg' => 'http://example.org/wp-content/uploads/'. $yearMonthNow .'/34561690-300x200.jpg',
-          'http://postaisportugal.canalblog.com/images/t-Fond_d_ecran9.jpg' => 'http://example.org/wp-content/uploads/'. $yearMonthNow .'/Fond_d_ecran9-150x150.jpg',
-          'http://storage.canalblog.com/09/65/501700/34561690_q.jpg' => 'http://example.org/wp-content/uploads/'. $yearMonthNow .'/34561690-150x150.jpg',
-          'http://storage.canalblog.com/09/65/501700/34561690.jpg' => 'http://example.org/wp-content/uploads/'. $yearMonthNow .'/34561690.jpg',
-          'http://p7.storage.canalblog.com/79/42/1295810/98533741.to_resize_150x3000.jpg' => 'http://example.org/wp-content/uploads/'. $yearMonthNow .'/98533741.jpg',
+          'http://storage.canalblog.com/09/65/501700/34561690_p.jpg' => 'http://example.org/wp-content/uploads/2014/08/34561690-300x200.jpg',
+          'http://postaisportugal.canalblog.com/images/t-Fond_d_ecran9.jpg' => 'http://example.org/wp-content/uploads/2014/08/Fond_d_ecran9-150x150.jpg',
+          'http://storage.canalblog.com/09/65/501700/34561690_q.jpg' => 'http://example.org/wp-content/uploads/2014/08/34561690-150x150.jpg',
+          'http://storage.canalblog.com/09/65/501700/34561690.jpg' => 'http://example.org/wp-content/uploads/2014/08/34561690.jpg',
+          'http://p7.storage.canalblog.com/79/42/1295810/98533741.to_resize_150x3000.jpg' => 'http://example.org/wp-content/uploads/2014/08/98533741.jpg',
           'http://storage.canalblog.com/65/79/829482/64555901.pdf' => NULL,
         ]
       ]
