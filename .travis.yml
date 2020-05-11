@@ -1,7 +1,9 @@
 language: php
 dist: xenial
 
+# they are the active versions listed on https://www.php.net/
 php:
+- '7.2'
 - '7.3'
 - '7.4'
 

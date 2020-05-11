@@ -328,13 +328,25 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
       // Legacy Mode
       else {
+        $originalLocale = setlocale(LC_ALL, 0);
+        setlocale(LC_ALL, 'en_US');
         $tmp = trim(str_replace(array("\r\n", "\r", "\n"), ' ', $xpath->query("div[@class='itemfooter']", $commentNode)->item(0)->textContent));
         $tmp = str_replace('  ', ' ', $tmp);
         preg_match('#, (le )?(?P<day>[^ ]+) (?P<month>[^ ]+) (?P<year>[^ ]+) (à|&agrave;?) (?P<hour>[^:]+):(?P<minute>.+)$#iUs', $tmp, $matches);
-        $matches['strptime'] = strptime(sprintf('%s %s %s %s:%s', $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute']), '%d %B %Y %H:%M');
+
+        $from = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+        $to = array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
+        $tmp = str_ireplace(
+          $from,
+          $to,
+          sprintf('%s %s %s %s:%s', $matches['day'], $matches['month'], $matches['year'], $matches['hour'], $matches['minute'])
+        );
+
+        $matches['strptime'] = strptime($tmp, '%d %B %Y %H:%M');
         $matches['month'] = sprintf('%02s', $matches['strptime']['tm_mon'] + 1);
 
         $data['comment_date'] = sprintf('%s-%s-%s %s:%s:00', $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']);
+        setlocale(LC_ALL, $originalLocale);
       }
 
       $data['comment_date_gmt'] = $data['comment_date'];
