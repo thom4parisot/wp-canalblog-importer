@@ -107,7 +107,7 @@ abstract class CanalblogImporterImporterBase
     try{
       $result = $http->get($uri, array(
         'redirection' =>  5,
-        'timeout' =>      20,
+        'timeout' =>      5,
         'user-agent' =>   'WordPress/'.get_bloginfo('version')
       ));
 

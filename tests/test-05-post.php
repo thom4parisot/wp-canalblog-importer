@@ -3,7 +3,7 @@
 // include ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 // include ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 
-class ImportPort extends WP_UnitTestCase {
+class ImportPost extends WP_UnitTestCase {
 
   protected $importer;
   protected $operation;
@@ -11,6 +11,7 @@ class ImportPort extends WP_UnitTestCase {
   public function setUp() {
     $plugin = WPPluginToolkitPlugin::create('CanalblogImporter', dirname(__FILE__) . '/../bootstrap.php');
 
+    $this->plugin = $plugin;
     $this->importer = new CanalblogImporterImporter($plugin);
     $this->operation = new CanalblogImporterImporterPost($plugin->getConfiguration());
 	  $this->operation->setUri('http://maflo.canalblog.com/archives/2010/09/07/18732506.html');
@@ -260,6 +261,34 @@ class ImportPort extends WP_UnitTestCase {
       array('grisfluo', 'http://grisfluo.canalblog.com/archives/2015/12/08/33097920.html', 'Que rapporter de Lisbonne ?', 2),
 	  );
 	}
+
+
+	/**
+   * @dataProvider realPostProvider
+   * @group content
+   * @group realdata
+   */
+	function testSaveRealPost($uri, $title, $commentsCount) {
+    $post = new CanalblogImporterImporterPost($this->plugin->getConfiguration());
+    $post->setUri($uri);
+    $result = $post->process();
+
+    $this->assertEquals($result['post']['status'], 'imported');
+	  $this->assertInternalType('integer', $result['post']['id']);
+	  $this->assertEquals('imported', $result['post']['status']);
+	  $this->assertEquals($title, $result['post']['title']);
+	  $this->assertEquals($result['comments']['count'], $commentsCount);
+	}
+
+  public function realPostProvider() {
+    return [
+      [
+        'uri' => 'http://grisfluo.canalblog.com/archives/2020/02/22/38047482.html',
+        'title' => 'Le jardin de cactus de Pinya Rosa à Blanes',
+        'commentsCount' => 0,
+      ]
+    ];
+  }
 
   /**
    * @group content

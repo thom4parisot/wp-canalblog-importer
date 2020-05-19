@@ -76,10 +76,24 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
   public function getContentFromUri($uri) {
     $html = null;
+    $dom = $this->getRemoteDomDocument($uri, $html);
+    $xpath = new DOMXPath($dom);
 
-    $query = $this->getRemoteXpath($uri, "//div[@id='content']", $html);
     $dom = new DomDocument();
-    $dom->appendChild($dom->importNode($query->item(0), true));
+    $root = $dom->createElement('html');
+    // import headers
+    $root->appendChild($dom->importNode(
+      $xpath->query("//head")->item(0),
+      true
+    ));
+    // import content as body
+    //
+    $root->appendChild($dom->importNode(
+      $xpath->query("//div[@id='content']")->item(0),
+      true
+    ));
+    $dom->appendChild($root);
+    var_dump($dom->saveHTML());
 
     return array('dom' => $dom, 'html' => $html);
   }
@@ -427,7 +441,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
     $data['post_date'] = $this->extractPostDate($xpath);
 
     if (!$data['post_date']) {
-      var_dump($data);
       return $stats;
     }
 
@@ -744,7 +757,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
         if ($attachment_id instanceof WP_Error) {
           $stats['error']++;
-          var_dump($attachment_id);
           throw new CanalblogImporterException(sprintf(__("Failed to import a distant image.", 'canalblog-importer')));
         }
         else {

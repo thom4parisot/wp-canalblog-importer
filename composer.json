@@ -9,7 +9,7 @@
     ],
     "minimum-stability": "stable",
     "scripts": {
-      "test": "phpunit"
+      "test": "phpunit --exclude-group realdata"
     },
     "require": {
       "wordpress/wordpress-importer": "dev-trunk"

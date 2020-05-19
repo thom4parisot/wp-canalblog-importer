@@ -30,26 +30,26 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 
   		return true;
   	}
- 
+
   	return false;
   }
 
   public function processRemote(WP_Ajax_Response $response)
-  { 
+  {
   	$months = $this->arguments['months'];
   	$permalinks = get_transient('canalblog_permalinks');
-  	
+
   	$this->setupProcess(array(
   		'offset' => get_transient('canalblog_step_offset'),
   		'limit' => 1,
   		'total' => count($months),
   	));
-  	
+
   	if (!is_array($permalinks))
   	{
   		$permalinks = array();
   	}
-  	
+
   	for ($i = $this->offset; $i < $this->new_offset; $i++)
   	{
   		if (!isset($months[$i]))
@@ -63,13 +63,13 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 	    $permalinks = array_merge($permalinks, $month_permalinks);
 	    $permalinks = array_unique($permalinks);
 	    set_transient('canalblog_permalinks', $permalinks);
-	    
+
 	    $message = sprintf(__('<strong>%s/%s</strong>: found %s posts.', 'canalblog-importer'),
 	    	$archives_index['year'],
 	    	$archives_index['month'],
 	    	count($month_permalinks)
 	    );
-  		
+
   		$response->add(array(
   			'data' => $message,
   		));
@@ -77,14 +77,14 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 
   	$this->processRemoteShutdown($response);
   }
-  
+
   /**
    * Retrieves all permalinks within a month archive
    * @param unknown_type $year
    * @param unknown_type $month
    * @return unknown_type
    */
-  protected function getMonthPermalinks($year, $month)
+  public function getMonthPermalinks($year, $month)
   {
   	$offset = 0;
   	$permalinks = array();
@@ -97,7 +97,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
   		$uri_suffix = sprintf('%s/%s/p%s-0.html', $year, $month, $offset);
   		$dom = $this->getRemoteDomDocument(get_option('canalblog_importer_blog_uri').'/archives/'.$uri_suffix);
   		$xpath = new DOMXPath($dom);
- 
+
   		/*
   		 * Collecting archive permalinks
   		 */
@@ -114,7 +114,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
 	    {
 	    	$offset += 10;
 	    }
-	    else 
+	    else
 	    {
 	    	$offset = -1;
 	    }
@@ -134,7 +134,7 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
         }
       }
     }
-    
+
     return array_unique($permalinks);
   }
 
@@ -144,13 +144,13 @@ class CanalblogImporterImporterArchives extends CanalblogImporterImporterBase
    * @author oncletom
    * @return unknown_type
    */
-  protected function getMonths()
+  public function getMonths()
   {
   	if ($months = get_transient('canalblog_months'))
   	{
   		return $months;
   	}
- 
+
     foreach ($this->getRemoteXpath(get_option('canalblog_importer_blog_uri').'/archives/', "//div[@id='content']//p/a[@href]") as $node)
     {
       if (preg_match('#archives/(\d{4})/(\d{2})/index.html$#iU', $node->getAttribute('href'), $matches))
