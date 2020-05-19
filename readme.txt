@@ -58,6 +58,11 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.4 ###
+
+* correction de la détection de métadonnées, dont l'absence empêchait l'import d'articles pour un certain type de blogs
+* correction d'une erreur… lors d'une erreur d'accès aux données — elle ne s'affichait donc pas, ce qui empêche sa résolution par la personne qui lance l'import
+
 ### Version 1.6.3 ###
 
 * correction de la détection des dates pour les commentaires
