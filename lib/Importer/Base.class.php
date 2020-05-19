@@ -121,11 +121,15 @@ abstract class CanalblogImporterImporterBase
       }
       elseif (!isset($result['response']['code']) || preg_match('#^[4,5]\d{2}#sU', (int)$result['response']['code']))
       {
+        $map_url = function (Requests_Response $response) {
+          return $response->url;
+        }
+
         throw new CanalblogImporterException(sprintf(__("Tried to request an unavailable page [%s] (%d, %s)<br><strong>Redirects</strong>: <code>%s</code><br><strong>Content</strong>: <details>%s</details>", 'canalblog-importer'),
           $uri,
           $result['response']['code'],
           $result['response']['message'],
-          join(', ', $result['http_response']->get_response_object()->history),
+          join(', ', array_map($map_url, $result['http_response']->get_response_object()->history)),
           $result['body']
         ));
       }
