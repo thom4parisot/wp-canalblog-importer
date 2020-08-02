@@ -283,9 +283,9 @@ class ImportPost extends WP_UnitTestCase {
   public function realPostProvider() {
     return [
       [
-        'uri' => 'http://grisfluo.canalblog.com/archives/2020/02/22/38047482.html',
-        'title' => 'Le jardin de cactus de Pinya Rosa à Blanes',
-        'commentsCount' => 0,
+        'uri' => 'http://grisfluo.canalblog.com/archives/2019/08/27/37593376.html',
+        'title' => 'Petits coins de verdure et jardins à Édimbourg',
+        'commentsCount' => 2,
       ]
     ];
   }

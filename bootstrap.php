@@ -3,7 +3,7 @@
 Plugin Name: Canalblog Importer
 Description: Enables content importing from a blog hosted on Canalblog platform.
 Author: Oncle Tom
-Version: 1.6.4
+Version: 1.6.5
 Text Domain: canalblog-importer
 Domain Path: /i18n
 Author URI: http://case.oncle-tom.net/

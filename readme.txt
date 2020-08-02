@@ -58,6 +58,13 @@ Encore quelques clics et ça sera terminé !
 
 == Changelog ==
 
+### Version 1.6.5 ###
+
+* suppression d'un débogage qui déformait la fenêtre d'import
+* suppression d'un bout de code qui faisait planter l'import des pièces-jointes
+
+Merci à Samuel pour son message et sa contribution !
+
 ### Version 1.6.4 ###
 
 * correction de la détection de métadonnées, dont l'absence empêchait l'import d'articles pour un certain type de blogs
