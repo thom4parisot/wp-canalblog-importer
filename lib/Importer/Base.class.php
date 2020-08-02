@@ -1,9 +1,5 @@
 <?php
 
-function map_url($response) {
-  return $response->url;
-}
-
 /**
  * Base class for importing process
  *
@@ -53,6 +49,10 @@ abstract class CanalblogImporterImporterBase
   public function getConfiguration()
   {
     return $this->configuration;
+  }
+
+  public function mapResponseUrl($response) {
+    return $response->url;
   }
 
   /**
@@ -130,7 +130,7 @@ abstract class CanalblogImporterImporterBase
           $uri,
           $result['response']['code'],
           $result['response']['message'],
-          join(', ', array_map(map_url, $result['http_response']->get_response_object()->history)),
+          join(', ', array_map(array($this, 'mapResponseUrl'), $result['http_response']->get_response_object()->history)),
           $result['body']
         ));
       }

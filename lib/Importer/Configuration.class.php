@@ -36,7 +36,7 @@ class CanalblogImporterImporterConfiguration extends CanalblogImporterImporterBa
 
     $result = $xpath->query("//meta[@name='generator']");
 
-    return $result && $result->length && strpos($result->item(0)->getAttribute('content'), 'CanalBlog - http://www.canalblog.com') === 0;
+    return $result && $result->length && strpos($result->item(0)->getAttribute('content'), 'CanalBlog') === 0;
   }
 
 

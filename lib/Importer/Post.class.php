@@ -93,7 +93,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       true
     ));
     $dom->appendChild($root);
-    var_dump($dom->saveHTML());
 
     return array('dom' => $dom, 'html' => $html);
   }
@@ -106,7 +105,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
   	$data = array();
     $remote = $this->getContentFromUri($this->uri);
 
-    $data['post'] = $this->savePost($remote['dom'], $remote['html']);
+    $data['post'] = $this->savePost($remote['dom']);
     $data['medias'] = $this->saveMedias(get_post($this->id, ARRAY_A));
     $data['comments'] = $this->savePaginatedComments($remote['dom'], $remote['html']);
 
@@ -378,15 +377,17 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
     // Get storage hyperlinks
     foreach ($xpath->query("//a[contains(@href, 'canalblog.com/storagev1') or contains(@href, 'storage.canalblog.com') or contains(@href, 'canalblog.com/docs')]") as $link) {
-      array_push($remote_uris, $this->cleanupMediaUri($link->getAttribute('href')));
+      array_push($remote_uris, $link->getAttribute('href'));
     }
 
     // Get image sources
     foreach ($xpath->query("//img[contains(@src, 'canalblog.com/storagev1') or contains(@src, 'storage.canalblog.com') or contains(@src, 'canalblog.com/images')]") as $link) {
-      array_push($remote_uris, $this->cleanupMediaUri($link->getAttribute('src')));
+      array_push($remote_uris, $link->getAttribute('src'));
     }
 
-    return $remote_uris;
+    $remote_uris = array_unique($remote_uris);
+
+    return array_map(array($this, 'cleanupMediaUri'), $remote_uris);
   }
 
   protected function cleanupMediaUri ($uri) {
@@ -757,7 +758,6 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
 
         if ($attachment_id instanceof WP_Error) {
           $stats['error']++;
-          throw new CanalblogImporterException(sprintf(__("Failed to import a distant image.", 'canalblog-importer')));
         }
         else {
           add_post_meta($attachment_id, 'canalblog_attachment_uri', $original_uri, true);

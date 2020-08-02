@@ -55,7 +55,6 @@ class ImportArchives extends WP_UnitTestCase {
     foreach ($permalinks as $uri) {
       $post = new CanalblogImporterImporterPost($this->plugin->getConfiguration());
       $post->setUri($uri);
-      var_dump($uri);
       $data = $post->process();
     }
 	}
