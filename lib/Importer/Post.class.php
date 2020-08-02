@@ -93,6 +93,7 @@ class CanalblogImporterImporterPost extends CanalblogImporterImporterBase
       true
     ));
     $dom->appendChild($root);
+    $dom->saveHTML();
 
     return array('dom' => $dom, 'html' => $html);
   }
